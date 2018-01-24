@@ -80,7 +80,7 @@ void printMap(int map[][width]){
           string terrain;
           switch(map[row][column]){
             case 0:
-              terrain = "\u2588";
+              terrain = "#";
               break;
             case 1:
               terrain = "|";
