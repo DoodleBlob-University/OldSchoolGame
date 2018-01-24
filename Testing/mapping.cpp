@@ -1,6 +1,7 @@
 //Charlie Barry
 #include <iostream>
-#include <conio.h>
+#include <ncurses.h>
+#include <locale.h>
 
 using namespace std;
 
@@ -9,7 +10,11 @@ const int height = 12;
 
 int playerpos[] = {10,10};
 
-int main(){
+int main(void){
+    cout << "\u2588";
+    setlocale(LC_ALL, "");
+    initscr();
+    curs_set(0);
     void printMap(int map[][width]);
     void movement(int map[][width]);
 
@@ -29,31 +34,31 @@ int main(){
     while(true){
       printMap(map);
       movement(map);
+      clear();
     }
-    return 0;
   }
 
 void movement(int map[][width]){
   char keypress;
-  keypress = toupper(getch());
+  keypress = getch();
   try{
     switch(keypress){
-      case 'W':
+      case 'w':
           if(map[playerpos[0]-1][playerpos[1]] == 3){
             playerpos[0] -= 1;
           }
           break;
-        case 'A':
+        case 'a':
           if(map[playerpos[0]][playerpos[1]-1] == 3){
             playerpos[1] -= 1;
           }
           break;
-        case 'S':
+        case 's':
           if(map[playerpos[0]+1][playerpos[1]] == 3){
             playerpos[0] += 1;
           }
           break;
-        case 'D':
+        case 'd':
           if(map[playerpos[0]][playerpos[1]+1] == 3){
             playerpos[1] += 1;
           }
@@ -61,9 +66,7 @@ void movement(int map[][width]){
         default: cout << "";
           break;
         }
-        if(map[playerpos[0]][playerpos[1]] == 2){
-          cout << endl << "You opened a door" << endl;
-        }
+
     }catch(...){}
   }
 
@@ -74,26 +77,26 @@ void printMap(int map[][width]){
     {
         for (int column = 0; column < width; ++column)
         {
-          char terrain;
+          string terrain;
           switch(map[row][column]){
             case 0:
-              terrain = '#';
+              terrain = "\u2588";
               break;
             case 1:
-              terrain = '|';
+              terrain = "|";
               break;
             case 2:
-              terrain = '%';
+              terrain = "7";
               break;
             case 3:
-              terrain = ' ';
+              terrain = " ";
               break;
           }
           if(playerpos[0] == row && playerpos[1] == column){
-            terrain = 'X';
+            terrain = "X";
           }
-          cout << terrain;
+          printw(terrain.c_str());
         }
-        cout << endl;
+        printw("\n");
     }
 }
