@@ -2,10 +2,14 @@
 
 Discord: https://discord.gg/3Dcje4
 
-# Getting Started
+## Getting Started
 
-Installing Ncurses Library
-```sudo apt-get install libncurses5-dev libncursesw5-dev```
+```
+git clone https://github.coventry.ac.uk/barryc2/OldSchoolGame/
+cd OldSchoolGame
 
-When compiling, use this as a template:
-```g++ -std=c++14 *filename*.cpp -o *filename* -lncurses```
+sudo apt-get install libncurses5-dev libncursesw5-dev
+
+g++ -std=c++14 *filename*.cpp -o *filename* -lncursesw
+./*filename*
+```
