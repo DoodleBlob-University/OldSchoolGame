@@ -1,7 +1,7 @@
 //Charlie Barry
 #include <iostream>
 #include <ncurses.h>
-#include <locale.h>
+#include <locale>
 
 using namespace std;
 
@@ -11,9 +11,9 @@ const int height = 12;
 int playerpos[] = {10,10};
 
 int main(void){
-    cout << "\u2588";
     setlocale(LC_ALL, "");
     initscr();
+    noecho();
     curs_set(0);
     void printMap(int map[][width]);
     void movement(int map[][width]);
@@ -80,13 +80,13 @@ void printMap(int map[][width]){
           string terrain;
           switch(map[row][column]){
             case 0:
-              terrain = "#";
+              terrain = "░";
               break;
             case 1:
-              terrain = "|";
+              terrain = "\u2588";
               break;
             case 2:
-              terrain = "7";
+              terrain = "~";
               break;
             case 3:
               terrain = " ";

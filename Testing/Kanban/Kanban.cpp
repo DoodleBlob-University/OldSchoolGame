@@ -4,7 +4,7 @@
 
 using namespace std;
 
-int main(void){
+int main(){
   array<string,27> todoList, doingList, doneList;
 
   while(true){
@@ -26,27 +26,24 @@ int main(void){
 
     switch(getch()){
       case '1':
-        void movetask(array<string,27>,array<string,27>,array<string,27>);
+        int movetask(array<string,27>,array<string,27>,array<string,27>);
         movetask(todoList, doingList, doneList);
         break;
       case '2':
-        void addtask(array<string,27>,array<string,27>,array<string,27>);
+        int addtask(array<string,27>,array<string,27>,array<string,27>);
         addtask(todoList, doingList, doneList);
         break;
       case '3':
-        void removetask(array<string,27>,array<string,27>,array<string,27>);
+        int removetask(array<string,27>,array<string,27>,array<string,27>);
         removetask(todoList, doingList, doneList);
         break;
       case '9':
         endwin();
-        goto end;
+        return 1;
         break;
     }
     clear();
   }
-
-  end:
-  ;
 }
 
 void clearline(int num){
@@ -54,7 +51,7 @@ void clearline(int num){
   clrtoeol();
 }
 
-void movetask(array<string,27> todo, array<string,27> doing, array<string,27> done){
+int movetask(array<string,27> todo, array<string,27> doing, array<string,27> done){
   clearline(33);
   mvprintw(33,14,"MOVE)       1: TODO         2: DOING       3: DONE           9: BACK");
   switch(getch()){
@@ -68,11 +65,12 @@ void movetask(array<string,27> todo, array<string,27> doing, array<string,27> do
       //
       break;
     case '9':
+      return 0;
       break;
   }
 }
 
-void addtask(array<string,27> todo, array<string,27> doing, array<string,27> done){
+int addtask(array<string,27> todo, array<string,27> doing, array<string,27> done){
   clearline(33);
   mvprintw(33,14,"ADD)        1: TODO         2: DOING       3: DONE           9: BACK");
   switch(getch()){
@@ -86,11 +84,12 @@ void addtask(array<string,27> todo, array<string,27> doing, array<string,27> don
       //
       break;
     case '9':
+      return 0;
       break;
   }
 }
 
-void removetask(array<string,27> todo, array<string,27> doing, array<string,27> done){
+int removetask(array<string,27> todo, array<string,27> doing, array<string,27> done){
   clearline(33);
   mvprintw(33,14,"REMOVE)     1: TODO         2: DOING       3: DONE           9: BACK");
   switch(getch()){
@@ -104,6 +103,7 @@ void removetask(array<string,27> todo, array<string,27> doing, array<string,27> 
       //
       break;
     case '9':
+      return 0;
       break;
   }
 }
