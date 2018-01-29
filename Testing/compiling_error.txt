@@ -1,0 +1,4 @@
+C:\Users\Charlie\Documents\OldSchoolGame\Testing\widechar.cpp:1:21: fatal error: ncurses.h: No such file or directory
+ #include <ncurses.h>
+                     ^
+compilation terminated.
