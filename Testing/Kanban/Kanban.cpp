@@ -1,6 +1,10 @@
 //Charlie Barry
 #include <ncurses.h>
 #include <array>
+//#include <sqlite3.h>
+#include <string>
+
+//#include "libsqlite.hpp"
 
 using namespace std;
 
@@ -144,3 +148,25 @@ void createboxes(WINDOW* todo, WINDOW* doing, WINDOW* done){
   mvprintw(33,14,"OPTIONS)    1: MOVE TASK    2: ADD TASK    3: REMOVE TASK    9: EXIT");
   use_default_colors();
 }
+/*
+void getTable(){
+  sqlite3 *db;
+  sqlite3_stmt *stmt;
+  if (sqlite3_open("kanban.db", &db) == SQLITE_OK){
+
+    sqlite3_prepare( db, "SELECT task from task;", 0, &stmt, NULL );
+    while( sqlite3_column_text( stmt, 0 ) ){
+      for( int i = 0; i < 4; i++ )
+        printw((char *)sqlite3_column_text( stmt, i ));
+        printw("\n");
+        sqlite3_step( stmt );
+    }
+
+  }else{
+    printw("Failed to open db");
+  }
+  sqlite3_finalize(stmt);
+  sqlite3_close(db);
+
+}
+*/
