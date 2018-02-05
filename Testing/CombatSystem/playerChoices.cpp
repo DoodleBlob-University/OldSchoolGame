@@ -9,7 +9,7 @@ class combat{
     string const attackSearch = "attack"; //melee
     string const spellSearch = "spells";
     string const defenseSearch = "defense";
-    string const healSeatch = "heal";
+    string const healSeatch = "heal"; //not implemented yet, decisions need to be made 
     string initialResponse;
     string initialResponseOne;
     string response;
