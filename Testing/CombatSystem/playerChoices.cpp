@@ -4,40 +4,53 @@
 
 
 using namespace std;
-int main(){
-    //display options to the user for each situation, ncurses helps with the interface but this is the simple logic 
-
-    string const attackSearch = "attack";
+class combat{
+    public:
+    string const attackSearch = "attack"; //melee
+    string const spellSearch = "spells";
     string const defenseSearch = "defense";
-    string const bagSearch = "bag";
+    string const healSeatch = "heal";
+    string initialResponse;
+    string initialResponseOne;
     string response;
-      
-    
-    cout << "What would you like to do?" << endl;
-    getline(cin, response);
-    //cout << response << endl;
-
-    for (size_t i = 0; response.size() > i; ++i){
-      if ((response[i] >= 'A') && (response[i] <= 'Z')){
-          response[i] = response[i] - 'A' + 'a';
-      }
-    }
-    //cout << response << endl;
-    
-    size_t findAttack = response.find(attackSearch);
-    if (findAttack!=string::npos){
-        //cout << "attack works" << endl;
-        string attackResponse;
-        string const dagger = "dagger"; //these options could use a DB call for what kind of options, can only have 3 options to limit code and options, same for all 'string const' - s
-        string const bow = "bow";
-        string const sword = "sword";
-        cout << "What attack would you like to do?" << endl;
-        getline(cin, attackResponse);
-        for (size_t i = 0; response.size() > i; ++i){
-              if ((attackResponse[i] >= 'A') && (attackResponse[i] <= 'Z')){
-                  attackResponse[i] = attackResponse[i] - 'A' + 'a'; //duplication of code
-              }
+    string lower_case(string input){
+        for (size_t i = 0; input.size() > i; ++i){
+            if ((input[i] >= 'A') && (input[i] <= 'Z')){
+                input[i] = input[i] - 'A' + 'a';
+            }
         }
+    return input;
+    }
+    
+    string get_line(){ 
+        getline(cin, response);
+    return response;
+    }
+    string initial_response(){
+        cout << "What would you like to do?" << endl;
+        initialResponseOne = get_line();
+        initialResponse = lower_case(initialResponseOne);
+    return initialResponse;
+    }
+    
+    
+};
+
+class attack : public combat{
+    public:
+    string attackResponse;
+    string attackResponseOne;
+    string const dagger = "dagger"; //these bottom 3 can be calling from a database for the weapons which they have, more code needed to define each 
+    string const bow = "bow";
+    string const sword = "sword";
+    
+    int attack_response(){
+        cout << "What weapon would you like to use?" << endl;
+        attackResponseOne = get_line();
+        attackResponse = lower_case(attackResponseOne);
+    return 0;
+    }
+    int attack_choice(){ 
         size_t attackDagger = attackResponse.find(dagger);
         if (attackDagger!=string::npos){
             cout << "dagger works" << endl;
@@ -50,29 +63,70 @@ int main(){
         if (attackSword!=string::npos){
             cout << "dagger works" << endl;
         }
+    return 0;
+    }
+};
+
+class spells : public combat{
+    public:
+    string spellResponse;
+    string spellResponseOne;
+    string const spellOne = "spell 1";
+    string const spellTwo = "spell 2";
+    string const spellThree = "spell 3";
+    
+    int spell_response(){ 
+        cout << "What spell would you like to use?" << endl;
+        spellResponseOne = get_line();
+        spellResponse = lower_case(spellResponseOne);
+    return 0;
     }
     
-    size_t findDefense = response.find(defenseSearch);
-    if (findDefense!=string::npos){
-        //cout << "defense works" << endl;
-        string defenseResponse;
-        string const heal = "heal";
-        string const block = "block";
-        cout << "What defense would you like to do?" << endl;
-        getline(cin, defenseResponse);
-        for (size_t i = 0; response.size() > i; ++i){
-              if ((response[i] >= 'A') && (response[i] <= 'Z')){
-                  response[i] = response[i] - 'A' + 'a';//duplication of code 
-              }
+    int spell_choice(){
+        size_t spellAttackOne = spellResponse.find(spellOne);        
+        if (spellAttackOne!=string::npos){
+            cout << "spell1 works" << endl;
         }
-        size_t defenseHeal = defenseResponse.find(heal);
+        size_t spellAttackTwo = spellResponse.find(spellTwo);
+        if (spellAttackTwo!=string::npos){
+            cout << "spell2 works" << endl;
+        }
+        size_t spellAttackThree = spellResponse.find(spellThree);
+        if (spellAttackThree!=string::npos){
+            cout << "spell3 works" << endl;
+        }
+    return 0;
+    }
+    
+};
+
+class defense : public combat{
+    public:
+    string defenseResponse;
+    string defenseResponseOne;
+    string const heal = "heal";
+    string const block = "block";
+    
+    int defense_response(){
+        cout << "What defense would you like to do?" << endl;
+        defenseResponseOne = get_line();
+        defenseResponse = lower_case(defenseResponseOne);
+    return 0;
+    }
+    int defense_choice(){    
+    size_t defenseHeal = defenseResponse.find(heal);
         if (defenseHeal!=string::npos){
             cout << "heal works" << endl;
         }
-        size_t defenseBlock = defenseResponse.find(block);
+    size_t defenseBlock = defenseResponse.find(block);
         if (defenseBlock!=string::npos){
             cout << "block works" << endl;
         }
-    }    
+    }
+};
+
+
+
+int main(){    
     return 0;
 }
