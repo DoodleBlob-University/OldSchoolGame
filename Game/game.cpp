@@ -8,9 +8,25 @@
 
 using namespace std;
 
-int MAX_HEIGHT = 40;
-int MAX_WIDTH = 160;
+int const MAX_HEIGHT = 40;
+int const MAX_WIDTH = 160;
 WINDOW *mainwin;// = newwin(MAX_HEIGHT,MAX_WIDTH,0,0);
+WINDOW *gamewin;
+
+int map[][MAX_WIDTH - 2] =  {   {0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0},
+                                {0,0,0,0,0,1,3,3,3,3,3,3,3,3,1,0,0,0,0,0},
+                                {0,0,0,0,0,1,3,3,3,3,3,3,3,3,1,0,0,0,0,0},
+                                {0,0,0,0,0,1,3,3,3,3,3,3,3,3,1,0,0,0,0,0},
+                                {0,0,0,0,0,1,3,3,3,3,3,3,3,3,1,0,0,0,0,0},
+                                {0,0,0,0,0,1,3,3,3,3,3,3,3,3,1,0,0,0,0,0},
+                                {0,0,0,0,0,1,3,3,3,3,3,3,3,3,1,0,0,0,0,0},
+                                {0,0,0,0,0,1,3,3,3,3,3,3,3,3,1,0,0,0,0,0},
+                                {0,0,0,0,0,1,3,3,3,3,3,3,3,3,1,0,0,0,0,0},
+                                {0,0,0,0,0,1,3,3,3,3,3,3,3,3,1,0,0,0,0,0},
+                                {0,0,0,0,0,1,3,3,3,3,3,3,3,3,1,0,0,0,0,0},
+                                {0,0,0,0,0,1,1,1,1,2,2,1,1,1,1,0,0,0,0,0}};
+
+int playerpos[] = {10,10};
 
 int readkey(){//replacement for getch()
   while(true){
@@ -43,13 +59,6 @@ public:
 
 };
 */
-void drawDisplay(){
-  clear();
-  mainwin = newwin(LINES-2,COLS-1,0,0);
-  box(mainwin,0,0);
-  mvwprintw(mainwin, 1, 1, "COLS = %d, LINES = %d", COLS, LINES);
-  wrefresh(mainwin);
-}
 
 void resizeHandler(int sig){
     endwin();
@@ -60,31 +69,63 @@ void resizeHandler(int sig){
     //box(mainwin,0,0);
     //mvwprintw(mainwin, 1, 1, "COLS = %d, LINES = %d          %d", COLS, LINES, sig);
     //wrefresh(mainwin);
-    drawDisplay();
+    clear();
+    mainwin = newwin(LINES-2,COLS-1,0,0);
+    gamewin = derwin(mainwin, 20,20,10,10);
+    box(mainwin,0,0);
+    box(gamewin,0,0);
+    //mvwprintw(mainwin, 1, 1, "COLS = %d, LINES = %d", COLS, LINES);
+    wrefresh(mainwin);
+    wrefresh(gamewin);
+}
+
+void printMap(){
+  wmove(mainwin,1,1);
+  for (int row = 0; row < 12; ++row){
+      for (int column = 0; column < 20; ++column){
+        //wprintw(mainwin,"X");
+        string terrain;
+        switch(map[row][column]){
+          case 0:
+            terrain = "░";
+            break;
+          case 1:
+            terrain = "\u2588";
+            break;
+          case 2:
+            terrain = "~";
+            break;
+          case 3:
+            terrain = " ";
+            break;
+        }
+        if(playerpos[0] == row && playerpos[1] == column){
+          terrain = "X";
+        }
+        wprintw(mainwin,terrain.c_str());
+      }
+      wmove(mainwin,row+2,1);
+  }
+  wrefresh(mainwin);
 }
 
 int game(){
   while(true){
-    drawDisplay();
-
-    switch(readkey()){
-      case '1':
-        return 0;
-        break;
-    }
-
+    printMap();
+    readkey();
   }
 }
 
 int main(){
-
+    setlocale(LC_ALL, "");
     initscr();
     noecho();
+    //resizeterm(MAX_WIDTH,MAX_HEIGHT);
 
     struct sigaction resizeSignal;
     sigemptyset(&resizeSignal.sa_mask);
-    resizeSignal.sa_flags = SA_RESTART;//Restart functions if interupted by handler
-    resizeSignal.sa_handler = resizeHandler;
+    resizeSignal.sa_flags = SA_RESTART;//restart functions if interupted by handler
+    resizeSignal.sa_handler = resizeHandler;//cannot give arguments to a function when called by handler
     sigaction(SIGWINCH, &resizeSignal, NULL);
 
     resizeHandler(28);//resize to terminals current size
