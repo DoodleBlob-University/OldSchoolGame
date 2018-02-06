@@ -34,17 +34,24 @@ public:
 
 };
 */
+void drawDisplay(){
+  mainwin = newwin(LINES-2,COLS-1,0,0);
+  box(mainwin,0,0);
+  mvwprintw(mainwin, 1, 1, "COLS = %d, LINES = %d", COLS, LINES);
+  wrefresh(mainwin);
+}
 
-void handle_winch(int sig){
+void resizeHandler(int sig){
     endwin();
     refresh();//re-initialise ncurses with new terminal dimensions
     if(LINES > MAX_HEIGHT){LINES = MAX_HEIGHT;}
     if(COLS > MAX_WIDTH){COLS = MAX_WIDTH;}
-    mainwin = newwin(LINES-2,COLS-1,0,0);
+    //mainwin = newwin(LINES-2,COLS-1,0,0);
     clear();
-    box(mainwin,0,0);
-    mvwprintw(mainwin, 1, 1, "COLS = %d, LINES = %d          %d", COLS, LINES, sig);
-    wrefresh(mainwin);
+    //box(mainwin,0,0);
+    //mvwprintw(mainwin, 1, 1, "COLS = %d, LINES = %d          %d", COLS, LINES, sig);
+    //wrefresh(mainwin);
+    drawDisplay();
 }
 
 int main(){
@@ -55,16 +62,17 @@ int main(){
     struct sigaction resizeSignal;
     sigemptyset(&resizeSignal.sa_mask);
     resizeSignal.sa_flags = SA_RESTART;//Restart functions if interupted by handler
-    resizeSignal.sa_handler = handle_winch;
+    resizeSignal.sa_handler = resizeHandler;
     sigaction(SIGWINCH, &resizeSignal, NULL);
 
-    handle_winch(28);
+    resizeHandler(28);
 
     while(true) {
-      //mvprintw(1,1,"reeeeeee");
-      //getch();
-      //mvprintw(2,1,"roooooooo");
-      //getch();
+      int count;
+      if(wgetch(mainwin)=='1'){endwin(); return 0;}
+      mvwprintw(mainwin,5,5,"%d",count);
+      wrefresh(mainwin);
+      count += 1;
     }
 
     endwin();
