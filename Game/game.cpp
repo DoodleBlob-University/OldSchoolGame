@@ -12,6 +12,8 @@ int const MAX_HEIGHT = 40;
 int const MAX_WIDTH = 160;
 WINDOW *mainwin;// = newwin(MAX_HEIGHT,MAX_WIDTH,0,0);
 WINDOW *gamewin;
+WINDOW *statwin;
+WINDOW *termwin;
 
 int map[][MAX_WIDTH - 2] =  {   {0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0},
                                 {0,0,0,0,0,1,3,3,3,3,3,3,3,3,1,0,0,0,0,0},
@@ -46,20 +48,6 @@ void threadtest(){
   }
 }*/
 
-/*
-class Boxes{
-
-private:
-  int pX, pY, pHeight, pWidth;
-
-public:
-  Boxes(){
-
-  }
-
-};
-*/
-
 void resizeHandler(int sig){
     endwin();
     refresh();//re-initialise ncurses with new terminal dimensions
@@ -71,19 +59,23 @@ void resizeHandler(int sig){
     //wrefresh(mainwin);
     clear();
     mainwin = newwin(LINES-2,COLS-1,0,0);
-    gamewin = derwin(mainwin, 20,20,10,10);
+    gamewin = derwin(mainwin, MAX_HEIGHT - 4,107,1,2);
+    statwin = derwin(mainwin, MAX_HEIGHT - 16,47,1,110);
+    termwin = derwin(mainwin, 12,47,MAX_HEIGHT - 15,110);
     box(mainwin,0,0);
+    mvwprintw(mainwin, 1, 2, "Please enlarge the Terminal");
     box(gamewin,0,0);
+    box(statwin,0,0);
+    box(termwin,0,0);
     //mvwprintw(mainwin, 1, 1, "COLS = %d, LINES = %d", COLS, LINES);
     wrefresh(mainwin);
     wrefresh(gamewin);
 }
 
 void printMap(){
-  wmove(mainwin,1,1);
+  wmove(gamewin,1,1);
   for (int row = 0; row < 12; ++row){
       for (int column = 0; column < 20; ++column){
-        //wprintw(mainwin,"X");
         string terrain;
         switch(map[row][column]){
           case 0:
@@ -102,11 +94,11 @@ void printMap(){
         if(playerpos[0] == row && playerpos[1] == column){
           terrain = "X";
         }
-        wprintw(mainwin,terrain.c_str());
+        wprintw(gamewin,terrain.c_str());
       }
-      wmove(mainwin,row+2,1);
+      wmove(gamewin,row+2,1);
   }
-  wrefresh(mainwin);
+  wrefresh(gamewin);
 }
 
 int game(){
@@ -120,13 +112,13 @@ int main(){
     setlocale(LC_ALL, "");
     initscr();
     noecho();
-    //resizeterm(MAX_WIDTH,MAX_HEIGHT);
+    //resize_term(MAX_WIDTH,MAX_HEIGHT);
 
     struct sigaction resizeSignal;
     sigemptyset(&resizeSignal.sa_mask);
     resizeSignal.sa_flags = SA_RESTART;//restart functions if interupted by handler
     resizeSignal.sa_handler = resizeHandler;//cannot give arguments to a function when called by handler
-    sigaction(SIGWINCH, &resizeSignal, NULL);
+    sigaction(SIGWINCH, &resizeSignal, NULL);//signal occurs upon terminal resizing
 
     resizeHandler(28);//resize to terminals current size
 
