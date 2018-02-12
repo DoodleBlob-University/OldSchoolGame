@@ -1,6 +1,6 @@
 # OldSchoolGame
 
-Discord: https://discord.gg/3Dcje4
+Discord: https://discord.gg/j2b8Aue
 
 ## Getting Started
 
