@@ -1,6 +1,6 @@
 // This is what I managed to do so far. However, I struggled with creating a database table.
-// This program helps the user register, provide an ID number for them, 
-// and lets them login when the correct username and password is provided.
+// This program helps the user register, provides an ID number for them, 
+// and lets them login when the correct username and password are provided.
 
 
 
