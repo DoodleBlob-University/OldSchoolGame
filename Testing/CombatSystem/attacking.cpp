@@ -11,68 +11,80 @@
  */
 using namespace std;
 
-class Combat{
-    public:
-    string response;
-    //string response2;
-    int playerHealth = 100;
-    int monsterMana = 100;
-    int playerMana = 100;
-    
-    Combat(){        
-    }    
-    string lower_case(string input){//could combine this with the get_line function so it reduces one line in code      
-        for (size_t i = 0; input.size() > i; ++i){
-            if ((input[i] >= 'A') && (input[i] <= 'Z')){
-                input[i] = input[i] - 'A' + 'a';
-            }
-        }       
-    return input;
-    }
-        
-    string get_line(){ 
-        getline(cin, response);
-        //response2 = lower_case(response1); to reduce code usage 
-    return response;
-    }
-    
-    int weapon_attack_player(int weaponAttackStats){
-        
-    }
-    int spells_attack_player(int magicAbility, int magicItem){
-        int magicDamagePlayer = magicAbility * magicItem;
-        
-    }
-    
-    int block_player(int defensePlayer)
-    
-    int meleeAttackM(int attackStr, int itemAttackStr){
-    int attackDamageM = attackStr * itemAttackStr;
-    }
-    
-    int magicAttackM(int MagAbil, int itemMagAbil){
-        int magicDamageM = MagAbil * itemMagAbil;
-        monsterMana - 5;
-            
-    }
-    
-    /*int damageTaken(int mAttack){
-    int health = health - mAttack;   
-        if(health >= 0){
-            int v=0;
-            //can't do this, im dumb.
-        }
-    }*/
-   
-    int blockM(int defM,int itemDefM, int mAttack){
-        int block = defM * itemDefM;
-        int health = health - (health - mAttack) + block;
-    }
-    
-    //function which stops combat when the monsters health is zero/displays its health as well 
 
+
+
+ _____  _                              _____ _                          _            
+ |  __ \| |                            / ____| |                        | |           
+ | |__) | | __ _ _   _  ___ _ __ ___  | |    | |__   __ _ _ __ __ _  ___| |_ ___ _ __ 
+ |  ___/| |/ _` | | | |/ _ \ '__/ __| | |    | '_ \ / _` | '__/ _` |/ __| __/ _ \ '__|
+ | |    | | (_| | |_| |  __/ |  \__ \ | |____| | | | (_| | | | (_| | (__| ||  __/ |   
+ |_|    |_|\__,_|\__, |\___|_|  |___/  \_____|_| |_|\__,_|_|  \__,_|\___|\__\___|_|   
+                  __/ |                                                               
+                 |___/                                                                
+                                                                      
+                                                                      
+class playableCharacter{
+    private:
+
+    public:
+        int health =20;
+        int XP = 0;
+    //XP adding function, can be implemented with different monsters later.
+    int addXP(int pXP){
+        XP= XP + pXP;
+    }
+    
+    //Damage Taking Function, will be changed to accomodate armour and def stats. Need databse for that.
+    int damageTaken(int mAttack){
+        health = health - mAttack;    
+    }
 
 };
+
+class warrior : public playableCharacter{
+    private:
+
+    public:
+        int wAttackStr = 55;
+        int wDef = 60;
+        int wMagAbil = 10;
+        int wMana = 20;
+
+};
+
+class mage : public playableCharacter{
+    private:
+
+    public:
+        int wAttackStr = 30;
+        int wDef = 40;
+        int wMagAbil = 60;
+        int wMana = 50;
+    
+};
+
+class archer : public playableCharacter{
+    private:
+
+    public:
+        int wAttackStr = 45;
+        int wDef = 50;
+        int wMagAbil = 35;
+        int wMana = 30;
+    
+};
+
+                                                                      
+                                                                      
+ __  __                 _                
+ |  \/  |               | |               
+ | \  / | ___  _ __  ___| |_ ___ _ __ ___ 
+ | |\/| |/ _ \| '_ \/ __| __/ _ \ '__/ __|
+ | |  | | (_) | | | \__ \ ||  __/ |  \__ \
+ |_|  |_|\___/|_| |_|___/\__\___|_|  |___/
+                                          
+                                          
 
 class Monster : virtual public Combat{
     public:
@@ -103,24 +115,6 @@ class Wolf : public Monster{
     
 };
 
-class Ugandan_Knuckles : public Monster{
-    public:
-    
-
-    int health = rand()%(30-10+1)+10;
-    int attackStr = rand()%(14-1+1)+1;
-    int magAbil = rand()%(10-0+1)+0;
-    int mana = 10;
-    int def = rand()%(10-3+1)+3;    
-    string const uCryOne = "We fight for da qween!";
-    string const uCryTwo = "We know de wae.";
-    
-    int time_to_cry(){
-        monster_battlecry(uCryOne);
-        monster_battlecry(uCryTwo);
-    }
-};
-
 class Rabbit : public Monster{
     public:
     
@@ -143,6 +137,49 @@ class Dragon : public Monster{
     
 };
 
+                                                                      
+   _____                _           _   
+  / ____|              | |         | |  
+ | |     ___  _ __ ___ | |__   __ _| |_ 
+ | |    / _ \| '_ ` _ \| '_ \ / _` | __|
+ | |___| (_) | | | | | | |_) | (_| | |_ 
+  \_____\___/|_| |_| |_|_.__/ \__,_|\__|                                                                      
+                                                                      
+
+class Combat{
+    public:
+    string response;
+    //string response2;
+    int playerHealth = 100;
+    int monsterMana = 100;
+    int playerMana = 100;
+    
+    Combat(){        
+    }    
+    string lower_case(string input){//could combine this with the get_line function so it reduces one line in code      
+        for (size_t i = 0; input.size() > i; ++i){
+            if ((input[i] >= 'A') && (input[i] <= 'Z')){
+                input[i] = input[i] - 'A' + 'a';
+            }
+        }
+
+    }
+    return input;
+    }
+        
+    string get_line(){ 
+        getline(cin, response);
+        //response2 = lower_case(response1); to reduce code usage 
+    return response;
+    }
+    
+
+    
+    //function which stops combat when the monsters health is zero/displays its health as well 
+
+
+};                                
+                                
 class Attack : virtual public Combat{ //use of virtual to stop Diamond Death within classes = https://stackoverflow.com/questions/137282/how-can-i-avoid-the-diamond-of-death-when-using-multiple-inheritance
     public:
     string attackResponse;
