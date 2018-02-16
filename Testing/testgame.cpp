@@ -8,11 +8,6 @@
 
 using namespace std;
 
-int const MAX_HEIGHT = 38;
-int const MAX_WIDTH = 159;
-
-int playerpos[] = {10,10};
-
 class Window{
 private:
   int _width, _height, _x, _y;
@@ -97,7 +92,14 @@ void printMap(){
   wrefresh(gamewin); */
 }
 
+void gamesequence(WINDOW* gamewin, WINDOW* statwin, WINDOW* termwin){
+  int playerpos[] = {10,10};
+  getch();
+}
+
 int main(){
+    int const MAX_HEIGHT = 38;
+    int const MAX_WIDTH = 159;
     setlocale(LC_ALL, "");
     initscr();
     noecho();
@@ -107,12 +109,10 @@ int main(){
     Window stat(main.getData(),MAX_HEIGHT-14,47,1,110);
     Window term(main.getData(),12,47,MAX_HEIGHT-13,110);
 
-    getch();
+    //resizeHandler(main, game, stat, term);//resize to terminals current size
 
-    resizeHandler(main, game, stat, term);//resize to terminals current size
-    refresh();
+    gamesequence(game.getData(),stat.getData(),term.getData());
 
-    //game();
-    getch();
     endwin();
+
 }

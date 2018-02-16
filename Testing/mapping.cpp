@@ -1,5 +1,5 @@
 //Charlie Barry
-#include <iostream>
+//#include <iostream>
 #include <ncurses.h>
 #include <locale>
 
@@ -75,7 +75,7 @@ void movement(int map[][width]){
           void doors( int map[][width]);
           doors(map);
           break;
-        default: cout << "";
+        default: //cout << "";
           break;
         }
 
@@ -149,7 +149,7 @@ void doors( int map[][width]){
         }
         else if(map[playerpos[0]-1][playerpos[1]] == 2){
           terrain = map[playerpos[0]-1][playerpos[1]] = 4;
-      } 
+      }
 
       else if(map[playerpos[0]][playerpos[1]+1] == 4){
           terrain = map[playerpos[0]][playerpos[1]+1] = 2;
@@ -163,5 +163,5 @@ void doors( int map[][width]){
         else if(map[playerpos[0]-1][playerpos[1]] == 4){
           terrain = map[playerpos[0]-1][playerpos[1]] = 2;
      }
-      
+
   }
