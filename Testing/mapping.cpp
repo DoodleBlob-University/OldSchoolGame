@@ -166,3 +166,4 @@ void doors( int map[][width]){
         else if(map[playerpos[0]-1][playerpos[1]] == 2){
           terrain = map[playerpos[0]-1][playerpos[1]] = 3;
       }
+}
