@@ -5,7 +5,7 @@
 
 using namespace std;
 
-const int tileno = 3;
+const int tileno = 4;
 
 struct tile {
   string character;
