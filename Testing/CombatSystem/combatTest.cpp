@@ -73,7 +73,7 @@ public:
     string const weaponThree = "sword";
     int weaponStrength;
     int Phealth;
-    int monsterHealth;
+    int monsterHealth = bob.health;
     
 
 
@@ -118,12 +118,12 @@ public:
     }
    int attacking(int weaponStrength){
         Phealth = 100;
-        monsterHealth = bob.health;
-            while(Phealth > 0 && monsterHealth > 0)
+            while(Phealth > 0 && monsterHealth > 0) //need to have a true or false section so the combat will stop when the health is at 0 or below
             {
                 cout << monsterHealth << endl;
                 monsterHealth = monsterHealth - weaponStrength*0.7;
                 cout << monsterHealth << endl;
+                
                 attack_response();
                 break;
                 
