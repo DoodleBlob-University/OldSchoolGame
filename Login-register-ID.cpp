@@ -19,6 +19,7 @@ int main()
     {
         cout << "1: Would you like to Register?" << endl;
         cout << "2: Would you like to Login?" << endl;
+        cout << "Enter 1 or 2: ";
         cin >> Decision;
         if(Decision == 1)
         {
@@ -34,6 +35,8 @@ int main()
             ID_counter += 1;
             Check_counter = Counter;
             cout << "Welcome " << Username_entered << " your Id number is " << ID_counter <<endl;
+            cout << "\n";
+            
         }
         else if(Decision == 2)
         {
@@ -46,13 +49,14 @@ int main()
             {
                 if((Username[Check_counter] == Username_entered) && (Password[Check_counter] == Password_entered))
                       {
-                    cout << "You've been logged in! :)"<<endl;
+                    cout << "User number " << ID_counter << " ,you've been logged in!"<<endl;
                     Check = true;
                     Loop = false;
                 }
                 else if (Check_counter == 0 && Check == false)
                 {
                     cout << "Wrong Username or password!"<<endl;
+                    cout<< "Please try again"<<endl;
                     Check = true;
                 }
                 else
