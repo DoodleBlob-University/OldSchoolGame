@@ -1,11 +1,13 @@
 //Charlie Barry
 #include <ncurses.h>
 #include <locale>
+//#include <chrono>
+//#include <thread>
 #include "libsqlite.hpp" //sqlite library with wrapper
 
 using namespace std;
 
-const int tileno = 4;
+const int tileno = 9;
 
 struct tile {
   string character;
@@ -13,6 +15,53 @@ struct tile {
 } ;
 
 struct tile tiles[tileno];
+
+void uploadMap(int map[35][105]){
+  sqlite::sqlite db( "gamedb.db" ); // open database
+  for(int x = 1; x < 106; ++x){
+    for(int y = 1; y < 35; ++y){
+      auto cur = db.get_statement(); // create query
+      cur->set_sql( "INSERT INTO map(dungeonID, y, x, tileID) VALUES (1,?,?,?);" );
+      cur->prepare();
+      cur->bind( 1, x );                // set placeholders
+      cur->bind( 2, y );
+      cur->bind( 3, map[y][x] );
+      cur->step();
+    }
+  }
+}
+
+void printMap(int map[35][105], WINDOW* win){
+  for(int y = 1; y < 35; ++y){
+    for(int x = 1; x < 105; ++x){
+      if(tiles[map[y][x]].colour > 0){wattron(win,COLOR_PAIR(tiles[map[y][x]].colour));}
+      mvwprintw(win, y, x, tiles[map[y][x]].character.c_str());
+      wattroff(win,COLOR_PAIR(tiles[map[y][x]].colour));
+    }
+  }
+/*  if(tiles[tilepos].colour > 0){wattron(win,COLOR_PAIR(tiles[tilepos].colour));}
+  wprintw(win,tiles[tilepos].character.c_str());
+  map[coords[0]][coords[1]] = tilepos;
+  wattroff(win,COLOR_PAIR(tiles[tilepos].colour)); */
+}
+
+void loadMap(int map[35][105], WINDOW* win){
+
+  int yvalue, xvalue, tileno = 1;
+  sqlite::sqlite db( "gamedb.db" ); // open database
+  auto cur = db.get_statement(); // create query
+  cur->set_sql( "SELECT y, x, tileID FROM map WHERE dungeonID = 1 ORDER BY y, x;" );
+  cur->prepare(); // run query
+  while( cur->step() ){ // loop over results
+    yvalue = cur->get_int(0);
+    xvalue = cur->get_int(1);
+    tileno = cur->get_int(2);
+
+    map[yvalue][xvalue] = tileno;
+    //wprintw(win, "%i,%i %i\n", yvalue, xvalue, tileno);
+  }
+printMap(map, win);
+}
 
 void printOptions(WINDOW* win){
   box(win,0,0);
@@ -27,7 +76,7 @@ void printOptions(WINDOW* win){
   int selectedtile = cur->get_int(0);
   tiles[selectedtile].character = cur->get_text(1).c_str(); tiles[selectedtile].colour = cur->get_int(2);}
 
-  mvwprintw(win,1,16,"current tile"); mvwprintw(win, 3, 15, "O <--"); mvwprintw(win, 3, 25, "--> P");
+  mvwprintw(win,1,16,"current tile"); mvwprintw(win, 3, 15, "O <--"); mvwprintw(win, 3, 25, "--> P"); mvwprintw(win, 8, 18, "q : quit"); mvwprintw(win, 10, 18, "u : upload");
   mvwprintw(win,3,22, tiles[0].character.c_str());
   wrefresh(win);
 }
@@ -39,7 +88,7 @@ void refreshOptions(WINDOW* win, int tilepos){
   wrefresh(win);
 }
 
-int input(WINDOW* win, int map[34][105], WINDOW* info){
+int input(WINDOW* win, int map[35][105], WINDOW* info){
   int coords[] = {1,1}; int tilepos = 0;
   while(true){
     switch(wgetch(win)){
@@ -74,6 +123,14 @@ int input(WINDOW* win, int map[34][105], WINDOW* info){
         if(tilepos+1 < tileno){tilepos += 1;}
         break;
 
+      case 'u':
+        uploadMap(map);
+        break;
+
+      case 'l':
+        loadMap(map, win);
+        break;
+
       case 'q':
         return 0;
         break;
@@ -85,7 +142,7 @@ int input(WINDOW* win, int map[34][105], WINDOW* info){
 }
 
 int main(void){
-  int map[34][105] = {0};
+  int map[35][105] = {0};
   setlocale(LC_ALL, "");
   initscr();
   start_color();
@@ -95,7 +152,6 @@ int main(void){
   init_pair(4, COLOR_YELLOW, 0);
   init_pair(5, COLOR_BLUE, 0);
   init_pair(6, COLOR_MAGENTA, 0);
-  init_pair(7, COLOR_WHITE, 0);
   //keypad(stdscr, TRUE);
   noecho();
 
