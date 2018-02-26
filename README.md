@@ -13,3 +13,4 @@ sudo apt-get install libncurses5-dev libncursesw5-dev
 g++ -std=c++14 *filename*.cpp -o *filename* -lncursesw
 ./*filename*
 ```
+## Test
