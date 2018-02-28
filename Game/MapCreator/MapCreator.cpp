@@ -3,7 +3,7 @@
 #include <locale>
 //#include <chrono>
 //#include <thread>
-#include "libsqlite.hpp" //sqlite library with wrapper
+#include "../libsqlite.hpp" //sqlite library with wrapper
 
 using namespace std;
 
@@ -16,39 +16,38 @@ struct tile {
 
 struct tile tiles[tileno];
 
-void uploadMap(int map[35][105]){
-  sqlite::sqlite db( "gamedb.db" ); // open database
-  for(int x = 1; x < 106; ++x){
-    for(int y = 1; y < 35; ++y){
-      auto cur = db.get_statement(); // create query
-      cur->set_sql( "INSERT INTO map(dungeonID, y, x, tileID) VALUES (1,?,?,?);" );
-      cur->prepare();
-      cur->bind( 1, x );                // set placeholders
-      cur->bind( 2, y );
-      cur->bind( 3, map[y][x] );
-      cur->step();
+void uploadMap(int map[35][105], WINDOW* win){
+  mvwprintw(win, 10, 3, "Please Wait!");
+  for(int i = 0; i < 1; ++i){
+    sqlite::sqlite db( "../gamedb.db" ); // open database
+    for(int x = 1; x < 106; ++x){
+      for(int y = 1; y < 35; ++y){
+        auto cur = db.get_statement(); // create query
+        cur->set_sql( "INSERT INTO map(dungeonID, y, x, tileID) VALUES (1,?,?,?);" );
+        cur->prepare();
+        cur->bind( 1, x );                // set placeholders
+        cur->bind( 2, y );
+        cur->bind( 3, map[y][x] );
+        cur->step();
+      }
     }
   }
 }
 
 void printMap(int map[35][105], WINDOW* win){
   for(int y = 1; y < 35; ++y){
-    for(int x = 1; x < 105; ++x){
+    for(int x = 1; x < 106; ++x){
       if(tiles[map[y][x]].colour > 0){wattron(win,COLOR_PAIR(tiles[map[y][x]].colour));}
       mvwprintw(win, y, x, tiles[map[y][x]].character.c_str());
       wattroff(win,COLOR_PAIR(tiles[map[y][x]].colour));
     }
   }
-/*  if(tiles[tilepos].colour > 0){wattron(win,COLOR_PAIR(tiles[tilepos].colour));}
-  wprintw(win,tiles[tilepos].character.c_str());
-  map[coords[0]][coords[1]] = tilepos;
-  wattroff(win,COLOR_PAIR(tiles[tilepos].colour)); */
 }
 
 void loadMap(int map[35][105], WINDOW* win){
 
   int yvalue, xvalue, tileno = 1;
-  sqlite::sqlite db( "gamedb.db" ); // open database
+  sqlite::sqlite db( "../gamedb.db" ); // open database
   auto cur = db.get_statement(); // create query
   cur->set_sql( "SELECT y, x, tileID FROM map WHERE dungeonID = 1 ORDER BY y, x;" );
   cur->prepare(); // run query
@@ -60,7 +59,7 @@ void loadMap(int map[35][105], WINDOW* win){
     map[yvalue][xvalue] = tileno;
     //wprintw(win, "%i,%i %i\n", yvalue, xvalue, tileno);
   }
-printMap(map, win);
+  printMap(map, win);
 }
 
 void printOptions(WINDOW* win){
@@ -68,7 +67,7 @@ void printOptions(WINDOW* win){
   WINDOW* currenttile = derwin(win, 3,3, 2, 21);
   box(currenttile,0,0);
   wrefresh(currenttile);
-  sqlite::sqlite db( "gamedb.db" ); // open database
+  sqlite::sqlite db( "../gamedb.db" ); // open database
   auto cur = db.get_statement(); // create query
   cur->set_sql( "SELECT * FROM maptiles;" );
   cur->prepare(); // run query
@@ -76,7 +75,7 @@ void printOptions(WINDOW* win){
   int selectedtile = cur->get_int(0);
   tiles[selectedtile].character = cur->get_text(1).c_str(); tiles[selectedtile].colour = cur->get_int(2);}
 
-  mvwprintw(win,1,16,"current tile"); mvwprintw(win, 3, 15, "O <--"); mvwprintw(win, 3, 25, "--> P"); mvwprintw(win, 8, 18, "q : quit"); mvwprintw(win, 10, 18, "u : upload");
+  mvwprintw(win,1,16,"current tile"); mvwprintw(win, 3, 15, "O <--"); mvwprintw(win, 3, 25, "--> P"); mvwprintw(win, 8, 18, "q : quit"); mvwprintw(win, 10, 18, "u : upload"); mvwprintw(win, 12, 18, "l : load");
   mvwprintw(win,3,22, tiles[0].character.c_str());
   wrefresh(win);
 }
@@ -124,7 +123,7 @@ int input(WINDOW* win, int map[35][105], WINDOW* info){
         break;
 
       case 'u':
-        uploadMap(map);
+        uploadMap(map, info);
         break;
 
       case 'l':
@@ -152,7 +151,6 @@ int main(void){
   init_pair(4, COLOR_YELLOW, 0);
   init_pair(5, COLOR_BLUE, 0);
   init_pair(6, COLOR_MAGENTA, 0);
-  //keypad(stdscr, TRUE);
   noecho();
 
   WINDOW* mapwin = newwin(36,107,0,1);
