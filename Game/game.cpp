@@ -51,12 +51,12 @@ const char* loadMap(int map[35][105], WINDOW* win, int dungeonID){
   string dungeonname;
   sqlite::sqlite db( "gamedb.db" ); // open database
   auto cur = db.get_statement(); // create query
-  cur->set_sql( "SELECT map.y, map.x, map.tileID, dungeon.name FROM map, dungeon WHERE map.dungeonID = ? ORDER BY map.y, map.x;" );
+  cur->set_sql( "SELECT x, y, tileID FROM map WHERE map.dungeonID = 2 ORDER BY x, y;" );
   cur->prepare(); // run query
-  cur->bind( 1, dungeonID );
+  //cur->bind( 1, dungeonID );
   while( cur->step() ){ // loop over results
-    yvalue = cur->get_int(0);
-    xvalue = cur->get_int(1);
+    xvalue = cur->get_int(0);
+    yvalue = cur->get_int(1);
     tileno = cur->get_int(2);
     dungeonname = cur->get_text(3);
 
@@ -86,7 +86,7 @@ int MainMenu(WINDOW* stat, string dungeonname, int windowWidth){
       mvwprintw(stat, i+5, (windowWidth - MenuOptions[i].size())/2, MenuOptions[i].c_str());
       wattroff(stat,COLOR_PAIR(2));
     }
-    wmove(stat, 2, 2);
+    wmove(stat, 0, 0);
     switch(toupper(wgetch(stat))){
       case 'W':
         if(selected != 0){selected -= 1;}
@@ -117,7 +117,7 @@ int MainMenu(WINDOW* stat, string dungeonname, int windowWidth){
 int gameSequence(int map[35][105], WINDOW* game, WINDOW* stat, WINDOW*){
   const int windowWidth = 45;
 
-  string dungeonname = loadMap(map, game, 1);
+  string dungeonname = loadMap(map, game, 2);
   if(MainMenu(stat, dungeonname, windowWidth)){return 1;};
 
   getch();
