@@ -15,7 +15,7 @@ struct tile {
 } ;
 
 int getMapTileNo(){
-  sqlite::sqlite db( "MapCreator/gamedb.db" ); // open database
+  sqlite::sqlite db( "gamedb.db" ); // open database
   auto cur = db.get_statement(); // create query
   cur->set_sql( "SELECT COUNT(*) FROM maptiles;" );
   cur->prepare(); // run query
@@ -27,7 +27,7 @@ vector<tile> tiles(getMapTileNo());
 
 void initialiseGame(){
 
-  sqlite::sqlite db( "MapCreator/gamedb.db" ); // open database
+  sqlite::sqlite db( "gamedb.db" ); // open database
   auto cur = db.get_statement(); // create query
   cur->set_sql( "SELECT * FROM maptiles;" );
   cur->prepare(); // run query
@@ -49,7 +49,7 @@ void printMap(int map[35][105], WINDOW* win){
 const char* loadMap(int map[35][105], WINDOW* win, int dungeonID){
   int yvalue, xvalue, tileno = 1;
   string dungeonname;
-  sqlite::sqlite db( "MapCreator/gamedb.db" ); // open database
+  sqlite::sqlite db( "gamedb.db" ); // open database
   auto cur = db.get_statement(); // create query
   cur->set_sql( "SELECT map.y, map.x, map.tileID, dungeon.name FROM map, dungeon WHERE map.dungeonID = ? ORDER BY map.y, map.x;" );
   cur->prepare(); // run query
