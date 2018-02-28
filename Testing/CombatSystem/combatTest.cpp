@@ -4,10 +4,11 @@
 using namespace std;
 
 class Combat { //could have the general while loop with if statements which could help?
-public:
+    private:
     string response;
+    public:
     
-    string lower_case(string input)
+    string lower_case(string input)//change this or add more functions to be called 
     {
         for (size_t i = 0; input.size() > i; ++i) {
             if ((input[i] >= 'A') && (input[i] <= 'Z')) {
@@ -23,23 +24,27 @@ public:
         //response2 = lower_case(response1); to reduce code usage
         return response;
     }
-};
-
-class Monster : public Combat {
-public:
+    
     int monster_battlecry(string cry)
     {
         cout << cry << endl;
     }
 };
 
-class Dragon : public Monster {
-public:
+class Dragon : public Combat {
+private:
     int health = rand() % (200 - 150 + 1) + 150;
-    int attackStr = rand() % (500 - 10 + 1) + 10;
+    int attackStr = rand() % (50 - 10 + 1) + 10;
     int magAbil = rand() % (200 - 20 + 1) + 20;
     int mana = 70;
     int def = rand() % (400 - 100 + 1) + 100;
+public:
+    int get_health(){
+        return health;
+    }
+    int get_attack(){
+        return attackStr;        
+    }
 };
 
 class Playable_Character {
@@ -56,7 +61,7 @@ public:
     int wAttackStr = 55;
     int wDef = 60;
     int wMagAbil = 10;
-    int wMana = 20;
+    int wMana = 20; 
 };
 
 class Attack : virtual public Dragon {
@@ -68,24 +73,20 @@ class Attack : virtual public Dragon {
     string const weaponThree = "sword";
     int weaponStrengthOne = 20;
     int weaponStrengthTwo = 30;
-    int weaponStrengthThree = 40; //use pointers for this - learn pointers (sort combat out first)
+    int weaponStrengthThree = 40; //also from database 
     
     public:
-    //int *strengthPointerOne = &weaponStrengthOne;
-    //int properStrengthOne = *strengthPointerOne;
-    Dragon bob;
-    Dragon mike;
     Attack()
     {
     }
 
     int attack_response()
     {
-        cout << "These are the weapons you can use: " << endl;
-        cout << "-    Deal damage with a " << weaponOne << endl; //could make each option selection random
-        cout << "-    Destroy enemy whilst weilding a " << weaponTwo << endl;
-        cout << "-    Put them 6 feet under with your " << weaponThree << endl;
-        cout << "What weapon would you like to use?" << endl;
+        cout << "These are the weapons you can use: " << endl
+        << "-    Deal damage with a " << weaponOne << endl //could make each option selection random
+        << "-    Destroy enemy whilst weilding a " << weaponTwo << endl
+        << "-    Put them 6 feet under with your " << weaponThree << endl
+        << "What weapon would you like to use?" << endl;
         getline(cin, attackResponseOne);
         attackResponse = lower_case(attackResponseOne);        
 
@@ -93,21 +94,18 @@ class Attack : virtual public Dragon {
         if (weaponOptionOne != string::npos) 
         {
             //cout << "Weapon 1 works" << endl;        
-            //cout << weaponStrengthOne << endl;
             return weaponStrengthOne;
         }
         size_t weaponOptionTwo = attackResponse.find(weaponTwo);
         if (weaponOptionTwo != string::npos) 
         {
-            //cout << "Weapon 2 works" << endl;
-            
+            //cout << "Weapon 2 works" << endl;           
             return weaponStrengthTwo;
         }
         size_t weaponOptionThree = attackResponse.find(weaponThree);
         if (weaponOptionThree != string::npos) 
         {
-            //cout << "Weapon 3 works" << endl;
-            
+            //cout << "Weapon 3 works" << endl;            
             return weaponStrengthThree;
         }
         return 0;
@@ -162,7 +160,7 @@ class Spells : virtual public Dragon{
 };
 
 class Defense : virtual public Dragon{
-     public:
+    private:
     string defenseResponse;
     string defenseResponseOne;
     string const defenseOne = "heal";//database reference for each 
@@ -172,37 +170,39 @@ class Defense : virtual public Dragon{
     int syrup = 5;
     int potion = 8;
     
+    public:
+    
     Defense(){
         
     }
     
     int defense_response()
-    {
-        cout << "These are the defenses you can use: " << endl; 
-        cout << "-    Use ability " << defenseOne << endl; //possible code duplication
-        cout << "-    Use ability " << defenseTwo << endl; 
-        cout << "-    Use ability " << defenseThree << endl;  
-        cout << "What defense would you like to do?" << endl;
-        defenseResponseOne = get_line();
-        defenseResponse = lower_case(defenseResponseOne);
+        {
+            cout << "These are the defenses you can use: " << endl; 
+            cout << "-    Use ability " << defenseOne << endl; //possible code duplication
+            cout << "-    Use ability " << defenseTwo << endl; 
+            cout << "-    Use ability " << defenseThree << endl;  
+            cout << "What defense would you like to do?" << endl;
+            defenseResponseOne = get_line();
+            defenseResponse = lower_case(defenseResponseOne);
     
-        size_t defenseOptionOne = defenseResponse.find(defenseOne);
-            if (defenseOptionOne != string::npos){
-                //cout << "Option 1  " << endl;
-                return heal;
+            size_t defenseOptionOne = defenseResponse.find(defenseOne);
+                if (defenseOptionOne != string::npos){
+                    //cout << "Option 1  " << endl;
+                    return heal;
+    
+                }
+            size_t defenseOptionTwo = defenseResponse.find(defenseTwo);
+                if (defenseOptionTwo!=string::npos){
+                    //cout << "Option 2 works" << endl;
+                    return syrup;
 
-            }
-        size_t defenseOptionTwo = defenseResponse.find(defenseTwo);
-            if (defenseOptionTwo!=string::npos){
-                //cout << "Option 2 works" << endl;
-                return syrup;
-
-            }
-        size_t defenseOptionThree = defenseResponse.find(defenseThree);
-            if (defenseOptionThree!=string::npos){
-                //cout << "Option 3 works" << endl;
-                return potion;
-            }
+                }
+            size_t defenseOptionThree = defenseResponse.find(defenseThree);
+                if (defenseOptionThree!=string::npos){
+                    //cout << "Option 3 works" << endl;
+                    return potion;
+                }
         return 0;
     }
 };
@@ -267,23 +267,27 @@ class AttackTest : public Attack, public Spells, public Defense{
     string fightingResponse;
     string fightingResponseOne;
     string battleResponse;
-    string defenseResponse;
+    int defenseResponse;
     int point1;
     int point2;
     int point3;
     int amount;
     int healing1;
     int andAgain;
-    
-    public:    
+    int weaponStrength;
+    double balance;
+    Dragon bob;
+    Dragon mike;
     int Phealth;
-    int monsterHealth = bob.health;
+    int monsterHealth = bob.get_health();
+    int monsterAttack = bob.get_attack();
+    int healingChance;
     
-    int healing(int amount, int playerHealth){
-        //database reference need to update constantly to the same place 
-        //cout << playerHealth << endl;  
+    
+    public:
+    
+    int healing(int amount, int playerHealth){  
         playerHealth = playerHealth + amount;
-        //cout << playerHealth << endl; //make it so you can go back into combat needs to be in the while loop - extra message pop up 
         return playerHealth;
     }
  
@@ -311,7 +315,7 @@ class AttackTest : public Attack, public Spells, public Defense{
         cout << "Your health is " << playerHealth << "." << endl;
         cout << "What would you like to do? " << endl; 
         cout << "-    Use an attack" << endl;
-        cout << "-    Defend yourself somehow" << endl;
+        //cout << "-    Defend yourself somehow" << endl; 
         cout << "-    Cast a spell" << endl;
         getline(cin, fightingResponseOne);
         fightingResponse = lower_case(fightingResponseOne);
@@ -337,7 +341,7 @@ class AttackTest : public Attack, public Spells, public Defense{
             }
         
             if (nextS != -1){
-                //point3 = spells_response();
+                point3 = spells_response(); //read json file for an array selection of what they input or switch cases 
                 return point3;
             }
         
@@ -348,56 +352,63 @@ class AttackTest : public Attack, public Spells, public Defense{
             }         
     }
     
-   int battle(int weaponStrength){
-           //need to use the playerable character class to maintain the health throughout
-           //cout << weaponStrength << endl;
-           //need to have a true or false section so the combat will stop when the health is at 0 or below
-           //if statements to recall back to until the monster or users health is 0 - then it will work properly, change from attack to heal
-           Phealth = 50;
+   int battle(){
+           Phealth = 39; //database
            bool startFinish = true;
            while(startFinish){
               if (Phealth > 0 && monsterHealth > 0)
               {
-                  cout << monsterHealth << endl;
-                  //cout << weaponStrength << endl;
-                  monsterHealth = monsterHealth - weaponStrength; //only an attack or spells option - no defense 
-                  cout << monsterHealth << endl;
+                  cout << "The monsters health is "<< monsterHealth << endl;
                   battleResponse = attacking_response(Phealth);
-                  //cout << battleResponse << endl;
-                  amount = next_step(battleResponse);
-                  //cout << amount << endl;
-                  monsterHealth = monsterHealth - amount;
+                  weaponStrength = next_step(battleResponse);
+                  cout << "Your weapon's attack is " << weaponStrength << endl;
+                  monsterHealth = monsterHealth - weaponStrength; //only an attack or spells option - no defense 
+                  cout << "Monsters health after attack is "<< monsterHealth << endl;
+                  cout << "Monsters Attack" << endl;
+                  
+                  balance = (double)rand() / RAND_MAX;
+                  //cout << balance << endl
+                  //    << monsterAttack * balance << endl;
+                  cout << "The monster did this much " << monsterAttack * balance << "damage!!" << endl;
+                  Phealth = Phealth - monsterAttack * balance;
+                  cout << "Your health now is... " << Phealth << endl;
+                  
+                  
                   
               }
-              else if (Phealth < 100 && Phealth > 0 && monsterHealth <= 0)
+              else if (Phealth <= 25 && Phealth > 0)
               { 
-                  cout << "You need to heal" << endl;
-                  defenseResponse = defense_response();
-                  amount = next_step(defenseResponse);
-                  healing1 = healing(amount, Phealth);
-                  Phealth = Phealth + healing1;                  
                   
+                  cout << "You need to heal" << endl;
+                  defenseResponse = defense_response();                  
+                  //amount = next_step(defenseResponse);
+                  healing1 = healing(defenseResponse, Phealth);
+                  Phealth = Phealth + healing1; 
+                      
               }
-              else
+                                                                
+              else if(Phealth <= 0)
               {
+                  startFinish = false;
+                  cout << "You have died" << endl;
+                  return startFinish;
+              }
+              else if(monsterHealth <=0){
                   startFinish = false;
                   cout << "You have killed the monster" << endl;
                   return startFinish;
               }
           }
    }
+   
    int startGame(){
       
         cout << "There is something blocking your path" << endl;
         cout << "What would you like to do?" << endl;
         cout << "-----  ";
         getline(cin, choice);
-        if (choice == "attack") {
-            moveForward = initial_response();
-            cout << moveForward << endl;
-            andAgain = next_step(moveForward);
-            cout << andAgain << endl;
-            battle(andAgain);
+        if (choice == "attack") { //json list needed so bad 
+            battle();
         }
         else {
             cout << "Move along, move along" << endl;
