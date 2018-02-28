@@ -1,5 +1,4 @@
 //Charlie Barry
-//compile with 'g++ -std=c++14 game.cpp Window.cpp -o game -lncursesw -lsqlite3'
 #include <locale>
 #include <ncurses.h>
 
@@ -48,12 +47,12 @@ void printMap(int map[35][105], WINDOW* win){
 
 const char* loadMap(int map[35][105], WINDOW* win, int dungeonID){
   int yvalue, xvalue, tileno = 1;
-  string dungeonname;
+  string dungeonname = " ";
   sqlite::sqlite db( "gamedb.db" ); // open database
   auto cur = db.get_statement(); // create query
-  cur->set_sql( "SELECT x, y, tileID FROM map WHERE map.dungeonID = 2 ORDER BY x, y;" );
+  cur->set_sql( "select x, y, tileID, dungeon.name from map, dungeon where dungeonID = ? and dungeonID = dungeon.ID order by y, x;" );
   cur->prepare(); // run query
-  //cur->bind( 1, dungeonID );
+  cur->bind( 1, dungeonID );
   while( cur->step() ){ // loop over results
     xvalue = cur->get_int(0);
     yvalue = cur->get_int(1);
@@ -86,7 +85,7 @@ int MainMenu(WINDOW* stat, string dungeonname, int windowWidth){
       mvwprintw(stat, i+5, (windowWidth - MenuOptions[i].size())/2, MenuOptions[i].c_str());
       wattroff(stat,COLOR_PAIR(2));
     }
-    wmove(stat, 0, 0);
+    wmove(stat, 23, 46);
     switch(toupper(wgetch(stat))){
       case 'W':
         if(selected != 0){selected -= 1;}
@@ -117,7 +116,7 @@ int MainMenu(WINDOW* stat, string dungeonname, int windowWidth){
 int gameSequence(int map[35][105], WINDOW* game, WINDOW* stat, WINDOW*){
   const int windowWidth = 45;
 
-  string dungeonname = loadMap(map, game, 2);
+  string dungeonname = loadMap(map, game, 1);
   if(MainMenu(stat, dungeonname, windowWidth)){return 1;};
 
   getch();
