@@ -242,12 +242,12 @@ class Defence : virtual public Dragon{
 };
 
 class User_Response : public Warrior, public Combat { //includes classes for character selection
-        //needs a function to pick which character they are and can then call it all from there, class has to be chosen first
+        
         public:
         string characterChoice;
-        string characterChoiceOne;
         string nameChoice;
         string const warriorSearch = "warrior";
+    
 
         User_Response()
         {
@@ -257,31 +257,28 @@ class User_Response : public Warrior, public Combat { //includes classes for cha
         {
             cout << "Please name your character... " << endl; //save to db
             cout << "--- ";
-            nameChoice = get_line();
+            getline(cin, nameChoice);
             Dragon bob; //section to create all of the monster within the game - limited amount
-            character_selection(nameChoice);
-        }
-
-        int character_selection(string playerName)
-        {
+           
             cout << "Choose a class for " << nameChoice << endl;
             cout << "-  Warrior." << endl;
-            characterChoiceOne = get_line();
-            characterChoice = lower_case(characterChoiceOne);
+            characterChoice = get_line();
+            
             //save this to database possibly - can find the attributes given what comes out
 
             int classChoiceW = characterChoice.find(warriorSearch);
 
             if (classChoiceW != -1) {
                 Warrior player;
-                player.name = playerName;
+                player.name = nameChoice;
                 cout << player.name << endl;
             }
             else {
-                character_selection(playerName);
+                name_selection();
             }
+            return 0;
         }
-    };   
+};  
 
 class AttackTest : public Attack, public Spells, public Defence{
     private:
