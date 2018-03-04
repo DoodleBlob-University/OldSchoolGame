@@ -107,7 +107,7 @@ class Attack : virtual public Combat{
             return weaponStrengthTwo;
             //delete weaponStrength;
         }
-)
+
         if(strstr (attackResponse, weaponThree))
         {
             //cur->bind(1,weaponThree);
