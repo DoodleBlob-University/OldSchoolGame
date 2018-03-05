@@ -8,6 +8,8 @@
 
 using namespace std;
 
+const int width = 105; const int height = 35;
+
 struct tile {
   string character;
   int colour;
@@ -35,9 +37,9 @@ void initialiseGame(){
   tiles[selectedtile].character = cur->get_text(1).c_str(); tiles[selectedtile].colour = cur->get_int(2);}
 }
 
-void printMap(int map[35][105], WINDOW* win){
-  for(int y = 1; y < 35; ++y){
-    for(int x = 1; x < 106; ++x){
+void printMap(int map[height][width], WINDOW* win){
+  for(int y = 1; y < height; ++y){
+    for(int x = 1; x < width+1; ++x){
       if(tiles[map[y][x]].colour > 0){wattron(win,COLOR_PAIR(tiles[map[y][x]].colour));}
       mvwprintw(win, y, x, tiles[map[y][x]].character.c_str());
       wattroff(win,COLOR_PAIR(tiles[map[y][x]].colour));
@@ -45,7 +47,7 @@ void printMap(int map[35][105], WINDOW* win){
   }
 }
 
-const char* loadMap(int map[35][105], WINDOW* win, int dungeonID, int playerpos[1], int bosspos[1]){
+const char* loadMap(int map[height][width], WINDOW* win, int dungeonID, int playerpos[1], int bosspos[1]){
   int yvalue, xvalue, tileno = 1;
   string dungeonname = " ";
   sqlite::sqlite db( "gamedb.db" );
@@ -126,7 +128,7 @@ int MainMenu(WINDOW* stat, string dungeonname, int windowWidth){
   }
 }
 
-int gameSequence(int map[35][105], WINDOW* game, WINDOW* stat, WINDOW* term){
+int gameSequence(int map[height][width], WINDOW* game, WINDOW* stat, WINDOW* term){
   const int windowWidth = 45;
   int playerpos[] = {1, 1};
   int bosspos[] = {1, 1};
@@ -136,7 +138,9 @@ int gameSequence(int map[35][105], WINDOW* game, WINDOW* stat, WINDOW* term){
   //GET SAVE DATA FROM DATABASE HERE
 
   printDungeonName(stat, loadMap(map, game, 2, playerpos, bosspos), windowWidth);
+//  while(true){
 
+//  }
   getch();
 
 }
@@ -160,7 +164,7 @@ int main(){
 
     keypad(stdscr, true);
 
-    int map[35][105] = {0};
+    int map[height][width] = {0};
     initialiseGame();
     gameSequence(map, game.getData(), stat.getData(), term.getData());
 
