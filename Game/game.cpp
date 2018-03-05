@@ -14,10 +14,10 @@ struct tile {
 } ;
 
 int getMapTileNo(){
-  sqlite::sqlite db( "gamedb.db" ); // open database
-  auto cur = db.get_statement(); // create query
+  sqlite::sqlite db( "gamedb.db" );
+  auto cur = db.get_statement();
   cur->set_sql( "SELECT COUNT(*) FROM maptiles;" );
-  cur->prepare(); // run query
+  cur->prepare();
   while( cur->step() ){
   return cur->get_int(0);}
 }
@@ -26,11 +26,11 @@ vector<tile> tiles(getMapTileNo());
 
 void initialiseGame(){
 
-  sqlite::sqlite db( "gamedb.db" ); // open database
-  auto cur = db.get_statement(); // create query
+  sqlite::sqlite db( "gamedb.db" );
+  auto cur = db.get_statement();
   cur->set_sql( "SELECT * FROM maptiles;" );
-  cur->prepare(); // run query
-  while( cur->step() ){ // loop over results
+  cur->prepare();
+  while( cur->step() ){
   int selectedtile = cur->get_int(0);
   tiles[selectedtile].character = cur->get_text(1).c_str(); tiles[selectedtile].colour = cur->get_int(2);}
 }
@@ -45,32 +45,50 @@ void printMap(int map[35][105], WINDOW* win){
   }
 }
 
-const char* loadMap(int map[35][105], WINDOW* win, int dungeonID){
+const char* loadMap(int map[35][105], WINDOW* win, int dungeonID, int playerpos[1], int bosspos[1]){
   int yvalue, xvalue, tileno = 1;
   string dungeonname = " ";
-  sqlite::sqlite db( "gamedb.db" ); // open database
-  auto cur = db.get_statement(); // create query
-  cur->set_sql( "select x, y, tileID, dungeon.name from map, dungeon where dungeonID = ? and dungeonID = dungeon.ID order by y, x;" );
-  cur->prepare(); // run query
+  sqlite::sqlite db( "gamedb.db" );
+  auto cur = db.get_statement();
+  cur->set_sql( "select x, y, tileID, dungeon.name, dungeon.playery, dungeon.playerx, dungeon.bossy, dungeon.bossx from map, dungeon where dungeonID = ? and dungeonID = dungeon.ID order by y, x;" );
+  cur->prepare();
   cur->bind( 1, dungeonID );
-  while( cur->step() ){ // loop over results
+  while( cur->step() ){
     xvalue = cur->get_int(0);
     yvalue = cur->get_int(1);
     tileno = cur->get_int(2);
     dungeonname = cur->get_text(3);
+    playerpos[0] = cur->get_int(4);
+    playerpos[1] = cur->get_int(5);
+    bosspos[0] = cur->get_int(6);
+    bosspos[1] = cur->get_int(7);
 
     map[yvalue][xvalue] = tileno;
   }
   printMap(map, win);
+  if(playerpos[0]){mvwprintw(win, playerpos[0], playerpos[1], "X");}
   wrefresh(win);
   return dungeonname.c_str();
 }
 
 void printDungeonName(WINDOW* stat, string dungeonname, int windowWidth){
+  wclear(stat);
   mvwprintw(stat, 1, (windowWidth - dungeonname.size())/2, dungeonname.c_str());
   wmove(stat, 2, ((windowWidth - dungeonname.size())/2) - 1);
   for(int i = 0; i < (dungeonname.size() + 2); ++i){
     wprintw(stat, "¯");
+  }
+    box(stat, 0, 0);
+  wmove(stat, 20, 20);
+  wrefresh(stat);
+}
+
+template<size_t N>
+void printMenuOptions(string (&MenuOptions)[N], int selected, int windowWidth, WINDOW* stat){
+  for(int i = 0; i < (sizeof(MenuOptions)/sizeof(*MenuOptions)); ++i){
+    if(i == selected){wattron(stat,COLOR_PAIR(2));}
+    mvwprintw(stat, i+5, (windowWidth - MenuOptions[i].size())/2, MenuOptions[i].c_str());
+    wattroff(stat,COLOR_PAIR(2));
   }
 }
 
@@ -78,14 +96,9 @@ int MainMenu(WINDOW* stat, string dungeonname, int windowWidth){
   printDungeonName(stat, dungeonname, windowWidth);
   string MenuOptions[] = {"Play Game", "Extra", "Options", "Exit"};
   int selected = 0;
-
   while(true){
-    for(int i = 0; i < (sizeof(MenuOptions)/sizeof(*MenuOptions)); ++i){
-      if(i == selected){wattron(stat,COLOR_PAIR(2));}
-      mvwprintw(stat, i+5, (windowWidth - MenuOptions[i].size())/2, MenuOptions[i].c_str());
-      wattroff(stat,COLOR_PAIR(2));
-    }
-    wmove(stat, 23, 46);
+    printMenuOptions(MenuOptions, selected, windowWidth, stat);
+
     switch(toupper(wgetch(stat))){
       case 'W':
         if(selected != 0){selected -= 1;}
@@ -98,7 +111,7 @@ int MainMenu(WINDOW* stat, string dungeonname, int windowWidth){
           case 0://play game
             return 0;
             break;
-          case 1://extra
+          case 1://extras
 
             break;
           case 2://options
@@ -113,11 +126,16 @@ int MainMenu(WINDOW* stat, string dungeonname, int windowWidth){
   }
 }
 
-int gameSequence(int map[35][105], WINDOW* game, WINDOW* stat, WINDOW*){
+int gameSequence(int map[35][105], WINDOW* game, WINDOW* stat, WINDOW* term){
   const int windowWidth = 45;
+  int playerpos[] = {1, 1};
+  int bosspos[] = {1, 1};
 
-  string dungeonname = loadMap(map, game, 1);
-  if(MainMenu(stat, dungeonname, windowWidth)){return 1;};
+  if(MainMenu(stat, loadMap(map, game, 1, playerpos, bosspos), windowWidth)){return 1;};
+
+  //GET SAVE DATA FROM DATABASE HERE
+
+  printDungeonName(stat, loadMap(map, game, 2, playerpos, bosspos), windowWidth);
 
   getch();
 
