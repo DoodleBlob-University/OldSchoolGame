@@ -162,22 +162,22 @@ int MainMenu(WINDOW* stat, string dungeonname, int windowWidth){
 void movement(int playerpos[1], int map[height][width], int bosspos[1], WINDOW* game, WINDOW* stat, WINDOW* term){
   switch(toupper(wgetch(game))){
     case 'W':
-        if((map[playerpos[0]-1][playerpos[1]] == 0) || (playerpos[0] - 1 <= height)){
+        if((map[playerpos[0]-1][playerpos[1]] == 0) && (playerpos[0] - 1 > 0)){
           playerpos[0] -= 1;
         }
         break;
     case 'A':
-        if((map[playerpos[0]][playerpos[1] - 1] == 0) || (playerpos[1] - 1 <= width)){
+        if((map[playerpos[0]][playerpos[1] - 1] == 0) && (playerpos[1] - 1 > 0)){
           playerpos[1] -= 1;
         }
         break;
     case 'S':
-        if((map[playerpos[0]+1][playerpos[1]] == 0) || (playerpos[0] + 1 <= height)){
+        if((map[playerpos[0]+1][playerpos[1]] == 0) && (playerpos[0] + 1 <= height)){
           playerpos[0] += 1;
         }
         break;
     case 'D':
-         if((map[playerpos[0]][playerpos[1] + 1] == 0) || (playerpos[1] + 1 <= width)){
+         if((map[playerpos[0]][playerpos[1] + 1] == 0) && (playerpos[1] + 1 <= width)){
            playerpos[1] += 1;
          }
          break;
@@ -205,7 +205,7 @@ int gameSequence(int map[height][width], WINDOW* game, WINDOW* stat, WINDOW* ter
     movement(playerpos, map, bosspos, game, stat, term);
   }
   getch();
-  
+
 }
 
 int main(){
