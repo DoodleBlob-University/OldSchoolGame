@@ -131,7 +131,7 @@ int gameSequence(int map[35][105], WINDOW* game, WINDOW* stat, WINDOW* term){
   int playerpos[] = {1, 1};
   int bosspos[] = {1, 1};
 
-  if(MainMenu(stat, loadMap(map, game, 3, playerpos, bosspos), windowWidth)){return 1;};
+  if(MainMenu(stat, loadMap(map, game, 1, playerpos, bosspos), windowWidth)){return 1;};
 
   //GET SAVE DATA FROM DATABASE HERE
 
