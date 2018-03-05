@@ -128,6 +128,69 @@ int MainMenu(WINDOW* stat, string dungeonname, int windowWidth){
   }
 }
 
+/*void doors(int playerpos[1], int map[height][width], int bosspos[1], WINDOW* game, WINDOW* stat, WINDOW* term){
+  string terrain;
+    if(map[playerpos[0]-1][playerpos[1] == 8]){
+      terrain = map[playerpos[0]][playerpos[1]+1] = 0;
+      playerpos[0] += 1;
+      doors(playerpos, map, bosspos, game, stat, term);
+      playerpos[0] -= 1;
+    }
+    else if(map[playerpos[0]][playerpos[1] - 1] == 8){
+      terrain = map[playerpos[0]][playerpos[1] - 1] = 0;
+      playerpos[1] += 1;
+      doors(playerpos, map, bosspos, game, stat, term);
+      playerpos[1] -= 1;
+    }
+    else if(map[playerpos[0] + 1][playerpos[1]] == 8){
+      terrain = map[playerpos[0] + 1][playerpos[1]] = 0;
+      playerpos[0] += 1;
+      doors(playerpos, map, bosspos, game, stat, term);
+      playerpos[0] -= 1;
+    }
+    else if(map[playerpos[0]][playerpos[1] + 1] == 8){
+      terrain = map[playerpos[0]][playerpos[1] + 1] = 0;
+      playerpos[1] += 1;
+      doors(playerpos, map, bosspos, game, stat, term);
+      playerpos[1] -= 1;
+    }
+  printMap(map, game);
+  mvwprintw(game, playerpos[0],playerpos[1], "X");
+  wrefresh(game);
+}*/
+
+void movement(int playerpos[1], int map[height][width], int bosspos[1], WINDOW* game, WINDOW* stat, WINDOW* term){
+  switch(toupper(wgetch(game))){
+    case 'W':
+        if((map[playerpos[0]-1][playerpos[1]] == 0) || (playerpos[0] - 1 <= height)){
+          playerpos[0] -= 1;
+        }
+        break;
+    case 'A':
+        if((map[playerpos[0]][playerpos[1] - 1] == 0) || (playerpos[1] - 1 <= width)){
+          playerpos[1] -= 1;
+        }
+        break;
+    case 'S':
+        if((map[playerpos[0]+1][playerpos[1]] == 0) || (playerpos[0] + 1 <= height)){
+          playerpos[0] += 1;
+        }
+        break;
+    case 'D':
+         if((map[playerpos[0]][playerpos[1] + 1] == 0) || (playerpos[1] + 1 <= width)){
+           playerpos[1] += 1;
+         }
+         break;
+
+    case 'E':
+
+    break;
+  }
+  printMap(map, game);
+  mvwprintw(game, playerpos[0],playerpos[1], "X");
+  wrefresh(game);
+}
+
 int gameSequence(int map[height][width], WINDOW* game, WINDOW* stat, WINDOW* term){
   const int windowWidth = 45;
   int playerpos[] = {1, 1};
@@ -138,11 +201,11 @@ int gameSequence(int map[height][width], WINDOW* game, WINDOW* stat, WINDOW* ter
   //GET SAVE DATA FROM DATABASE HERE
 
   printDungeonName(stat, loadMap(map, game, 2, playerpos, bosspos), windowWidth);
-//  while(true){
-
-//  }
+  while(true){
+    movement(playerpos, map, bosspos, game, stat, term);
+  }
   getch();
-
+  
 }
 
 int main(){
