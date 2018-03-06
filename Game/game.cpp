@@ -70,7 +70,6 @@ void printDungeonName(WINDOW* stat, string dungeonname, int windowWidth){
     wprintw(stat, "¯");
   }
     box(stat, 0, 0);
-  wmove(stat, 20, 20);
   wrefresh(stat);
 }
 
@@ -148,6 +147,10 @@ int MainMenu(WINDOW* stat, string dungeonname, int windowWidth){
   wrefresh(game);
 }*/
 
+void interact(int map[height][width], int playerpos[1], WINDOW* term){
+//doors and chests here
+}
+
 void movement(int playerpos[1], int map[height][width], int bosspos[1], WINDOW* game, WINDOW* stat, WINDOW* term){
   switch(toupper(wgetch(game))){
     case 'W':
@@ -172,8 +175,8 @@ void movement(int playerpos[1], int map[height][width], int bosspos[1], WINDOW* 
          break;
 
     case 'E':
-      //interact with doors/chests
-      break;
+        interact(map, playerpos, term);
+        break;
 
     break;
   }
@@ -194,7 +197,7 @@ bool ifIdenticalArray(int (&array1)[N], int (&array2)[Nn]){
   }
 }
 
-void WorldMap(int map[height][width], WINDOW* game, WINDOW* stat, WINDOW* term, string dungeonname, int windowWidth, int playerpos[1]){
+int WorldMap(int map[height][width], WINDOW* game, WINDOW* stat, WINDOW* term, string dungeonname, int windowWidth, int playerpos[1]){
   int temp[] = {0,0};
   int Dungeon[][2] = {{31,85},{8,87},{10,20},{30,22},{18,38}};
 
@@ -228,29 +231,19 @@ void WorldMap(int map[height][width], WINDOW* game, WINDOW* stat, WINDOW* term, 
       if(enteringdungeon){
         switch(dungeonno){
           case 0://Dungeon 1
-            wclear(game);
-            box(game, 0, 0);
-            wrefresh(game);
+            return dungeonno;
             break;
           case 1://Dungeon 2
-            wclear(game);
-            box(game, 0, 0);
-            wrefresh(game);
+            return dungeonno;
             break;
           case 2://Dungeon 3
-            wclear(game);
-            box(game, 0, 0);
-            wrefresh(game);
+            return dungeonno;
             break;
           case 3://Dungeon 4
-            wclear(game);
-            box(game, 0, 0);
-            wrefresh(game);
+            return dungeonno;
             break;
           case 4://Shop
-            wclear(game);
-            box(game, 0, 0);
-            wrefresh(game);
+            return dungeonno;
             break;
         }
       }
@@ -261,25 +254,24 @@ void WorldMap(int map[height][width], WINDOW* game, WINDOW* stat, WINDOW* term, 
 
 int gameSequence(int map[height][width], WINDOW* game, WINDOW* stat, WINDOW* term){
   const int windowWidth = 45;
-  int playerpos[] = {1, 1};
-  int bosspos[] = {1, 1};
+  int playerpos[1];
+  int bosspos[1];
 
   if(MainMenu(stat, loadMap(map, game, 1, playerpos, bosspos), windowWidth)){return 1;};
 
   //GET SAVE DATA FROM DATABASE HERE
 
-  WorldMap(map, game, stat, term, loadMap(map, game, 2, playerpos, bosspos), windowWidth, playerpos);
-/*
-  printDungeonName(stat, loadMap(map, game, 2, playerpos, bosspos), windowWidth);
   while(true){
-    movement(playerpos, map, bosspos, game, stat, term);
-  }*/
-  getch();
+  WorldMap(map, game, stat, term, loadMap(map, game, 2, playerpos, bosspos), windowWidth, playerpos);
+
+
+  }
 }
 
 int main(){
     setlocale(LC_ALL, "");
     initscr();
+
     start_color();
     init_pair(1, COLOR_BLACK, 0);
     init_pair(2, COLOR_RED, 0);
@@ -287,14 +279,17 @@ int main(){
     init_pair(4, COLOR_YELLOW, 0);
     init_pair(5, COLOR_BLUE, 0);
     init_pair(6, COLOR_MAGENTA, 0);
+
     noecho();
+    keypad(stdscr, true);//dosent work for me? try in an actual bash terminal (not windows)?
+    try{
+      curs_set(0);
+    }catch(...) {}
 
     Window main(38,159);
     Window game(main.getData(),36,107,1,2);
     Window stat(main.getData(),24,47,1,110);
     Window term(main.getData(),12,47,25,110);
-
-    keypad(stdscr, true);
 
     int map[height][width] = {0};
 
