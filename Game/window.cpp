@@ -1,5 +1,5 @@
 #include <ncurses.h>
-#include "Window.h"
+#include "window.h"
 
 Window::Window(WINDOW* frame, int height, int width, int y, int x){
   _frame = frame; _width = width; _height = height; _x = x; _y = y;
