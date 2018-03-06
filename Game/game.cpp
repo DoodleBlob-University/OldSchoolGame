@@ -149,6 +149,24 @@ int MainMenu(WINDOW* stat, string dungeonname, int windowWidth){
 
 void interact(int map[height][width], int playerpos[1], WINDOW* term){
 //doors and chests here
+if(map[playerpos[0]-1][playerpos[1]] == 8){
+    map[playerpos[0]-1][playerpos[1]] = 0;
+    int temppos[] = {playerpos[0]-1,playerpos[1]};
+    interact(map, temppos, term);
+  }else if(map[playerpos[0]][playerpos[1] - 1] == 8){
+    map[playerpos[0]][playerpos[1] - 1] = 0;
+    int temppos[] = {playerpos[0],playerpos[1]-1};
+    interact(map, temppos, term);
+  }else if(map[playerpos[0] + 1][playerpos[1]] == 8){
+    map[playerpos[0] + 1][playerpos[1]] = 0;
+    int temppos[] = {playerpos[0]+1,playerpos[1]};
+    interact(map, temppos, term);
+  }
+  else if(map[playerpos[0]][playerpos[1] + 1] == 8){
+    map[playerpos[0]][playerpos[1] + 1] = 0;
+    int temppos[] = {playerpos[0],playerpos[1]+1};
+    interact(map, temppos, term);
+  }
 }
 
 void movement(int playerpos[1], int map[height][width], int bosspos[1], WINDOW* game, WINDOW* stat, WINDOW* term){
@@ -254,7 +272,7 @@ int WorldMap(int map[height][width], WINDOW* game, WINDOW* stat, WINDOW* term, s
 
 int gameSequence(int map[height][width], WINDOW* game, WINDOW* stat, WINDOW* term){
   const int windowWidth = 45;
-  int playerpos[1];
+  int playerpos[] = {1, 1};
   int bosspos[1];
 
   if(MainMenu(stat, loadMap(map, game, 1, playerpos, bosspos), windowWidth)){return 1;};
