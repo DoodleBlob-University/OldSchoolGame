@@ -247,23 +247,7 @@ int WorldMap(int map[height][width], WINDOW* game, WINDOW* stat, WINDOW* term, s
         break;
       }
       if(enteringdungeon){
-        switch(dungeonno){
-          case 0://Dungeon 1
-            return dungeonno;
-            break;
-          case 1://Dungeon 2
-            return dungeonno;
-            break;
-          case 2://Dungeon 3
-            return dungeonno;
-            break;
-          case 3://Dungeon 4
-            return dungeonno;
-            break;
-          case 4://Shop
-            return dungeonno;
-            break;
-        }
+        return dungeonno + 3;
       }
     }
   }
