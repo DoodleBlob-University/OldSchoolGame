@@ -153,10 +153,12 @@ if(map[playerpos[0]-1][playerpos[1]] == 8){
     map[playerpos[0]-1][playerpos[1]] = 0;
     int temppos[] = {playerpos[0]-1,playerpos[1]};
     interact(map, temppos, term);
+  }
 if(map[playerpos[0]][playerpos[1] - 1] == 8){
     map[playerpos[0]][playerpos[1] - 1] = 0;
     int temppos[] = {playerpos[0],playerpos[1]-1};
     interact(map, temppos, term);
+  }
 if(map[playerpos[0] + 1][playerpos[1]] == 8){
     map[playerpos[0] + 1][playerpos[1]] = 0;
     int temppos[] = {playerpos[0]+1,playerpos[1]};
