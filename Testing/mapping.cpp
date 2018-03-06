@@ -36,7 +36,7 @@ void uploadMap(int map[35][105]){
 
 int main(void){
     int playerpos[] = {33,4};
-    setlocale(LC_ALL, "");  
+    setlocale(LC_ALL, "");
     initscr();
       start_color();
   init_pair(1, COLOR_BLACK, 0);
@@ -123,13 +123,13 @@ void movement(int map[][width], int playerpos[]){
           void doors( int map[][width], int playerpos[]);
           doors(map, playerpos);
           break;
-        case 'l':
+        /*case 'l':
           uploadMap(map);
-          break;
+          break;*/
         default: //cout << "";
           break;
         }
-        
+
 
     }catch(...){}
   }

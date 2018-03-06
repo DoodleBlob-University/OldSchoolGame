@@ -8,7 +8,7 @@
 
 using namespace std;
 
-const int width = 105; const int height = 35;
+const int width = 105; const int height = 35;//height of displayed map is 34 to avoid weird database errors
 
 struct tile {
   string character;
@@ -25,17 +25,6 @@ int getMapTileNo(){
 }
 
 vector<tile> tiles(getMapTileNo());
-
-void initialiseGame(){
-
-  sqlite::sqlite db( "gamedb.db" );
-  auto cur = db.get_statement();
-  cur->set_sql( "SELECT * FROM maptiles;" );
-  cur->prepare();
-  while( cur->step() ){
-  int selectedtile = cur->get_int(0);
-  tiles[selectedtile].character = cur->get_text(1).c_str(); tiles[selectedtile].colour = cur->get_int(2);}
-}
 
 void printMap(int map[height][width], WINDOW* win){
   for(int y = 1; y < height; ++y){
@@ -172,7 +161,7 @@ void movement(int playerpos[1], int map[height][width], int bosspos[1], WINDOW* 
         }
         break;
     case 'S':
-        if((map[playerpos[0]+1][playerpos[1]] == 0) && (playerpos[0] + 1 <= height)){
+        if((map[playerpos[0]+1][playerpos[1]] == 0) && (playerpos[0] + 1 <= height - 1)){
           playerpos[0] += 1;
         }
         break;
@@ -183,12 +172,91 @@ void movement(int playerpos[1], int map[height][width], int bosspos[1], WINDOW* 
          break;
 
     case 'E':
+      //interact with doors/chests
+      break;
 
     break;
   }
   printMap(map, game);
   mvwprintw(game, playerpos[0],playerpos[1], "X");
   wrefresh(game);
+}
+
+template<size_t N, size_t Nn>
+bool ifIdenticalArray(int (&array1)[N], int (&array2)[Nn]){
+  if(N != Nn){return false;}else{
+    for(int i = 0; i < N; ++i){
+      if(array1[i] != array2[i]){
+        return false;
+      }
+    }
+    return true;
+  }
+}
+
+void WorldMap(int map[height][width], WINDOW* game, WINDOW* stat, WINDOW* term, string dungeonname, int windowWidth, int playerpos[1]){
+  int temp[] = {0,0};
+  int Dungeon[][2] = {{31,85},{8,87},{10,20},{30,22},{18,38}};
+
+  printDungeonName(stat, dungeonname, windowWidth);
+  while(true){
+
+    movement(playerpos, map, temp, game, stat, term);
+
+    int newplayerpos[] = {playerpos[0], playerpos[1]};//for some reason `ifIdenticalArray` dosent accept playerpos but does accept this?!
+    for(int dungeonno = 0; dungeonno < 5; ++dungeonno){
+      bool enteringdungeon = false;
+      switch(dungeonno){
+        case 1:
+          for(int i = 0; i < 2; ++i){
+            int tempdungeon[] = {Dungeon[dungeonno][0],Dungeon[dungeonno][1]+i};
+            if(ifIdenticalArray(tempdungeon, newplayerpos)){
+              enteringdungeon = true;
+          }}
+          break;
+        case 2: case 3:
+          for(int i = 0; i < 3; ++i){
+            int tempdungeon[] = {Dungeon[dungeonno][0],Dungeon[dungeonno][1]+i};
+            if(ifIdenticalArray(tempdungeon, newplayerpos)){
+              enteringdungeon = true;
+          }}
+          break;
+        default:
+          enteringdungeon = ifIdenticalArray(Dungeon[dungeonno], newplayerpos);
+        break;
+      }
+      if(enteringdungeon){
+        switch(dungeonno){
+          case 0://Dungeon 1
+            wclear(game);
+            box(game, 0, 0);
+            wrefresh(game);
+            break;
+          case 1://Dungeon 2
+            wclear(game);
+            box(game, 0, 0);
+            wrefresh(game);
+            break;
+          case 2://Dungeon 3
+            wclear(game);
+            box(game, 0, 0);
+            wrefresh(game);
+            break;
+          case 3://Dungeon 4
+            wclear(game);
+            box(game, 0, 0);
+            wrefresh(game);
+            break;
+          case 4://Shop
+            wclear(game);
+            box(game, 0, 0);
+            wrefresh(game);
+            break;
+        }
+      }
+    }
+  }
+
 }
 
 int gameSequence(int map[height][width], WINDOW* game, WINDOW* stat, WINDOW* term){
@@ -200,12 +268,13 @@ int gameSequence(int map[height][width], WINDOW* game, WINDOW* stat, WINDOW* ter
 
   //GET SAVE DATA FROM DATABASE HERE
 
+  WorldMap(map, game, stat, term, loadMap(map, game, 2, playerpos, bosspos), windowWidth, playerpos);
+/*
   printDungeonName(stat, loadMap(map, game, 2, playerpos, bosspos), windowWidth);
   while(true){
     movement(playerpos, map, bosspos, game, stat, term);
-  }
+  }*/
   getch();
-
 }
 
 int main(){
@@ -228,7 +297,15 @@ int main(){
     keypad(stdscr, true);
 
     int map[height][width] = {0};
-    initialiseGame();
+
+    sqlite::sqlite db( "gamedb.db" );
+    auto cur = db.get_statement();
+    cur->set_sql( "SELECT * FROM maptiles;" );
+    cur->prepare();
+    while( cur->step() ){
+    int selectedtile = cur->get_int(0);
+    tiles[selectedtile].character = cur->get_text(1).c_str(); tiles[selectedtile].colour = cur->get_int(2);}
+
     gameSequence(map, game.getData(), stat.getData(), term.getData());
 
     endwin();
