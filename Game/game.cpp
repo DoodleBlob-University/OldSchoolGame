@@ -4,7 +4,7 @@
 
 #include "libsqlite.hpp"
 
-#include "Window.h"
+#include "window.h"
 
 using namespace std;
 
@@ -264,7 +264,7 @@ int gameSequence(int map[height][width], WINDOW* game, WINDOW* stat, WINDOW* ter
   //GET SAVE DATA FROM DATABASE HERE
 
   while(true){
-  WorldMap(map, game, stat, term, loadMap(map, game, 2, playerpos, bosspos), windowWidth, playerpos);
+  /*returns dungeonID*/WorldMap(map, game, stat, term, loadMap(map, game, 2, playerpos, bosspos), windowWidth, playerpos);
 
 
   }
