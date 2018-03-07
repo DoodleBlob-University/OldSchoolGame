@@ -62,10 +62,14 @@ const char* loadMap(int map[height][width], WINDOW* win, int dungeonID, int play
   return dungeonname.c_str();
 }
 
+int centreTextCursorPos(string text, int width){
+  return (width - text.size())/2;
+}
+
 void printDungeonName(WINDOW* stat, string dungeonname, int windowWidth){
   werase(stat);
-  mvwprintw(stat, 1, (windowWidth - dungeonname.size())/2, dungeonname.c_str());
-  wmove(stat, 2, ((windowWidth - dungeonname.size())/2) - 1);
+  mvwprintw(stat, 1, centreTextCursorPos(dungeonname, windowWidth), dungeonname.c_str());
+  wmove(stat, 2, centreTextCursorPos(dungeonname, windowWidth)- 1);
   for(int i = 0; i < (dungeonname.size() + 2); ++i){
     wprintw(stat, "¯");
   }
@@ -77,7 +81,7 @@ template<size_t N>
 void printMenuOptions(string (&MenuOptions)[N], int selected, int windowWidth, WINDOW* stat){
   for(int i = 0; i < (sizeof(MenuOptions)/sizeof(*MenuOptions)); ++i){
     if(i == selected){wattron(stat,COLOR_PAIR(2));}
-    mvwprintw(stat, i+5, (windowWidth - MenuOptions[i].size())/2, MenuOptions[i].c_str());
+    mvwprintw(stat, i+5, centreTextCursorPos(MenuOptions[i], windowWidth), MenuOptions[i].c_str());
     wattroff(stat,COLOR_PAIR(2));
   }
 }
@@ -237,7 +241,7 @@ bool ifIdenticalArray(int (&array1)[N], int (&array2)[Nn]){
 
 int WorldMap(int map[height][width], WINDOW* game, WINDOW* stat, WINDOW* term, string dungeonname, int windowWidth, int playerpos[1]){
   int temp[] = {0,0};
-  int Dungeon[][2] = {{31,85},{8,87},{10,20},{30,22},{18,38}};
+  int Dungeon[][2] = {{8,87},{31,85},{10,20},{30,22},{18,38}};
 
   printDungeonName(stat, dungeonname, windowWidth);
   while(true){
@@ -248,7 +252,7 @@ int WorldMap(int map[height][width], WINDOW* game, WINDOW* stat, WINDOW* term, s
     for(int dungeonno = 0; dungeonno < 5; ++dungeonno){
       bool enteringdungeon = false;
       switch(dungeonno){
-        case 1:
+        case 0:
           for(int i = 0; i < 2; ++i){
             int tempdungeon[] = {Dungeon[dungeonno][0],Dungeon[dungeonno][1]+i};
             if(ifIdenticalArray(tempdungeon, newplayerpos)){
@@ -271,7 +275,13 @@ int WorldMap(int map[height][width], WINDOW* game, WINDOW* stat, WINDOW* term, s
       }
     }
   }
+}
 
+void Dungeon(int dungeonID, int map[height][width], int playerpos[], int bosspos[], WINDOW* game, WINDOW* stat, WINDOW* term, int windowWidth){
+  printDungeonName(stat, loadMap(map, game, dungeonID, playerpos, bosspos), windowWidth);
+  while(true){
+    movement(playerpos, map, bosspos, game, stat, term);
+  }
 }
 
 int gameSequence(int map[height][width], WINDOW* game, WINDOW* stat, WINDOW* term){
@@ -286,9 +296,9 @@ int gameSequence(int map[height][width], WINDOW* game, WINDOW* stat, WINDOW* ter
   //GET SAVE DATA FROM DATABASE HERE
 
   while(true){
-  /*returns dungeonID*/WorldMap(map, game, stat, term, loadMap(map, game, 2, playerpos, bosspos), windowWidth, playerpos);
-
-
+    int selecteddungeon = WorldMap(map, game, stat, term, loadMap(map, game, 2, playerpos, bosspos), windowWidth, playerpos);
+    Dungeon(selecteddungeon, map, playerpos, bosspos, game, stat, term, windowWidth);
+    while(true){}
   }
 }
 
