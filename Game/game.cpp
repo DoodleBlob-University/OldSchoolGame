@@ -247,7 +247,6 @@ int WorldMap(int map[height][width], WINDOW* game, WINDOW* stat, WINDOW* term, s
   while(true){
 
     movement(playerpos, map, temp, game, stat, term);
-
     int newplayerpos[] = {playerpos[0], playerpos[1]};//for some reason `ifIdenticalArray` dosent accept playerpos but does accept this?!
     for(int dungeonno = 0; dungeonno < 5; ++dungeonno){
       bool enteringdungeon = false;
