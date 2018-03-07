@@ -63,7 +63,7 @@ const char* loadMap(int map[height][width], WINDOW* win, int dungeonID, int play
 }
 
 void printDungeonName(WINDOW* stat, string dungeonname, int windowWidth){
-  wclear(stat);
+  werase(stat);
   mvwprintw(stat, 1, (windowWidth - dungeonname.size())/2, dungeonname.c_str());
   wmove(stat, 2, ((windowWidth - dungeonname.size())/2) - 1);
   for(int i = 0; i < (dungeonname.size() + 2); ++i){
@@ -83,6 +83,7 @@ void printMenuOptions(string (&MenuOptions)[N], int selected, int windowWidth, W
 }
 
 int MainMenu(WINDOW* stat, string dungeonname, int windowWidth){
+  //can I do this function better?!
   printDungeonName(stat, dungeonname, windowWidth);
   string MenuOptions[] = {"Play Game", "Extra", "Options", "Exit"};
   int selected = 0;
@@ -102,11 +103,59 @@ int MainMenu(WINDOW* stat, string dungeonname, int windowWidth){
             return 0;
             break;
           case 1://extras
-
+          {
+            selected = 0;
+            printDungeonName(stat, "Extras", windowWidth);
+            string TempOptions[] = {"MapCreator", "Back"};
+            while(true){
+              printMenuOptions(TempOptions, selected, windowWidth, stat);
+              switch(toupper(wgetch(stat))){
+                case 'W':
+                  if(selected != 0){selected -= 1;}
+                  break;
+                case 'S':
+                  if(selected != (sizeof(TempOptions)/sizeof(*TempOptions))-1){selected += 1;}
+                  break;
+                case ' ':
+                  switch(selected){
+                    case 0:
+                      break;
+                    case 1:
+                      return 2;
+                      break;
+                  }
+                  break;
+              }
+            }
             break;
+          }
           case 2://options
-
+          {
+            selected = 0;
+            printDungeonName(stat, "Options", windowWidth);
+            string TempOptions[] = {"---", "Back"};
+            while(true){
+              printMenuOptions(TempOptions, selected, windowWidth, stat);
+              switch(toupper(wgetch(stat))){
+                case 'W':
+                  if(selected != 0){selected -= 1;}
+                  break;
+                case 'S':
+                  if(selected != (sizeof(TempOptions)/sizeof(*TempOptions))-1){selected += 1;}
+                  break;
+                case ' ':
+                  switch(selected){
+                    case 0:
+                      break;
+                    case 1:
+                      return 2;
+                      break;
+                  }
+                  break;
+              }
+            }
             break;
+          }
           case 3://exit
             return 1;
             break;
@@ -115,37 +164,6 @@ int MainMenu(WINDOW* stat, string dungeonname, int windowWidth){
     }
   }
 }
-
-/*void doors(int playerpos[1], int map[height][width], int bosspos[1], WINDOW* game, WINDOW* stat, WINDOW* term){
-  string terrain;
-    if(map[playerpos[0]-1][playerpos[1] == 8]){
-      terrain = map[playerpos[0]][playerpos[1]+1] = 0;
-      playerpos[0] += 1;
-      doors(playerpos, map, bosspos, game, stat, term);
-      playerpos[0] -= 1;
-    }
-    else if(map[playerpos[0]][playerpos[1] - 1] == 8){
-      terrain = map[playerpos[0]][playerpos[1] - 1] = 0;
-      playerpos[1] += 1;
-      doors(playerpos, map, bosspos, game, stat, term);
-      playerpos[1] -= 1;
-    }
-    else if(map[playerpos[0] + 1][playerpos[1]] == 8){
-      terrain = map[playerpos[0] + 1][playerpos[1]] = 0;
-      playerpos[0] += 1;
-      doors(playerpos, map, bosspos, game, stat, term);
-      playerpos[0] -= 1;
-    }
-    else if(map[playerpos[0]][playerpos[1] + 1] == 8){
-      terrain = map[playerpos[0]][playerpos[1] + 1] = 0;
-      playerpos[1] += 1;
-      doors(playerpos, map, bosspos, game, stat, term);
-      playerpos[1] -= 1;
-    }
-  printMap(map, game);
-  mvwprintw(game, playerpos[0],playerpos[1], "X");
-  wrefresh(game);
-}*/
 
 void interact(int map[height][width], int playerpos[1], WINDOW* term){
 //doors and chests here
@@ -260,9 +278,11 @@ int gameSequence(int map[height][width], WINDOW* game, WINDOW* stat, WINDOW* ter
   const int windowWidth = 45;
   int playerpos[] = {1, 1};
   int bosspos[1];
+  while(true){
+  int menuoption = MainMenu(stat, loadMap(map, game, 1, playerpos, bosspos), windowWidth);
+  if(menuoption == 1){return 1;}else if(menuoption == 0){break;}
 
-  if(MainMenu(stat, loadMap(map, game, 1, playerpos, bosspos), windowWidth)){return 1;};
-
+  }
   //GET SAVE DATA FROM DATABASE HERE
 
   while(true){
