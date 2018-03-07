@@ -9,6 +9,7 @@ Kanban Chart: https://goo.gl/NY8UXm
 git clone https://github.coventry.ac.uk/barryc2/OldSchoolGame/
 cd OldSchoolGame
 
+sudo apt-get install sqlite3 libsqlite3-dev
 sudo apt-get install libncurses5-dev libncursesw5-dev
 
 g++ -std=c++14 *filename*.cpp -o *filename* -lncursesw -lsqlite3
