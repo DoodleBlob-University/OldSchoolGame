@@ -41,7 +41,7 @@ const char* loadMap(int map[height][width], WINDOW* win, int dungeonID, int play
   string dungeonname = " ";
   sqlite::sqlite db( "gamedb.db" );
   auto cur = db.get_statement();
-  cur->set_sql( "select x, y, tileID, dungeon.name, dungeon.playery, dungeon.playerx, dungeon.bossy, dungeon.bossx from map, dungeon where dungeonID = ? and dungeonID = dungeon.ID order by y, x;" );
+  cur->set_sql( "select x, y, tileID, dungeon.name, dungeon.playery, dungeon.playerx from map, dungeon where dungeonID = ? and dungeonID = dungeon.ID order by y, x;" );
   cur->prepare();
   cur->bind( 1, dungeonID );
   while( cur->step() ){
@@ -51,19 +51,38 @@ const char* loadMap(int map[height][width], WINDOW* win, int dungeonID, int play
     dungeonname = cur->get_text(3);
     playerpos[0] = cur->get_int(4);
     playerpos[1] = cur->get_int(5);
-    bosspos[0] = cur->get_int(6);
-    bosspos[1] = cur->get_int(7);
 
     map[yvalue][xvalue] = tileno;
   }
+  bosspos[0] = 0;
+  bosspos[1] = 0;
+
   printMap(map, win);
   if(playerpos[0]){mvwprintw(win, playerpos[0], playerpos[1], "X");}
   wrefresh(win);
   return dungeonname.c_str();
 }
 
+template<typename T, size_t N>
+int getArraySize(T (&array)[N]){
+  return sizeof(array)/sizeof(*array);
+}
+
 int centreTextCursorPos(string text, int width){
   return (width - text.size())/2;
+}
+
+template<typename T, size_t N, size_t Nn>
+bool ifIdenticalArray(T (&array1)[N], T (&array2)[Nn]){
+  //I assume the data types for the array are identical - if this isnt the case an error will occur upon compiling
+    if(N != Nn){return false;}else{
+      for(int i = 0; i < N; ++i){
+        if(array1[i] != array2[i]){
+          return false;
+        }
+      }
+      return true;
+    }
 }
 
 void printDungeonName(WINDOW* stat, string dungeonname, int windowWidth){
@@ -79,7 +98,7 @@ void printDungeonName(WINDOW* stat, string dungeonname, int windowWidth){
 
 template<size_t N>
 void printMenuOptions(string (&MenuOptions)[N], int selected, int windowWidth, WINDOW* stat){
-  for(int i = 0; i < (sizeof(MenuOptions)/sizeof(*MenuOptions)); ++i){
+  for(int i = 0; i < (getArraySize(MenuOptions)); ++i){
     if(i == selected){wattron(stat,COLOR_PAIR(2));}
     mvwprintw(stat, i+5, centreTextCursorPos(MenuOptions[i], windowWidth), MenuOptions[i].c_str());
     wattroff(stat,COLOR_PAIR(2));
@@ -99,7 +118,7 @@ int MainMenu(WINDOW* stat, string dungeonname, int windowWidth){
         if(selected != 0){selected -= 1;}
         break;
       case 'S':
-        if(selected != (sizeof(MenuOptions)/sizeof(*MenuOptions))-1){selected += 1;}
+        if(selected != (getArraySize(MenuOptions))-1){selected += 1;}
         break;
       case ' ':
         switch(selected){
@@ -118,7 +137,7 @@ int MainMenu(WINDOW* stat, string dungeonname, int windowWidth){
                   if(selected != 0){selected -= 1;}
                   break;
                 case 'S':
-                  if(selected != (sizeof(TempOptions)/sizeof(*TempOptions))-1){selected += 1;}
+                  if(selected != (getArraySize(TempOptions))-1){selected += 1;}
                   break;
                 case ' ':
                   switch(selected){
@@ -145,7 +164,7 @@ int MainMenu(WINDOW* stat, string dungeonname, int windowWidth){
                   if(selected != 0){selected -= 1;}
                   break;
                 case 'S':
-                  if(selected != (sizeof(TempOptions)/sizeof(*TempOptions))-1){selected += 1;}
+                  if(selected != (getArraySize(TempOptions))-1){selected += 1;}
                   break;
                 case ' ':
                   switch(selected){
@@ -225,18 +244,6 @@ void movement(int playerpos[1], int map[height][width], int bosspos[1], WINDOW* 
   printMap(map, game);
   mvwprintw(game, playerpos[0],playerpos[1], "X");
   wrefresh(game);
-}
-
-template<size_t N, size_t Nn>
-bool ifIdenticalArray(int (&array1)[N], int (&array2)[Nn]){
-  if(N != Nn){return false;}else{
-    for(int i = 0; i < N; ++i){
-      if(array1[i] != array2[i]){
-        return false;
-      }
-    }
-    return true;
-  }
 }
 
 int WorldMap(int map[height][width], WINDOW* game, WINDOW* stat, WINDOW* term, string dungeonname, int windowWidth, int playerpos[1]){
