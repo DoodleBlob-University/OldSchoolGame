@@ -238,12 +238,10 @@ bool ifIdenticalArray(int (&array1)[N], int (&array2)[Nn]){
 int WorldMap(int map[height][width], WINDOW* game, WINDOW* stat, WINDOW* term, string dungeonname, int windowWidth, int playerpos[1]){
   int temp[] = {0,0};
   int Dungeon[][2] = {{31,85},{8,87},{10,20},{30,22},{18,38}};
-
   printDungeonName(stat, dungeonname, windowWidth);
   while(true){
 
     movement(playerpos, map, temp, game, stat, term);
-
     int newplayerpos[] = {playerpos[0], playerpos[1]};//for some reason `ifIdenticalArray` dosent accept playerpos but does accept this?!
     for(int dungeonno = 0; dungeonno < 5; ++dungeonno){
       bool enteringdungeon = false;

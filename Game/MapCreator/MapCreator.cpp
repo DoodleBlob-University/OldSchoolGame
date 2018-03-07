@@ -7,7 +7,7 @@
 
 using namespace std;
 
-const int tileno = 10;
+const int tileno = 13;
 
 struct tile {
   string character;
@@ -49,7 +49,7 @@ void loadMap(int map[35][105], WINDOW* win){
   int yvalue, xvalue, tileno = 1;
   sqlite::sqlite db( "../gamedb.db" ); // open database
   auto cur = db.get_statement(); // create query
-  cur->set_sql( "SELECT y, x, tileID FROM map WHERE dungeonID = 2 ORDER BY y, x;" );
+  cur->set_sql( "SELECT y, x, tileID FROM map WHERE dungeonID = 3 ORDER BY y, x;" );
   cur->prepare(); // run query
   while( cur->step() ){ // loop over results
     yvalue = cur->get_int(0);
@@ -130,9 +130,9 @@ int input(WINDOW* win, int map[35][105], WINDOW* info){
         loadMap(map, win);
         break;
 
-      case 'q':
-        return 0;
-        break;
+      //case 'q':
+      //  return 0;
+      //  break;
     }
     wmove(win, coords[0], coords[1]);
     refreshOptions(info, tilepos);
