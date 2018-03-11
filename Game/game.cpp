@@ -14,7 +14,8 @@ class MapCreator{
 private:
   MapTile* maptiles;
   WINDOW* game; WINDOW* stat; WINDOW* term;
-  int map[35][105];
+  int coords[2]; int tilepos = 0;
+  int map[35][106];
   void printOptions(){
     werase(stat); box(stat,0,0);
     WINDOW* currenttile = derwin(stat, 3,3, 2, 21);
@@ -33,9 +34,7 @@ private:
   }
 
   int input(){
-    int coords[] = {1,1}; int tilepos = 0;
-    while(true){
-      switch(toupper(wgetch(stat))){
+      switch(toupper(wgetch(game))){
         case 'W':
           if(coords[0]-1 != 0){coords[0] -= 1;}
           break;
@@ -53,10 +52,10 @@ private:
           break;
 
         case ' ':
-          if(maptiles->tiles[tilepos].colour > 0){wattron(stat,COLOR_PAIR(maptiles->tiles[tilepos].colour));}
-          wprintw(stat,maptiles->tiles[tilepos].character.c_str());
+          if(maptiles->tiles[tilepos].colour > 0){wattron(game,COLOR_PAIR(maptiles->tiles[tilepos].colour));}
+          wprintw(game,maptiles->tiles[tilepos].character.c_str());
           map[coords[0]][coords[1]] = tilepos;
-          wattroff(stat,COLOR_PAIR(maptiles->tiles[tilepos].colour));
+          wattroff(game,COLOR_PAIR(maptiles->tiles[tilepos].colour));
           break;
 
         case 'O':
@@ -79,18 +78,24 @@ private:
           return 1;
           break;
       }
-      wmove(stat, coords[0], coords[1]);
-      refreshOptions(tilepos);
-      wrefresh(stat);
-    }
+    return 0;
   }
 public:
   MapCreator(WINDOW* _game, WINDOW* _stat, WINDOW* _term, MapTile* _maptiles){
     game = _game; stat = _stat; term = _term; maptiles = _maptiles;
     printOptions();
+    curs_set(1);
+    werase(game); box(game, 0, 0); coords[0] = 1; coords[1] = 1;
     while(true){
+      wmove(game, coords[0], coords[1]);
+      wrefresh(game);
       if(input()){break;}
+      refreshOptions(tilepos);
+      wrefresh(stat);
     }
+    try{
+      curs_set(0);
+    }catch(...) {}
   }
 };
 
@@ -127,7 +132,8 @@ private:
     wrefresh(stat->getData());
   }
 
-  int MainMenu(string dungeonname, int windowWidth){
+  int MainMenu(Map main, int windowWidth){
+    string dungeonname = main.getName();
     int selected = 0; int suboption = 0;
     vector<vector<string>> MenuOptions = {{"Play Game","Extra", "Options", "Exit"},{"MapCreator","Back"},{"----","Back"}};
     while(true){
@@ -153,15 +159,15 @@ private:
             case 0:
               {switch(suboption){
                 case 0: return 0; break;
-                case 1: {MapCreator create(game->getData(), stat->getData(), term->getData(), maptiles);} break;
+                case 1: {MapCreator creator(game->getData(), stat->getData(), term->getData(), maptiles);} return 2; break;
                 case 2: break;
               }}
               break;
             case 1:
               {switch(suboption){
                 case 0: dungeonname = "Extras"; suboption += 1; selected = 0; break;
-                case 1: dungeonname = "Main Menu"; suboption -= 1; selected = 0; return 2; break;
-                case 2: dungeonname = "Main Menu"; suboption -= 2; selected = 0; return 2; break;
+                case 1: dungeonname = main.getName(); suboption -= 1; selected = 0; return 2; break;
+                case 2: dungeonname = main.getName(); suboption -= 2; selected = 0; return 2; break;
               }}
               break;
             case 2:
@@ -230,12 +236,12 @@ private:
   int gameSequence(){
     const int windowWidth = 45;
 
-    Map main(1, game->getData(), maptiles);
     while(true){
-    printDungeonName(main.getName(), windowWidth);
-    int menuoption = MainMenu(main.getName(), windowWidth);
-    if(menuoption == 1){return 1;}else if(menuoption == 0){break;}
+      Map main(1, game->getData(), maptiles);
 
+      printDungeonName(main.getName(), windowWidth);
+      int menuoption = MainMenu(main, windowWidth);
+      if(menuoption == 1){return 1;}else if(menuoption == 0){break;}
     }
 
     //GET SAVE DATA FROM DATABASE HERE
