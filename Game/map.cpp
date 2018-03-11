@@ -13,6 +13,7 @@ int MapTile::getMapTileNo(){
   while( cur->step() ){
   return cur->get_int(0);}
 }
+
 void MapTile::loadMapTiles(){
   sqlite::sqlite db( "gamedb.db" );
   auto cur = db.get_statement();
@@ -22,6 +23,7 @@ void MapTile::loadMapTiles(){
   int selectedtile = cur->get_int(0);
   tiles[selectedtile].character = cur->get_text(1).c_str(); tiles[selectedtile].colour = cur->get_int(2);}
 }
+
 MapTile::MapTile(){
   tiles.resize(getMapTileNo());
   loadMapTiles();
@@ -36,9 +38,11 @@ void Map::printMap(){
       mvwprintw(win, y, x, maptiles->tiles[map[y][x]].character.c_str());
       wattroff(win,COLOR_PAIR(maptiles->tiles[map[y][x]].colour));
 }}}
+
 const char* Map::getName(){
   return name.c_str();
 }
+
 Map::Map(int _ID, WINDOW* _win, MapTile* _maptiles){
   ID = _ID; win = _win;
   maptiles = _maptiles;
@@ -46,6 +50,7 @@ Map::Map(int _ID, WINDOW* _win, MapTile* _maptiles){
   printMap();
   wrefresh(win);
 }
+
 void Map::loadMap(){
   int yvalue, xvalue, tileno = 1;
   sqlite::sqlite db( "gamedb.db" );
@@ -76,6 +81,7 @@ void PeacefulMap::fetchPlayerCoords(int ID){
   playerpos[0] = cur->get_int(0);
   playerpos[1] = cur->get_int(1);}
 }
+
 void PeacefulMap::interact(int pos[2]){
   if(map[pos[0]-1][pos[1]] == 8){
       map[pos[0]-1][pos[1]] = 0;
@@ -98,6 +104,7 @@ void PeacefulMap::interact(int pos[2]){
       interact(temppos);
   }
 }
+
 void PeacefulMap::movement(){
   switch(toupper(wgetch(win))){
     case 'W':
@@ -129,6 +136,7 @@ void PeacefulMap::movement(){
   mvwprintw(win, playerpos[0], playerpos[1], "X");
   wrefresh(win);
 }
+
 PeacefulMap::PeacefulMap(int ID, WINDOW* _win, MapTile* maptiles) : Map(ID, _win, maptiles){
   fetchPlayerCoords(ID);
   mvwprintw(win, playerpos[0], playerpos[1], "X");
