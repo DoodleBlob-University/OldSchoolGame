@@ -322,6 +322,7 @@ public:
   }
 };
 
+/*
 Window* mainwin; Window* gamewin; Window* statwin; Window* termwin;
 void resize(int sig){
   wait();
@@ -334,8 +335,11 @@ void resize(int sig){
   mainwin->resize(LINES, COLS);
   mainwin->winrefresh(); gamewin->winrefresh(); statwin->winrefresh(); termwin->winrefresh();
   refresh();
+  try{
+    curs_set(0);//some terminals dont support this feature, hence `try` and `catch`
+  }catch(...) {}
   fflush(0);
-}
+}*/
 
 int main(){
     setlocale(LC_ALL, "");//setting locale in order to allow unicode characters
@@ -356,20 +360,20 @@ int main(){
     }catch(...) {}
 
     Window* main = new Window(38,159);//create main window
-    mainwin = main;
+    //mainwin = main;
     Window* game = new Window(main->getData(),36,107,1,2);//game subwindow
-    gamewin = game;
+    //gamewin = game;
     Window* stat = new Window(main->getData(),24,47,1,110);//statistics subwindow
-    statwin = stat;
+    //statwin = stat;
     Window* term = new Window(main->getData(),12,47,25,110);//user terminal subwindow
-    termwin = term;
-
+    //termwin = term;
+    /*
     struct sigaction resizeSignal;
     sigemptyset(&resizeSignal.sa_mask);
     memset(&resizeSignal, 0, sizeof(resizeSignal));//reset all members of resizeSignal to 0
     resizeSignal.sa_flags = SA_RESTART;//restart functions if interupted by handler
     resizeSignal.sa_handler = resize;//cannot give arguments to a function when called by handler
-    sigaction(SIGWINCH, &resizeSignal, NULL);//signal occurs upon terminal resizing
+    sigaction(SIGWINCH, &resizeSignal, NULL);//signal occurs upon terminal resizing*/
 
     MapTile* maptiles = new MapTile();//load all maptiles from database and store in class
 
