@@ -52,6 +52,10 @@ void printMenuOptions(string (&MenuOptions)[N], int selected, int windowWidth, W
   }
 }
 
+int MainMenu(WINDOW* stat, Map menu, int WindowWidth){
+
+}
+
 int MainMenu(WINDOW* stat, string dungeonname, int windowWidth){
   //can I do this function better?!
   printDungeonName(stat, dungeonname, windowWidth);
@@ -189,6 +193,8 @@ int gameSequence(Window game, Window stat, Window term){
   while(true){
 
   Map main(1, game.getData(), maptiles);
+  printDungeonName(stat.getData(), main.getName(), windowWidth);
+  //int menuoption = MainMenu(stat.getData(), main, windowWidth);
   int menuoption = MainMenu(stat.getData(), main.getName(), windowWidth);
   if(menuoption == 1){return 1;}else if(menuoption == 0){break;}
   }
@@ -201,7 +207,7 @@ int gameSequence(Window game, Window stat, Window term){
     int selecteddungeon = WorldMap(game.getData(), stat.getData(), term.getData(), World, windowWidth);
     if(selecteddungeon == 7){
       //SHOP
-      Map shop(1, game.getData(), maptiles);
+      Map shop(7, game.getData(), maptiles);
 
     }else{
       //DUNGEON
