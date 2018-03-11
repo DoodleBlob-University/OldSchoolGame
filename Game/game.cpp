@@ -10,14 +10,94 @@
 
 using namespace std;
 
+class MapCreator{
+private:
+  MapTile* maptiles;
+  WINDOW* game; WINDOW* stat; WINDOW* term;
+  int map[35][105];
+  void printOptions(){
+    werase(stat); box(stat,0,0);
+    WINDOW* currenttile = derwin(stat, 3,3, 2, 21);
+    box(currenttile,0,0);
+    wrefresh(currenttile);
+
+    mvwprintw(stat,1,16,"current tile"); mvwprintw(stat, 3, 15, "O <--"); mvwprintw(stat, 3, 25, "--> P"); mvwprintw(stat, 8, 18, "q : quit"); mvwprintw(stat, 10, 18, "u : upload"); mvwprintw(stat, 12, 18, "l : load");
+    mvwprintw(stat,3,22, maptiles->tiles[0].character.c_str());
+    wrefresh(stat);
+  }
+  void refreshOptions(int tilepos){
+    if(maptiles->tiles[tilepos].colour > 0){wattron(stat,COLOR_PAIR(maptiles->tiles[tilepos].colour));}
+    mvwprintw(stat,3,22, maptiles->tiles[tilepos].character.c_str());
+    wattroff(stat,COLOR_PAIR(maptiles->tiles[tilepos].colour));
+    wrefresh(stat);
+  }
+
+  int input(){
+    int coords[] = {1,1}; int tilepos = 0;
+    while(true){
+      switch(toupper(wgetch(stat))){
+        case 'W':
+          if(coords[0]-1 != 0){coords[0] -= 1;}
+          break;
+
+        case 'A':
+          if(coords[1]-1 != 0){coords[1] -= 1;}
+          break;
+
+        case 'S':
+          if(coords[0]+1 != 35){coords[0] += 1;}
+          break;
+
+        case 'D':
+          if(coords[1]+1 != 106){coords[1] += 1;}
+          break;
+
+        case ' ':
+          if(maptiles->tiles[tilepos].colour > 0){wattron(stat,COLOR_PAIR(maptiles->tiles[tilepos].colour));}
+          wprintw(stat,maptiles->tiles[tilepos].character.c_str());
+          map[coords[0]][coords[1]] = tilepos;
+          wattroff(stat,COLOR_PAIR(maptiles->tiles[tilepos].colour));
+          break;
+
+        case 'O':
+          if(tilepos-1 >= 0){tilepos -= 1;}
+          break;
+
+        case 'P':
+          if(tilepos+1 < maptiles->tiles.size()){tilepos += 1;}
+          break;
+
+        case 'U':
+          //uploadMap(map, info);
+          break;
+
+        case 'L':
+          //loadMap(map, win);
+          break;
+
+        case 'Q':
+          return 1;
+          break;
+      }
+      wmove(stat, coords[0], coords[1]);
+      refreshOptions(tilepos);
+      wrefresh(stat);
+    }
+  }
+public:
+  MapCreator(WINDOW* _game, WINDOW* _stat, WINDOW* _term, MapTile* _maptiles){
+    game = _game; stat = _stat; term = _term; maptiles = _maptiles;
+    printOptions();
+    while(true){
+      if(input()){break;}
+    }
+  }
+};
+
 class Game{
 private:
   Window* game; Window* stat; Window* term;
   MapTile* maptiles;
-  template<typename T, size_t N>
-  int getArraySize(T (&array)[N]){
-    return sizeof(array)/sizeof(*array);
-  }
 
   int centreTextCursorPos(string text, int width){
     return (width - text.size())/2;
@@ -36,101 +116,62 @@ private:
       }
   }
 
-  void printDungeonName(WINDOW* stat, string dungeonname, int windowWidth){
-    werase(stat);
-    mvwprintw(stat, 1, centreTextCursorPos(dungeonname, windowWidth), dungeonname.c_str());
-    wmove(stat, 2, centreTextCursorPos(dungeonname, windowWidth)- 1);
+  void printDungeonName(string dungeonname, int windowWidth){
+    werase(stat->getData());
+    mvwprintw(stat->getData(), 1, centreTextCursorPos(dungeonname, windowWidth), dungeonname.c_str());
+    wmove(stat->getData(), 2, centreTextCursorPos(dungeonname, windowWidth)- 1);
     for(int i = 0; i < (dungeonname.size() + 2); ++i){
-      wprintw(stat, "¯");
+      wprintw(stat->getData(), "¯");
     }
-      box(stat, 0, 0);
-    wrefresh(stat);
+      box(stat->getData(), 0, 0);
+    wrefresh(stat->getData());
   }
 
-  template<size_t N>
-  void printMenuOptions(string (&MenuOptions)[N], int selected, int windowWidth, WINDOW* stat){
-    for(int i = 0; i < (getArraySize(MenuOptions)); ++i){
-      if(i == selected){wattron(stat,COLOR_PAIR(2));}
-      mvwprintw(stat, i+5, centreTextCursorPos(MenuOptions[i], windowWidth), MenuOptions[i].c_str());
-      wattroff(stat,COLOR_PAIR(2));
-    }
-  }
-
-  int MainMenu(WINDOW* stat, string dungeonname, int windowWidth){
-    //can I do this function better?!
-    printDungeonName(stat, dungeonname, windowWidth);
-    string MenuOptions[] = {"Play Game", "Extra", "Options", "Exit"};
-    int selected = 0;
+  int MainMenu(string dungeonname, int windowWidth){
+    int selected = 0; int suboption = 0;
+    vector<vector<string>> MenuOptions = {{"Play Game","Extra", "Options", "Exit"},{"MapCreator","Back"},{"----","Back"}};
     while(true){
-      printMenuOptions(MenuOptions, selected, windowWidth, stat);
+      printDungeonName(dungeonname, windowWidth);
 
-      switch(toupper(wgetch(stat))){
+      for(int i = 0; i < MenuOptions[suboption].size(); ++i){
+        if(i == selected){wattron(stat->getData(),COLOR_PAIR(2));}
+        mvwprintw(stat->getData(), i+5, centreTextCursorPos(MenuOptions[suboption][i], windowWidth), MenuOptions[suboption][i].c_str());
+        wattroff(stat->getData(),COLOR_PAIR(2));
+      }
+
+      wrefresh(stat->getData());
+      refresh();
+      switch(toupper(wgetch(stat->getData()))){
         case 'W':
           if(selected != 0){selected -= 1;}
           break;
         case 'S':
-          if(selected != (getArraySize(MenuOptions))-1){selected += 1;}
+          if(selected != (MenuOptions[suboption].size())-1){selected += 1;}
           break;
         case ' ':
           switch(selected){
-            case 0://play game
-              return 0;
+            case 0:
+              {switch(suboption){
+                case 0: return 0; break;
+                case 1: {MapCreator create(game->getData(), stat->getData(), term->getData(), maptiles);} break;
+                case 2: break;
+              }}
               break;
-            case 1://extras
-            {
-              selected = 0;
-              printDungeonName(stat, "Extras", windowWidth);
-              string TempOptions[] = {"MapCreator", "Back"};
-              while(true){
-                printMenuOptions(TempOptions, selected, windowWidth, stat);
-                switch(toupper(wgetch(stat))){
-                  case 'W':
-                    if(selected != 0){selected -= 1;}
-                    break;
-                  case 'S':
-                    if(selected != (getArraySize(TempOptions))-1){selected += 1;}
-                    break;
-                  case ' ':
-                    switch(selected){
-                      case 0:
-                        break;
-                      case 1:
-                        return 2;
-                        break;
-                    }
-                    break;
-                }
-              }
+            case 1:
+              {switch(suboption){
+                case 0: dungeonname = "Extras"; suboption += 1; selected = 0; break;
+                case 1: dungeonname = "Main Menu"; suboption -= 1; selected = 0; return 2; break;
+                case 2: dungeonname = "Main Menu"; suboption -= 2; selected = 0; return 2; break;
+              }}
               break;
-            }
-            case 2://options
-            {
-              selected = 0;
-              printDungeonName(stat, "Options", windowWidth);
-              string TempOptions[] = {"---", "Back"};
-              while(true){
-                printMenuOptions(TempOptions, selected, windowWidth, stat);
-                switch(toupper(wgetch(stat))){
-                  case 'W':
-                    if(selected != 0){selected -= 1;}
-                    break;
-                  case 'S':
-                    if(selected != (getArraySize(TempOptions))-1){selected += 1;}
-                    break;
-                  case ' ':
-                    switch(selected){
-                      case 0:
-                        break;
-                      case 1:
-                        return 2;
-                        break;
-                    }
-                    break;
-                }
-              }
+            case 2:
+              {switch(suboption){
+                case 0: dungeonname = "Options"; suboption += 2; selected = 0; break;
+                case 1: return 2; break;
+                case 2: return 2; break;
+              }}
               break;
-            }
-            case 3://exit
+            case 3:
               return 1;
               break;
           }
@@ -142,7 +183,7 @@ private:
   int WorldMap(WINDOW* game, WINDOW* stat, WINDOW* term, PeacefulMap World, int windowWidth){
     int Dungeon[][2] = {{8,87},{31,85},{10,20},{30,22},{18,38}};
 
-    printDungeonName(stat, World.getName(), windowWidth);
+    printDungeonName(World.getName(), windowWidth);
     while(true){
       World.movement();
 
@@ -175,7 +216,7 @@ private:
   }
 
   int DungeonSequence(WINDOW* game, WINDOW* stat, WINDOW* term, Dungeon dungeon, int windowWidth){
-    printDungeonName(stat, dungeon.getName(), windowWidth);
+    printDungeonName(dungeon.getName(), windowWidth);
 
     while(true){
       dungeon.movement();
@@ -185,16 +226,16 @@ private:
       box(term, 0, 0);
     }
   }
+
   int gameSequence(){
     const int windowWidth = 45;
 
-    while(true){
-
     Map main(1, game->getData(), maptiles);
-    printDungeonName(stat->getData(), main.getName(), windowWidth);
-    //int menuoption = MainMenu(stat.getData(), main, windowWidth);
-    int menuoption = MainMenu(stat->getData(), main.getName(), windowWidth);
+    while(true){
+    printDungeonName(main.getName(), windowWidth);
+    int menuoption = MainMenu(main.getName(), windowWidth);
     if(menuoption == 1){return 1;}else if(menuoption == 0){break;}
+
     }
 
     //GET SAVE DATA FROM DATABASE HERE
@@ -221,7 +262,6 @@ public:
     gameSequence();
   }
 };
-
 
 int main(){
     setlocale(LC_ALL, "");
