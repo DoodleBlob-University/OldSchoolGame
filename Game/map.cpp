@@ -145,7 +145,6 @@ PeacefulMap::PeacefulMap(int ID, WINDOW* _win, MapTile* maptiles) : Map(ID, _win
 
 
 
-
 //------------   DUNGEON   --------------------
 Dungeon::Dungeon(int ID, WINDOW* _win, MapTile* maptiles) : PeacefulMap(ID, _win, maptiles){
 
