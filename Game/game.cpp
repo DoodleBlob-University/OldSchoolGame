@@ -52,10 +52,6 @@ void printMenuOptions(string (&MenuOptions)[N], int selected, int windowWidth, W
   }
 }
 
-int MainMenu(WINDOW* stat, Map menu, int WindowWidth){
-
-}
-
 int MainMenu(WINDOW* stat, string dungeonname, int windowWidth){
   //can I do this function better?!
   printDungeonName(stat, dungeonname, windowWidth);
