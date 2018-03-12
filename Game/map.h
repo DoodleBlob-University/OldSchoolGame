@@ -33,7 +33,7 @@ public:
 class PeacefulMap : public Map{
 private:
   void fetchPlayerCoords();
-  void interact(int pos[2]);
+  int interact(int pos[2]);
   template<typename T, unsigned int N, unsigned int Nn>
   bool ifIdenticalArray(T (&array1)[N], T (&array2)[Nn]);
   bool checkPlayerExit();
@@ -42,7 +42,7 @@ protected:
   void fetchExitCoords();
 public:
   int playerpos[2];
-  bool movement();
+  int movement();
   PeacefulMap(int _ID, WINDOW* _win, MapTile* maptiles);
 };
 

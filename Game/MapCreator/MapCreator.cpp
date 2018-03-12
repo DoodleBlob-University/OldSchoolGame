@@ -23,7 +23,7 @@ void uploadMap(int map[35][105], WINDOW* win){
     for(int x = 1; x < 106; ++x){
       for(int y = 1; y < 35; ++y){
         auto cur = db.get_statement(); // create query
-        cur->set_sql( "INSERT INTO map(dungeonID, y, x, tileID) VALUES (7,?,?,?);" );
+        cur->set_sql( "INSERT INTO map(dungeonID, y, x, tileID) VALUES (3,?,?,?);" );
         cur->prepare();
         cur->bind( 1, y );                // set placeholders
         cur->bind( 2, x );
@@ -49,7 +49,7 @@ void loadMap(int map[35][105], WINDOW* win){
   int yvalue, xvalue, tileno = 1;
   sqlite::sqlite db( "../gamedb.db" ); // open database
   auto cur = db.get_statement(); // create query
-  cur->set_sql( "SELECT y, x, tileID FROM map WHERE dungeonID = 7 ORDER BY y, x;" );
+  cur->set_sql( "SELECT y, x, tileID FROM map WHERE dungeonID = 3 ORDER BY y, x;" );
   cur->prepare(); // run query
   while( cur->step() ){ // loop over results
     yvalue = cur->get_int(0);
@@ -58,7 +58,7 @@ void loadMap(int map[35][105], WINDOW* win){
 
     map[yvalue][xvalue] = tileno;
     //wprintw(win, "%i,%i %i\n", yvalue, xvalue, tileno);
-  }
+  } 
   printMap(map, win);
 }
 
@@ -130,9 +130,9 @@ int input(WINDOW* win, int map[35][105], WINDOW* info){
         loadMap(map, win);
         break;
 
-      case 'q':
-        return 0;
-        break;
+      //case 'q':
+      //  return 0;
+      //  break;
     }
     wmove(win, coords[0], coords[1]);
     refreshOptions(info, tilepos);

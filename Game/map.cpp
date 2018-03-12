@@ -82,7 +82,7 @@ void PeacefulMap::fetchPlayerCoords(){
   playerpos[1] = cur->get_int(1);}
 }
 
-void PeacefulMap::interact(int pos[2]){
+int PeacefulMap::interact(int pos[2]){
   if(map[pos[0]-1][pos[1]] == 8){
       map[pos[0]-1][pos[1]] = 0;
       int temppos[] = {pos[0]-1,pos[1]};
@@ -103,6 +103,19 @@ void PeacefulMap::interact(int pos[2]){
       int temppos[] = {pos[0],pos[1]+1};
       interact(temppos);
   }
+  if(map[pos[0] - 1][pos[1]] == 9){
+    return 1;
+  }
+  if(map[pos[0]][pos[1] - 1] == 9){
+    return 1;
+  }
+  if(map[pos[0] + 1][pos[1]] == 9){
+    return 1;
+  }
+  if(map[pos[0]][pos[1] + 1] == 9){
+    return 1;
+  }
+  return 0;
 }
 
 template<typename T, unsigned int N, unsigned int Nn>
@@ -140,8 +153,8 @@ void PeacefulMap::fetchExitCoords(){
   }
 }
 
-bool PeacefulMap::movement(){
-  if(checkPlayerExit()){return true;}
+int PeacefulMap::movement(){
+  if(checkPlayerExit()){return 1;}
   switch(toupper(wgetch(win))){
     case 'W':
         if((map[playerpos[0]-1][playerpos[1]] == 0) && (playerpos[0] - 1 > 0)){
@@ -164,7 +177,7 @@ bool PeacefulMap::movement(){
          }
          break;
     case 'E':
-        interact(playerpos);
+        if(interact(playerpos)){return 2;};
         break;
     break;
   }

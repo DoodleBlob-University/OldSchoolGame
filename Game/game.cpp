@@ -171,6 +171,11 @@ private:
       }
   }
 
+  void chests(){
+    mvwprintw(term->getData(), 1, 1, "ree");
+    wrefresh(term->getData());
+  }
+
   void printDungeonName(string dungeonname, int windowWidth){
     werase(stat->getData());
     mvwprintw(stat->getData(), 1, centreTextCursorPos(dungeonname, windowWidth), dungeonname.c_str());
@@ -279,7 +284,8 @@ private:
     printDungeonName(dungeon.getName(), windowWidth);
 
     while(true){
-      if(dungeon.movement()){return 0;}
+      int movementflag = dungeon.movement();
+      if(movementflag==1){return 0;}else if(movementflag == 2){chests();}
       mvwprintw(term, 1, 1, "(%i,%i)", dungeon.playerpos[0], dungeon.playerpos[1]);
       wrefresh(term);
       werase(term);
