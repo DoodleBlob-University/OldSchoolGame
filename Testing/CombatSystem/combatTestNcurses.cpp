@@ -15,7 +15,9 @@ class Combat {
     private:
     char response[];
     string name;
-    int amount;
+    int weaponAmount;
+    int spellAmount;
+  int healingAmount;
     public:
   
     string get_line() //take input from the user and put it in lowercase so that doesn't affect it    
@@ -45,19 +47,45 @@ class Combat {
         name = cur->get_text(0);
         return name;
       }
-  int database_assign_int(int ID)
+  int database_assign_int_weapon(int ID)
   {
     sqlite::sqlite db( "Inventory.db" );
         auto cur = db.get_statement();
         cur-> set_sql("SELECT Weapons.Damage FROM Inventory "
-                      "INNER JOIN Weapons ON Inventory.Weapon_name = Weapons.Weapon_name "
+                      "INNER JOIN Weapons ON Inventory.Weapon_name = Weapons.Weapon_name " //change it to item name not just weapon
                       "WHERE ID = ?");
         cur-> prepare();
         cur-> bind(1, ID);
         cur-> step();
-        amount = cur->get_int(0);
-        return amount;
+        weaponAmount = cur->get_int(0);
+        return weaponAmount;
   }
+  /*int database_assign_int_spell(int ID)
+  {
+    sqlite::sqlite db( "Inventory.db");
+    auto cur = db.get_statement();
+    cur-> set_sql("SELECT Spells.Damage FROM Inventory "
+                  "INNER JOIN Spells ON Inventory.Spell_name = Spells.Spell_name "
+                  "WHERE ID = ?");
+    cur->prepare();
+    cur->bind(1, ID);
+    cur->step();
+    spellAmount = cur->get_int(0);
+    return spellAmount;
+  }
+  int database_assign_int_healing(int ID)
+  {
+    sqlite::sqlite db( "Inventory.db");
+    auto cur = db.get_statement();
+    cur->set_sql("SELECT Healing.Amount FROM Inventory "
+                 "INNER JOIN Healing ON Inventory.Item_name = Healing.Item_name "
+                 "WHERE ID = ?");
+    cur->prepare();
+    cur->bind(1, ID);
+    cur->step();
+    healingAmount = cur->get_int(0);
+    return healingAmount;
+  }*/
 
   string make_lower(string attach){ //allows user input to match the name of the weapon or spell 
     for(int length = 0; length < attach.length(); ++length){
@@ -69,6 +97,11 @@ class Combat {
 
 class player{
     private:
+  int level;
+  int EXP;
+  int levelUpPoint;
+  int num;
+  int xpGain;
     
     auto dbOpen(){
         sqlite::sqlite db( "Database (1).db" );
@@ -76,7 +109,7 @@ class player{
         cur->set_sql( "SELECT * FROM Player WHERE PlayerName = 'Test'");
         cur->prepare();
         cur->step();
-        int num = 1;
+        num = 1;
         //array<int, 9>arrayOfStatsP;
         while(num<10){
             playerDB[num-1] = cur->get_int(num-1);;
@@ -124,7 +157,7 @@ class player{
             return 0;
         }
         int pXPGain(int mEXP){
-           int xpGain = playerDB[7] + mEXP;
+            xpGain = playerDB[7] + mEXP;
             playerDB[7] = xpGain;
             sqlite::sqlite db( "Database.db" );
             auto cur = db.get_statement();
@@ -142,9 +175,9 @@ class player{
             return playerDB[7];
         }
         int levelUp(){
-            int level = getLevel();
-            int EXP = getEXP();
-            int levelUpPoint = (level *1.2);
+            level = getLevel();
+            EXP = getEXP();
+            levelUpPoint = (level *1.2);
             if (EXP >= levelUpPoint){
                 //cout<< "You have leveled up!"<< endl;
                 //cout<< "You are level " << playerDB[1]<< endl;
@@ -166,7 +199,7 @@ class player{
             
             }
             else{
-               //return 0;
+               return 0;
            }
           return 0;
         }
@@ -176,14 +209,15 @@ class player{
 
 class monster{
     private:
+    int num;
+    array<int, 9>arrayofstats;
     auto dbOpen(){
         sqlite::sqlite db( "Database.db" );
         auto cur = db.get_statement();
         cur->set_sql( "SELECT * FROM Monster WHERE MonsterName = 'Goblin'");
         cur->prepare();
-        cur->step();
-        int num = 1;
-        array<int, 9>arrayofstats;
+        cur->step();        
+        num = 1;
         while(num<10){
             arrayofstats[num-1] = cur->get_int(num-1);
             num = num +1;
@@ -192,7 +226,6 @@ class monster{
      return arrayofstats;
     }
     array<int, 9>monsterDB;
-    //monsterDB = dbOpen();
     
     public:
        
@@ -244,43 +277,44 @@ class Attack : virtual public Combat{ //array of strings containing the weapon n
     char weaponOne[20];
     char weaponTwo[20];
     char weaponThree[20];
-  int weaponStrength;
-    int weaponStrengthOne = database_assign_int(1);
-    int weaponStrengthTwo = database_assign_int(2);
-    int weaponStrengthThree = database_assign_int(3);
-    
-    
+    int weaponStrength;
+    int weaponStrengthOne = database_assign_int_weapon(1);
+    int weaponStrengthTwo = database_assign_int_weapon(2);
+    int weaponStrengthThree = database_assign_int_weapon(3); 
+    size_t weaponOptionOne;
+    size_t weaponOptionTwo;
+    size_t weaponOptionThree;
     public:
 
     int attack_response() //player chooses desired weapon  
     {
-      sqlite::sqlite db( "Inventory.db" );
-      auto cur = db.get_statement();
+      clear();
       
       strcpy(weaponOne, weaponOneString.c_str());   //can't make a function which returns a char array 
       strcpy(weaponTwo, weaponTwoString.c_str());   //so this is the conversion 
       strcpy(weaponThree, weaponThreeString.c_str());
-      
-      
-        
+            
+        //printw ("These are the weapon stats %i, %i, %i \n", weaponStrengthOne, weaponStrengthTwo, weaponStrengthThree);
         printw ("These are the weapons you can use:\n" );
         printw ("-    Deal damage with a %s\n", weaponOne );  
         printw ("-    Destroy enemy whilst weilding a %s\n", weaponTwo);
         printw ("-    Put them 6 feet under with your %s\n", weaponThree);
         printw ("What weapon would you like to use? \n");
         attackResponse = get_line();
-        clear();
-      
-      weaponOneLower = make_lower(weaponOneString); //made lower so user can't misplace and uppercase letter 
-      weaponTwoLower = make_lower(weaponTwoString);
-      weaponThreeLower = make_lower(weaponThreeString);
-      
               
-        size_t weaponOptionOne = attackResponse.find(weaponOneLower);
-        size_t weaponOptionTwo = attackResponse.find(weaponTwoLower);
-        size_t weaponOptionThree = attackResponse.find(weaponThreeLower); //result will come out with -1 if it can't find substring 
+        weaponOneLower = make_lower(weaponOneString); //made lower so user can't misplace and uppercase letter 
+        weaponTwoLower = make_lower(weaponTwoString);
+        weaponThreeLower = make_lower(weaponThreeString);
+        /*strcpy(weaponOneLowerC, weaponOneLower.c_str());
+        printw("This is the lower option %s", weaponOneLowerC);*/
+       
+        refresh();
+        
+              
+        weaponOptionOne = attackResponse.find(weaponOneLower);
+        weaponOptionTwo = attackResponse.find(weaponTwoLower);
+        weaponOptionThree = attackResponse.find(weaponThreeLower); //result will come out with -1 if it can't find substring 
    
-
         if (weaponOptionOne != string::npos) 
         {
           return weaponStrengthOne;
@@ -305,20 +339,22 @@ class Attack : virtual public Combat{ //array of strings containing the weapon n
 class Spells : virtual public Combat{
     private:
     string spellResponse;
-    string spellOneString = "decay";
-    string spellTwoString = "potent"; //need a table for all of these 
-    string spellThreeString = "loud";
+    string spellOneString = "decay"; //database_assign_name(4);
+    string spellTwoString = "potent"; //database_assign_name(5); 
+    string spellThreeString = "loud"; //database_assign_name(6);
     char spellOne[6] = "decay";
     char spellTwo[7] = "potent";
     char spellThree[5] = "loud";
-    int spellStrengthOne = 10;
-    int spellStrengthTwo = 20; //all hardcoded until there is a table which I can access from 
-    int spellStrengthThree = 30;    
+    int spellStrengthOne = 5; //database_assign_int_spell(4);
+    int spellStrengthTwo = 6; //database_assign_int_spell(5);
+    int spellStrengthThree = 7; //database_assign_int_spell(6);
+    size_t spellOptionOne;
+    size_t spellOptionTwo;
+    size_t spellOptionThree;
     public:  
   
     int spells_response(){
-      //sqlite::sqlite db( "Database.db" );
-      //auto cur = db.get_statement();
+      
       printw ("These are the spells you can use:\n");  
       printw ("-    Cast %s\n", spellOne );  
       printw ("-    Cast %s\n", spellTwo); 
@@ -328,40 +364,25 @@ class Spells : virtual public Combat{
       spellResponse = get_line();
       clear();   
      
-      size_t spellOptionOne = spellResponse.find(spellOneString);
-      size_t spellOptionTwo = spellResponse.find(spellTwoString);
-      size_t spellOptionThree = spellResponse.find(spellThreeString);
+      spellOptionOne = spellResponse.find(spellOneString);
+      spellOptionTwo = spellResponse.find(spellTwoString);
+      spellOptionThree = spellResponse.find(spellThreeString);
       spellOneString = upper_first(spellOneString);
       spellTwoString = upper_first(spellTwoString);
       spellThreeString = upper_first(spellThreeString);
         
       if (spellOptionOne != string::npos)
       {
-        //cur->set_sql("SELECT Damage FROM Spell WHERE Name = ?");
-        //cur-> bind(1, spellOne);
-        //spellStrength = cur->get_int(0);
-        //return spellStrength;
-        return spellStrengthOne;
-         
-      }
-                      
+        return spellStrengthOne;         
+      }                      
       else if (spellOptionTwo != string::npos)
-      {
-          //cur-> bind(1,spellTwo);
-          //spellStrength = cur->get_int(0);
-          //return spellStrength;
-          return spellStrengthTwo;
-
+      {         
+        return spellStrengthTwo;
       }
- 
       else if (spellOptionThree != string::npos)
-      {
-          //cur-> bind(1,spellThree);
-          //spellStrength = cur->get_int(0);
-          //return spellStrength;
-          return spellStrengthThree;
-
-       }
+      {       
+        return spellStrengthThree;
+      }
     }
     
 };
@@ -378,6 +399,11 @@ class Defence : virtual public Combat{
     int heal = 5;
     int syrup = 10;
     int potion = 15;
+    size_t defenceOptionOne;
+    size_t defenceOptionTwo;
+    size_t defenceOptionThree;
+    int num = 0;
+    array<int, 3>arrayOfAmountLeft;
     
     public:
     
@@ -386,22 +412,24 @@ class Defence : virtual public Combat{
         /*string sqliteFile = "<<whatever the data baseness is>>";
         sqlite::sqlite db( sqliteFile );
         auto cur = db.get_statement();
-        cur -> set_sql("select defence_stats " subject to change 
-                       "from defence_table "
-                       "where defence = ?");
-        cur->prepare();*/
+        cur -> set_sql("SELECT Amount_left FROM Inventory "); subject to change 
+        cur->prepare();
+        while(cur->step()){
+          arrayOfAmountLeft[num] = cur->get_int(0);
+          num = num + 1;
+        }*/
       printw ("These are the defences you can use: \n"); 
-      printw ("-    Use ability %s\n", defenceOne); 
-      printw ("-    Use ability %s\n", defenceTwo ); 
-      printw ("-    Use ability %s\n", defenceThree);  
+      printw ("-    Use ability %s\n", defenceOne); //%i uses left", arrayOfAmountLeft[0]);
+      printw ("-    Use ability %s\n", defenceTwo ); //%i uses left", arrayOfAmountLeft[1]);
+      printw ("-    Use ability %s\n", defenceThree); //%i uses left", arrayOfAmountLeft[2]);
       printw ("What defence would you like to do? \n");
        
       defenceResponse = get_line();
       clear();        
 
-      size_t defenceOptionOne = defenceResponse.find(defenceOneString);
-      size_t spellOptionTwo = defenceResponse.find(defenceTwoString);
-      size_t spellOptionThree = defenceResponse.find(defenceThreeString);
+      defenceOptionOne = defenceResponse.find(defenceOneString);
+      defenceOptionTwo = defenceResponse.find(defenceTwoString);
+      defenceOptionThree = defenceResponse.find(defenceThreeString);
       defenceOneString = upper_first(defenceOneString);
       defenceTwoString = upper_first(defenceTwoString);
       defenceThreeString = upper_first(defenceThreeString); //fafing around without a database 
@@ -409,28 +437,56 @@ class Defence : virtual public Combat{
 
       if (defenceOptionOne != string::npos)
       {
-        //cur-> bind(1,defenceOne);
-        //defenceAmount = cur->get_int(0);
-        //return defenceAmount;
+        /*if(arrayOfAmountLeft[0]!=0){
+          cur->set_sql("UPDATE Inventory SET Healing_amount = Healing_amount - 1 WHERE Item_name = ?;");
+          cur->prepare();
+          cur->bind(1, defenceOneString);
+          cur->step();
+          return healingAmount;
+        }
+        else{
+          printw("You do not have enough of these in your inventory.\n");
+          refresh();
+          defence_response();
+        }*/
+        
         return heal;   
       }      
           
-      else if (spellOptionTwo != string::npos) //get amount of them that you have left in inventory
+      else if (defenceOptionTwo != string::npos) //get amount of them that you have left in inventory
         
       {
-        //cur->bind(1,defenceTwo);
-        //defenceAmount = cur->get_int(0);
-        //return defenceAmount;
+        /*if(arrayOfAmountLeft[1]!=0){
+          cur->set_sql("UPDATE Inventory SET Healing_amount = Healing_amount - 1 WHERE Item_name = ?;");
+          cur->prepare();
+          cur->bind(1, defenceTwoString);
+          cur->step();
+          return healingAmount;
+        }
+        else{
+          printw("You do not have enough of these in your inventory.\n");
+          refresh();
+          defence_response();
+        }*/
         return syrup; //can use an update with inbedded if statements 
 
       }
      
-      else if (spellOptionThree != string::npos)
+      else if (defenceOptionThree != string::npos)
       {
-                //cur->bind(1,defenceThree);
-                //defenceAmount = cur->get_int(0);
-                //return defenceAmount;
-                return potion;
+        /*if(arrayOfAmountLeft[2]!=0){
+          cur->set_sql("UPDATE Inventory SET Healing_amount = Healing_amount - 1 WHERE Item_name = ?;");
+          cur->prepare();
+          cur->bind(1, defenceThreeString);
+          cur->step();
+          return healingAmount;
+        }
+        else{
+          printw("You do not have enough of these in your inventory.\n");
+          refresh();
+          defence_response();
+        }*/
+        return potion;
        }
       else
       {
@@ -450,6 +506,7 @@ class AttackTest : public Attack, public Spells, public Defence, public monster,
     private:
     string choice;
     string response;
+    string responseSearch = "engage";
     string attacksearch = "attack";
     string spellsearch = "spell";
     string defencesearch = "defence"; //can stay hardcoded or be json related 
@@ -462,9 +519,14 @@ class AttackTest : public Attack, public Spells, public Defence, public monster,
     int attackPoint;
     int spellsPoint;
     int weaponStrength;
+    int togo;
+    size_t nextA;
+    size_t nextS;
+    bool startFinish;
   
     player matt;
     int pHealth = matt.getHealth();
+    //int pHealth = 100;
     int pAttackStrength = matt.getAttackStrength();
     int pMana = matt.getMana();
     int pMagicStrength = matt.getMagicStrength();
@@ -473,6 +535,7 @@ class AttackTest : public Attack, public Spells, public Defence, public monster,
         
     monster bob;
     int mHealth = bob.getHealth();
+    //int mHealth = 60;
     int mAttackStrength = bob.getAttackStrength();
     int mMana = bob.getMana();
     int mMagicStrength = bob.getMagicStrength();
@@ -489,55 +552,46 @@ class AttackTest : public Attack, public Spells, public Defence, public monster,
         printw ("-    Cast a spell \n");
       
         fightingResponse = get_line();
-        clear();        
-            size_t nextA = fightingResponse.find(attacksearch);
+        refresh();        
+        nextA = fightingResponse.find(attacksearch);
+        nextS = fightingResponse.find(spellsearch);
             if (nextA != string::npos) 
             {  
-                attackPoint = attack_response();
-                return attackPoint;
+                //attackPoint = attack_response();
+                return attack_response();
             }
         
-            size_t nextS = fightingResponse.find(spellsearch);
-            if (nextS != string::npos)
+            else if (nextS != string::npos)
             {
-                spellsPoint = spells_response(); 
-                return spellsPoint;
+                //spellsPoint = spells_response(); 
+                return spells_response();
             }
-        
-            /*size_t nextD = fightingResponse.find(defencesearch);
-            if (nextD != string::npos)
-            {
-                point3 = defence_response(); //read json file for an array selection of what they input or switch cases 
-                return point3;
-            }*/
         
             else{
                 //initial_response_error();
                 //do nothing for now
                 //cout << "Still happening" << endl;
+                return 0;
             }         
     }
     
    int battle(){
-           bool startFinish = true;
+           startFinish = true;
            while(startFinish){
-              if (pHealth > 0 && mHealth > 0)
-              {
-                  printw ("\nMonsters time to attack\n");                                
-                  printw ("The monster did %i damage!\n", mAttackStrength);
-                  pHealth = pHealth - mAttackStrength; // / pDef); //balance;
-                  printw ("\nYour health now is... %i\n", pHealth);  
-                  printw ("The monsters health is %i\n", mHealth);
+              
                   weaponStrength = attacking_response();
                   printw("Player Health = %i \n", pHealth);
                   printw ("Your weapon's attack is %i\n", weaponStrength);
                   mHealth = mHealth - weaponStrength; // pAttackStrength); //(/mDef); //only an attack or spells option - no defence 
-                  printw ("Monsters health after attack is %i\n", mHealth);
+                  printw ("Monsters health after attack is %i\n", mHealth);  
+                  printw ("\nMonsters time to attack\n");                                
+                  printw ("The monster did %i damage!\n", mAttackStrength);
+                  pHealth = pHealth - mAttackStrength; // / pDef); //balance;
+                  printw ("\nYour health now is... %i\n", pHealth);  
+                  printw ("The monsters health is %i\n", mHealth);                  
                   refresh();
-                                    
-                  
-                  
-              }
+                 
+              
               if (pHealth <= 5 && pHealth > 0) //make this optional 
               {                   
                   printw ("You need to heal\n");
@@ -555,20 +609,19 @@ class AttackTest : public Attack, public Spells, public Defence, public monster,
                   return startFinish;
                                 
               }
-              else {
+              else if(mHealth <= 0) 
+              {
                   startFinish = false;
+                  
                   printw ("You have killed the monster\n");
                   printw("You have been awarded with %i xp!\n", mEXP);
-                  refresh();
                   matt.pXPGain(mEXP);
                   matt.levelUp();
                   refresh();
                   return startFinish;
-                  //refresh();
-                                
               }
-             endwin();
           }
+   endwin();
    }
    
    int startGame(){
@@ -577,19 +630,17 @@ class AttackTest : public Attack, public Spells, public Defence, public monster,
         printw ("What would you like to do?\n");
         printw ("-----   ");
         refresh();
-        choice = get_line();
-         
-        int togo = choice.find(attacksearch);
-        //printw("%i", togo);
+        choice = get_line();        
+        togo = choice.find(responseSearch);
         refresh();
         if (togo != -1)
         {
-          //printw ("        \nBegin\n");
           battle();
         }
         else
         {
           printw ("Move along, move along\n");
+          refresh();
           endwin();
           
         }
