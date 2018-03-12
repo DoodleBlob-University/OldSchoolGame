@@ -3,6 +3,7 @@
 #include <ctime>
 #include "libsqlite.hpp"
 #include <array>
+#include <string>
 using namespace std;
 
 
@@ -64,7 +65,7 @@ class player{
     int levelUp(){
        int level = getLevel();
        int EXP = getEXP();
-       int levelUpPoint = 30 *(level *1.2);
+       int levelUpPoint = 40 *(level *1.2);
         if (EXP >= levelUpPoint){
             playerDB[1] = playerDB[1]+1;
             cout<< "\nYou have leveled up!"<< endl;
@@ -80,52 +81,108 @@ class player{
 
             cur->step();
            }
-        else{
-           return 0;
+
             }
-}
-    int statsLevelUp(int a, int b){
+      int healthLevelUp(){
+       int level = getHealth();
+       int EXP = getEXP();
+       int levelUpPoint = 30 *(level *1.2);
+        if (EXP >= levelUpPoint){
+            playerDB[2] = playerDB[2]+1;
+            cout<< "\nYour health has leveled up!"<< endl;
+            cout<< "You now have " << playerDB[2]<<" health."<< endl;
+
+            
             sqlite::sqlite db( "Database.db" );
             auto cur = db.get_statement();
-       
-            if(a=3){
-            
-                cur->set_sql("UPDATE Player SET AttackStrength = ? WHERE PlayerName = 'Test';"); 
-            }
-            if(a=4){
-               
-                cur->set_sql("UPDATE Player SET Mana = ? WHERE PlayerName = 'Test';");
-            }
-            if(a=5){
-                
-                cur->set_sql("UPDATE Player SET MagicStrength = ? WHERE PlayerName = 'Test';");
-            }
-            if(a=6){
-               
-                cur->set_sql("UPDATE Player SET Defence = ? WHERE PlayerName = 'Test';");
-            }
-        int asLevel = playerDB[a];
-        cout<<"Stat Level for : "<<a<<" Is "<<playerDB[a]<<endl;
-        int asEXP = playerDB[b];
-        cout<<"Stat EXP for: "<<b<<" Is "<<playerDB[b]<<"\n"<<endl;
-        int asLevelUpPoint = 20*(asLevel*1.2);
-        cout<<asLevelUpPoint<<endl;
-        if (asEXP >= asLevelUpPoint){
-            playerDB[a] = playerDB[a]+1;
-            cout<< "\nYour stats have increased!"<< endl;
-    
-
-            
+            cur->set_sql("UPDATE Player SET Health = ? WHERE PlayerName = 'Test';");
             cur->prepare();
 
-            cur->bind( 1, playerDB[a] );
+            cur->bind( 1, playerDB[2] );
 
-            cur->step(); 
-            }
-        else{
-            return 0;
-        }
+            cur->step();
+           }
+
+       }
+    
+int updateDB(int a, int b, int asLevelUpPoint){
+    string upgrade;
+    playerDB[a] = playerDB[a]+1;
+    if(a==3){
+        upgrade = "Attack Strength";
     }
+    if(a==4){
+        upgrade = "Mana";
+    }
+    if(a==5){
+        upgrade = "Magic Strength";
+    }
+    if(a==6){
+        upgrade = "Defence";
+    };
+            cout<< "\nYour stats have increased!"<< endl;
+                cout<<"You are "<<upgrade<<" level "<<playerDB[a]<<endl;
+            cout<<"You have  "<<playerDB[b]<<" EXP in "<<upgrade<<"\n"<<endl;            
+            cout<<"Next level at " <<asLevelUpPoint<<" EXP."<<endl;
+            
+             
+    }
+
+    int statsLevelUp(int a, int b){
+            
+            int asLevel = playerDB[a];
+            int asEXP = playerDB[b];
+            int asLevelUpPoint = 20*(asLevel*1.2);
+            if(a==3 && asEXP >= asLevelUpPoint){
+                sqlite::sqlite db( "Database.db" );
+                auto cur = db.get_statement();
+                cur->set_sql("UPDATE Player SET AttackStrength = ? WHERE PlayerName = 'Test';");
+                updateDB(3, 9, asLevelUpPoint);
+                cur->prepare();
+                cur->bind( 1, playerDB[a] );
+                cur->step();
+            }
+            if(a==4 && asEXP >= asLevelUpPoint){
+                sqlite::sqlite db( "Database.db" );
+                auto cur = db.get_statement();
+                cur->set_sql("UPDATE Player SET Mana = ? WHERE PlayerName = 'Test';");
+                updateDB(4, 10, asLevelUpPoint);
+                cur->prepare();
+                cur->bind( 1, playerDB[a] );
+                cur->step();
+            }
+            if(a==5 && asEXP >= asLevelUpPoint){
+                sqlite::sqlite db( "Database.db" );
+                auto cur = db.get_statement();
+                cur->set_sql("UPDATE Player SET MagicStrength = ? WHERE PlayerName = 'Test';");
+                updateDB(5, 11, asLevelUpPoint);
+                cur->prepare();
+                cur->bind( 1, playerDB[a] );
+                cur->step();
+            }
+            if(a==6&& asEXP >= asLevelUpPoint){
+               sqlite::sqlite db( "Database.db" );
+                auto cur = db.get_statement();
+                cur->set_sql("UPDATE Player SET Defence = ? WHERE PlayerName = 'Test';");
+                updateDB(6, 12, asLevelUpPoint);
+                cur->prepare();
+                cur->bind( 1, playerDB[a] );
+                cur->step();
+            }
+   
+
+            
+  
+    else{
+        return 0;
+    }
+    
+    }
+    
+
+     
+        
+    
 
 
                
@@ -173,14 +230,26 @@ class player{
         int getStatsLevelUp(int a, int b){
             return statsLevelUp(a, b);
         }
-    
-        int updateDB(){
-            dbOpen();
-            return 0;
+        int getHealthLevelUp(){
+            return healthLevelUp();
         }
-
-    
         
+        int levelingSystem(int mEXP, int numOfAttacks, int numOfDefence){
+            getXPGain(mEXP);
+            getXPSplit(mEXP, numOfAttacks, numOfDefence);
+            getLevelUp();
+            getHealthLevelUp();
+        int a=3;
+        int b = 9;
+        while(a<=6){
+            
+            getStatsLevelUp(a, b);
+            a=a+1;
+            b=b+1;
+        }
+     }
+    
+
     player(){
         playerDB = dbOpen();
     }
@@ -315,20 +384,7 @@ while(mHealth > 0 && pHealth > 0) {
         }
         if (mHealth <1){
         cout<< "\nYou killed the monster!" <<endl;
-        matt.getXPGain(mEXP);
-            matt.getXPSplit(mEXP, numOfAttacks, numOfDefence);
-            matt.getLevelUp();
-       // for(int a=3; a<7; a=a+1){
-        //    matt.getStatsLevelUp(a);
-       /* int a=3;
-        while(a<=6){
-            a=3;
-            int b = 9;
-            matt.getStatsLevelUp(a, b);
-            a=a+1;
-            b=b+1;
-        }*/
-            
+   matt.levelingSystem(mEXP, numOfAttacks, numOfDefence);
         }
     if (pHealth<=0){
         cout<<"You have died."<<endl;
