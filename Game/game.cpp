@@ -241,12 +241,8 @@ private:
 
     printDungeonName(World.getName(), windowWidth);
     World.printMap();
-    if(temppos[0]){
-      mvwprintw(game, temppos[0], temppos[1], "X");
-    }else{
-      mvwprintw(game, World.playerpos[0], World.playerpos[1], "X");
-    }
     if(temppos[0] != 0){World.playerpos[0] = temppos[0]; World.playerpos[1] = temppos[1];}
+    mvwprintw(game, World.playerpos[0], World.playerpos[1], "X");
     while(true){
       World.movement();
 
