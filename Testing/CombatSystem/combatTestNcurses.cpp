@@ -300,6 +300,7 @@ class Attack : virtual public Combat{ //array of strings containing the weapon n
         printw ("-    Destroy enemy whilst weilding a %s\n", weaponTwo);
         printw ("-    Put them 6 feet under with your %s\n", weaponThree);
         printw ("What weapon would you like to use? \n");
+      printw ("----- ");
         attackResponse = get_line();
               
         weaponOneLower = make_lower(weaponOneString); //made lower so user can't misplace and uppercase letter 
@@ -330,6 +331,7 @@ class Attack : virtual public Combat{ //array of strings containing the weapon n
         }
         else{ //make this a catch for a no input section - makes it look better 
             printw ("Please enter the name of your weapon \n");
+            refresh();
             attack_response();
         }
     }
@@ -355,11 +357,13 @@ class Spells : virtual public Combat{
   
     int spells_response(){
       
+      clear();
       printw ("These are the spells you can use:\n");  
       printw ("-    Cast %s\n", spellOne );  
       printw ("-    Cast %s\n", spellTwo); 
       printw ("-    Cast %s\n", spellThree); 
       printw ("What spell would you like to use?\n");
+      printw ("----- ");
 
       spellResponse = get_line();
       clear();   
@@ -423,6 +427,7 @@ class Defence : virtual public Combat{
       printw ("-    Use ability %s\n", defenceTwo ); //%i uses left", arrayOfAmountLeft[1]);
       printw ("-    Use ability %s\n", defenceThree); //%i uses left", arrayOfAmountLeft[2]);
       printw ("What defence would you like to do? \n");
+      printw ("----- ");
        
       defenceResponse = get_line();
       clear();        
@@ -491,6 +496,7 @@ class Defence : virtual public Combat{
       else
       {
         printw("Please enter the name of the spell\n");
+        refresh();
         defence_response();
       }
     }
@@ -498,6 +504,7 @@ class Defence : virtual public Combat{
     {  
         playerHealth = playerHealth + amount;
         printw ("Your health is now %i \n", playerHealth);
+        refresh();
         return playerHealth;
     }
 };
@@ -526,7 +533,6 @@ class AttackTest : public Attack, public Spells, public Defence, public monster,
   
     player matt;
     int pHealth = matt.getHealth();
-    //int pHealth = 100;
     int pAttackStrength = matt.getAttackStrength();
     int pMana = matt.getMana();
     int pMagicStrength = matt.getMagicStrength();
@@ -535,7 +541,6 @@ class AttackTest : public Attack, public Spells, public Defence, public monster,
         
     monster bob;
     int mHealth = bob.getHealth();
-    //int mHealth = 60;
     int mAttackStrength = bob.getAttackStrength();
     int mMana = bob.getMana();
     int mMagicStrength = bob.getMagicStrength();
@@ -550,6 +555,7 @@ class AttackTest : public Attack, public Spells, public Defence, public monster,
         printw ("What would you like to do? \n"); 
         printw ("-    Use an attack \n");
         printw ("-    Cast a spell \n");
+      printw ("----- ");
       
         fightingResponse = get_line();
         refresh();        
@@ -578,7 +584,7 @@ class AttackTest : public Attack, public Spells, public Defence, public monster,
    int battle(){
            startFinish = true;
            while(startFinish){
-              
+                  clear();              
                   weaponStrength = attacking_response();
                   printw("Player Health = %i \n", pHealth);
                   printw ("Your weapon's attack is %i\n", weaponStrength);
@@ -593,7 +599,7 @@ class AttackTest : public Attack, public Spells, public Defence, public monster,
                  
               
               if (pHealth <= 5 && pHealth > 0) //make this optional 
-              {                   
+              {  
                   printw ("You need to heal\n");
                   defenceResponse = defence_response();                  
                   pHealth = healing(defenceResponse, pHealth);
@@ -628,20 +634,20 @@ class AttackTest : public Attack, public Spells, public Defence, public monster,
       
         printw ("There is something blocking your path\n");
         printw ("What would you like to do?\n");
-        printw ("-----   ");
+        printw ("----- ");
         refresh();
         choice = get_line();        
         togo = choice.find(responseSearch);
         refresh();
         if (togo != -1)
         {
-          battle();
+          battle(); //starts the attacking of the monster 
         }
         else
         {
           printw ("Move along, move along\n");
           refresh();
-          endwin();
+          //endwin();
           
         }
    }
@@ -654,7 +660,5 @@ int main()
     //User_Response initialise;
     //initialise.name_selection(); - for the name selection make it part of laod screen to check if name is in db
     AttackTest go;
-  
-    go.startGame();
-    
+    go.startGame();   
 }
