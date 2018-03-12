@@ -16,11 +16,11 @@ public:
 
 class Map{
 private:
-  int ID;
   std::string name;
   MapTile *maptiles;
   void loadMap();
 protected:
+  int ID;
   const int width = 105; const int height = 35;//height of displayed map is 34 to avoid weird database errors
   int map[35][106];
   WINDOW* win;
@@ -32,23 +32,26 @@ public:
 
 class PeacefulMap : public Map{
 private:
-  void fetchPlayerCoords(int ID);
+  void fetchPlayerCoords();
   void interact(int pos[2]);
+  template<typename T, unsigned int N, unsigned int Nn>
+  bool ifIdenticalArray(T (&array1)[N], T (&array2)[Nn]);
+  bool checkPlayerExit();
+  std::vector<std::vector<int> > exitcoords;
 protected:
+  void fetchExitCoords();
 public:
   int playerpos[2];
-  void movement();
-  PeacefulMap(int ID, WINDOW* _win, MapTile* maptiles);
+  bool movement();
+  PeacefulMap(int _ID, WINDOW* _win, MapTile* maptiles);
 };
 
 class Dungeon : public PeacefulMap{
 private:
-  void fetchBossCoords(int ID){}
-  void fetchExitCoords(int ID){}
 protected:
 public:
   int bosspos[2];
-  Dungeon(int ID, WINDOW* _win, MapTile* maptiles);
+  Dungeon(int _ID, WINDOW* _win, MapTile* maptiles);
 };
 
 #endif

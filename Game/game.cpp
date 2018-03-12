@@ -158,7 +158,7 @@ private:
     return (width - text.size())/2;
   }
 
-  template<typename T, size_t N, size_t Nn>
+  template<typename T, unsigned int N, unsigned int Nn>
   bool ifIdenticalArray(T (&array1)[N], T (&array2)[Nn]){
     //I assume the data types for the array are identical - if this isnt the case an error will occur upon compiling
       if(N != Nn){return false;}else{
@@ -240,6 +240,12 @@ private:
     int Dungeon[][2] = {{8,87},{31,85},{10,20},{30,22},{18,38}};
 
     printDungeonName(World.getName(), windowWidth);
+    World.printMap();
+    if(temppos[0]){
+      mvwprintw(game, temppos[0], temppos[1], "X");
+    }else{
+      mvwprintw(game, World.playerpos[0], World.playerpos[1], "X");
+    }
     if(temppos[0] != 0){World.playerpos[0] = temppos[0]; World.playerpos[1] = temppos[1];}
     while(true){
       World.movement();
@@ -277,7 +283,7 @@ private:
     printDungeonName(dungeon.getName(), windowWidth);
 
     while(true){
-      dungeon.movement();
+      if(dungeon.movement()){return 0;}
       mvwprintw(term, 1, 1, "(%i,%i)", dungeon.playerpos[0], dungeon.playerpos[1]);
       wrefresh(term);
       werase(term);
