@@ -4,6 +4,7 @@
 #include <ncurses.h>
 #include <signal.h>
 #include <cstring>
+#include <unistd.h>
 
 #include "libsqlite.hpp"
 
@@ -37,6 +38,40 @@ private:
     }
   }
   */
+  void printTerminalText(string text){
+    int y = 1;
+    wmove(term, y, 1);
+    for(int i = 0; i < text.length(); ++i){
+      char cha = text[i];
+      if(cha == '\n'){y += 1; wmove(term, y, 1);}else{
+        wprintw(term, "%c", cha);
+      }
+    }
+    wrefresh(term);
+  }
+
+string getUserInput(){
+  wmove(term, 10, 1);
+  wprintw(term, ">");
+  string userinput;
+  for(int i = 1; i < 45; ++i){
+    int input = wgetch(term);
+    switch(input){
+      case 127:
+        if(userinput.length() > 0){userinput = userinput.substr(0,userinput.length()-1); mvwprintw(term, 10, i, " "); i -= 1; wmove(term, 10, i+1);}
+        i -= 1;
+        break;
+      case '\n':
+        return userinput;
+        break;
+      default:
+        userinput = userinput.append(1u, input);
+        wprintw(term, "%c", input);
+        break;
+    }
+  }
+}
+
   void printMap(){
     for(int y = 1; y < 35; ++y){
       for(int x = 1; x < 106; ++x){
@@ -70,9 +105,11 @@ private:
     wrefresh(currenttile);
 
     mvwprintw(stat,1,16,"current tile"); mvwprintw(stat, 3, 15, "O <--"); mvwprintw(stat, 3, 25, "--> P"); mvwprintw(stat, 8, 18, "q : quit"); mvwprintw(stat, 10, 18, "u : upload"); mvwprintw(stat, 12, 18, "l : load");
+    mvwprintw(stat, 16, 18, "h : help");
     mvwprintw(stat,3,22, maptiles->tiles[0].character.c_str());
     wrefresh(stat);
   }
+
   void refreshOptions(int tilepos){
     if(maptiles->tiles[tilepos].colour > 0){wattron(stat,COLOR_PAIR(maptiles->tiles[tilepos].colour));}
     mvwprintw(stat,3,22, maptiles->tiles[tilepos].character.c_str());
@@ -80,6 +117,7 @@ private:
     wrefresh(stat);
   }
   int input(){
+    string mapname; int mapnum;
       switch(toupper(wgetch(game))){
         case 'W':
           if(coords[0]-1 != 0){coords[0] -= 1;}
@@ -112,19 +150,54 @@ private:
           if(tilepos+1 < maptiles->tiles.size()){tilepos += 1;}
           break;
 
-        case 'U':
-          //overwrite/create new map
+        case 'U'://upload
+
 
           //uploadMap(map, info);
           break;
 
-        case 'L':
-          //select map to load
+        case 'L'://load
+          werase(term);
+          box(term, 0, 0);
+          wrefresh(term);
 
-          loadMap(7);
+          printTerminalText("Enter name of the map you would like to load:");
+          mapname = getUserInput();
+          werase(term);
+          box(term, 0, 0);
+          wrefresh(term);
+          if(!mapname.length()){
+            printTerminalText("Map Loading cancelled");
+          }else{
+            printTerminalText(">"+mapname);
+            {
+              sqlite::sqlite db( "gamedb.db" ); // open database
+              auto cur = db.get_statement();
+              cur->set_sql( "SELECT ID, name FROM dungeon WHERE name LIKE ?;" );
+              cur->prepare();
+              cur->bind(1, "%%"+mapname+"%%");
+              while( cur->step() ){
+                 mapnum = cur->get_int(0);
+                 mapname = cur->get_text(1);
+              }
+            }
+            if(mapnum == 0){
+              printTerminalText("\nError 404: Map Not Found");
+            }else{
+              printTerminalText("\nLoading "+mapname);
+              loadMap(mapnum);
+            }
+          }
+          break;
+
+        case 'H':
+          printTerminalText("Move the cursor using 'W', 'A', 'S' and 'D'\nDraw your selected tile by pressing SPACEBAR\nChoose your tile by pressing 'O' or 'P'");
           break;
 
         case 'Q':
+          werase(term);
+          box(term, 0, 0);
+          wrefresh(term);
           return 1;
           break;
       }
@@ -136,6 +209,7 @@ public:
     printOptions();
     curs_set(1);
     werase(game); box(game, 0, 0); coords[0] = 1; coords[1] = 1;
+
     while(true){
       wmove(game, coords[0], coords[1]);
       wrefresh(game);
@@ -330,25 +404,6 @@ public:
   }
 };
 
-/*
-Window* mainwin; Window* gamewin; Window* statwin; Window* termwin;
-void resize(int sig){
-  wait();
-  endwin();
-  refresh();//re-initialise ncurses with new terminal dimensions
-  if(LINES > mainwin->getHeight()){LINES = mainwin->getHeight();}
-  if(COLS > mainwin->getWidth()){COLS = mainwin->getWidth();}
-  clear();
-
-  mainwin->resize(LINES, COLS);
-  mainwin->winrefresh(); gamewin->winrefresh(); statwin->winrefresh(); termwin->winrefresh();
-  refresh();
-  try{
-    curs_set(0);//some terminals dont support this feature, hence `try` and `catch`
-  }catch(...) {}
-  fflush(0);
-}*/
-
 int main(){
     setlocale(LC_ALL, "");//setting locale in order to allow unicode characters
     initscr();
@@ -368,20 +423,9 @@ int main(){
     }catch(...) {}
 
     Window* main = new Window(38,159);//create main window
-    //mainwin = main;
     Window* game = new Window(main->getData(),36,107,1,2);//game subwindow
-    //gamewin = game;
     Window* stat = new Window(main->getData(),24,47,1,110);//statistics subwindow
-    //statwin = stat;
     Window* term = new Window(main->getData(),12,47,25,110);//user terminal subwindow
-    //termwin = term;
-    /*
-    struct sigaction resizeSignal;
-    sigemptyset(&resizeSignal.sa_mask);
-    memset(&resizeSignal, 0, sizeof(resizeSignal));//reset all members of resizeSignal to 0
-    resizeSignal.sa_flags = SA_RESTART;//restart functions if interupted by handler
-    resizeSignal.sa_handler = resize;//cannot give arguments to a function when called by handler
-    sigaction(SIGWINCH, &resizeSignal, NULL);//signal occurs upon terminal resizing*/
 
     MapTile* maptiles = new MapTile();//load all maptiles from database and store in class
 
