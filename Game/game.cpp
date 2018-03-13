@@ -10,6 +10,7 @@
 
 #include "window.h"
 #include "map.h"
+#include "combatsystem.h"
 
 using namespace std;
 
