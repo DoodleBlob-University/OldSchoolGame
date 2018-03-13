@@ -8,6 +8,7 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
+#include <unistd.h>
 #include "libsqlite.hpp"
 
 
@@ -484,7 +485,7 @@ class Attack : virtual public Combat{ //array of strings containing the weapon n
         {
           return weaponStrengthThree;        
         }
-        else{ //make this a catch for a no input section - makes it look better 
+        else{
             printw ("Please enter the name of your weapon \n");
             refresh();
             attack_response();
@@ -532,7 +533,7 @@ class Spells : virtual public Combat{
       spellResponse = get_line();
       refresh();
       spellOneLower = make_lower(spellOneString); //made lower so user can't misplace and uppercase letter 
-      spellTwoLower = make_lower(spellTwoString);
+      spellTwoLower = make_lower(spellTwoString); //either be in function or in the prirate section 
       spellThreeLower = make_lower(spellThreeString); 
      
       spellOptionOne = spellResponse.find(spellOneLower);
@@ -573,9 +574,9 @@ class Defence : virtual public Combat{
     size_t defenceOptionOne;
     size_t defenceOptionTwo;
     size_t defenceOptionThree;
-     vector<int> vectorOfQuantity;
+    vector<int> vectorOfQuantity;
     int amountHealed;
-  int numLeft;
+    int numLeft;
     
     private:
   
@@ -626,8 +627,6 @@ class Defence : virtual public Combat{
       {
         
         if(vectorOfQuantity[0]!=0){
-          //printw("This bit works");
-          //refresh();
           database_remove_amount(7);
           return defenceAmountOne;
         }
@@ -643,14 +642,7 @@ class Defence : virtual public Combat{
       {
         if(vectorOfQuantity[1]!=0)
         {
-          //printw("This bit works");
-          //refresh();
-          string sqliteFile = "gamedb.db";
-          sqlite::sqlite db( sqliteFile );
-          auto cur = db.get_statement();
-          cur->set_sql("UPDATE Inventory SET Quantity = Quantity - 1 WHERE ID = 8");
-          cur->prepare();
-          cur->step();
+          database_remove_amount(8);
           return defenceAmountTwo;          
         }        
         else
@@ -665,14 +657,8 @@ class Defence : virtual public Combat{
       {
         if(vectorOfQuantity[2]!=0)
         {
-          //printw("This bit works");
-          //refresh();
+          database_remove_amount(9);
           string sqliteFile = "gamedb.db";
-          sqlite::sqlite db( sqliteFile );
-          auto cur = db.get_statement();
-          cur->set_sql("UPDATE Inventory SET Quantity = Quantity - 1 WHERE ID = 9;");
-          cur->prepare();
-          cur->step();
           return defenceAmountThree;
         }
         else
@@ -702,52 +688,58 @@ class Defence : virtual public Combat{
 };
 
 class AttackTest : public Attack, public Spells, public Defence, public monster, public player{
-    private:
-    string choice;
-    string response;
-    string responseSearch = "engage";
-    string attacksearch = "attack";
-    string spellsearch = "spell";
-    string defencesearch = "defence"; //can stay hardcoded or be json related 
-    char attackSearch[7] = "attack"; 
-    char spellSearch[6] = "spell"; 
-    char defenceSearch[8] = "defence";
-    string initialResponse;
-    string fightingResponse;  
-    int defenceResponse;
-    int attackPoint;
-    int spellsPoint;
-    int weaponStrength;
-    int togo;
-    size_t nextA;
-    size_t nextS;
-    bool startFinish;
-    int attackCounter = 1;
-    int spellCounter = 1;
-    int healingCounter = 1;
+  private:
+  string choice;
+  string response;
+  string responseSearch = "engage";
+  string attacksearch = "attack";
+  string spellsearch = "spell";
+  string defencesearch = "yes"; //can stay hardcoded or be json related 
+  char attackSearch[7] = "attack"; 
+  char spellSearch[6] = "spell"; 
+  char defenceSearch[8] = "defence";
+  string initialResponse;
+  string fightingResponse;  
+  int defenceResponse;
+  int attackPoint;
+  int spellsPoint;
+  int weaponStrength;
+  int togo;
+  size_t nextA;
+  size_t nextS;
+  size_t nextD;
+  bool startFinish;
+  int attackCounter;
+  int spellCounter;
+  int healingCounter;
+  int combatAttack;
+  string defenceOption;
   
-    player matt;
-    //int pHealth = matt.getHealth();
-    int pHealth = 22;
-    int pAttackStrength = matt.getAttackStrength();
-    int pMana = matt.getMana();
-    int pMagicStrength = matt.getMagicStrength();
-    int pDef = matt.getDefence();
-    int pXP = matt.getEXP();
+  player matt;
+  //int pHealth = matt.getHealth();
+  int pHealth = 22;
+  int pAttackStrength = matt.getAttackStrength();
+  int pMana = matt.getMana();
+  int pMagicStrength = matt.getMagicStrength();
+  int pDef = matt.getDefence();
+  int pXP = matt.getEXP();
         
-    monster bob;
-    //int mHealth = bob.getHealth();
-    int mHealth = 50;
-    int mAttackStrength = bob.getAttackStrength();
-    int mMana = bob.getMana();
-    int mMagicStrength = bob.getMagicStrength();
-    int mDef = bob.getDefence();
-    int mEXP = bob.getEXP();
-  
-    public:
-    
-    int attacking_response(){
-        //clear();
+  monster bob;
+  //int mHealth = bob.getHealth();
+  int mHealth = 50;
+  int mAttackStrength = bob.getAttackStrength();
+  int mMana = bob.getMana();
+  int mMagicStrength = bob.getMagicStrength();
+  int mDef = bob.getDefence();
+  int mEXP = bob.getEXP();
+  public:
+  int battle(){
+    attackCounter = 0;
+    healingCounter = 0;
+    startFinish = true;
+    while(startFinish){
+      if(pHealth >=1 && mHealth >=1){
+        refresh();
         printw ("What would you like to do? \n"); 
         printw ("-    Use an attack \n");
         printw ("-    Cast a spell \n");
@@ -757,105 +749,94 @@ class AttackTest : public Attack, public Spells, public Defence, public monster,
         refresh();        
         nextA = fightingResponse.find(attacksearch);
         nextS = fightingResponse.find(spellsearch);
-            if (nextA != string::npos) 
-            {  
-                //attackPoint = attack_response();
-                attackCounter = attackCounter + 1;
-                return attack_response();
-            }
-        
-            else if (nextS != string::npos)
-            {
-                //spellsPoint = spells_response(); 
-                return spells_response();
-            }
-        
-            else{
-                //initial_response_error();
-                //do nothing for now
-                //cout << "Still happening" << endl;
-                return 0;
-            }         
-    }
-    
-   int battle(){
-           startFinish = true;
-           while(startFinish){
-             if(pHealth >=1 && mHealth >=1){
-                  refresh();
-                  weaponStrength = attacking_response();
-                  printw("Player Health = %i \n", pHealth);
-                  printw ("Your weapon's attack is %i\n", weaponStrength);
-                  mHealth = mHealth - weaponStrength; // pAttackStrength); //(/mDef); //only an attack or spells option - no defence 
-                  printw ("Monsters health after attack is %i\n", mHealth);  
-                  printw ("\nMonsters time to attack\n");                                
-                  
-                  printw ("The monster did %i damage!\n", mAttackStrength);
-                  pHealth = pHealth - mAttackStrength; // / pDef); //balance;
-                  printw ("\nYour health now is... %i\n", pHealth);  
-                  refresh();
-             }
-                 
-              
-              if (pHealth <= 22 && pHealth > 0) 
-              {  
-                  printw ("You need to heal\n");
-                  defenceResponse = defence_response();                  
-                  pHealth = healing(defenceResponse, pHealth);
-                  healingCounter = healingCounter + 1;
-                  refresh();                     
-              }
-                                                                
-              else if(pHealth <= 0)
-              {
-                  startFinish = false;
-                  printw ("You have died\n");
-                  refresh();
-                  return startFinish;
-                                
-              }
-              else if(mHealth <= 0) 
-              {
-                  startFinish = false;                  
-                  printw ("You have killed the monster\n");
-                  printw("You have been awarded with %i xp!\n", mEXP);
-                  matt.levelingSystem(mEXP, attackCounter, healingCounter);
-                  refresh();
-                  return startFinish;
-              }
-          }
-   endwin();
-   }
-   
-   int startGame(){
-      
-        printw ("There is something blocking your path\n");
-        printw ("What would you like to do?\n");
-        printw ("----- ");
-        refresh();
-        choice = get_line();        
-        togo = choice.find(responseSearch);
-        refresh();
-        if (togo != -1)
-        {
-          battle(); //starts the attacking of the monster 
+        if (nextA != string::npos) 
+        {  
+          attackCounter = attackCounter + 1;
+          combatAttack = attack_response();
         }
-        else
+        
+        else if (nextS != string::npos)
         {
-          printw ("Move along, move along\n");
+          combatAttack = spells_response();
+        }
+        else{
+          clear();
+          printw("Type exactly what you want to do\n");
           refresh();
-          endwin();
-          
+          battle();
         }
-   }
+        printw("Player Health = %i \n", pHealth);
+        printw ("Your weapon's attack is %i\n", combatAttack);
+        mHealth = mHealth - combatAttack; // pAttackStrength); //(/mDef); //only an attack or spells option - no defence 
+        printw ("Monsters health after attack is %i\n", mHealth);  
+        printw ("\nMonsters time to attack\n");                                
+                  
+        printw ("The monster did %i damage!\n", mAttackStrength);
+        pHealth = pHealth - mAttackStrength; // / pDef); //balance;
+        printw ("\nYour health now is... %i\n", pHealth);  
+        printw("Would you like to use a defence item? \n");
+        printw("Type yes if you would like to heal ---- ");
+        defenceOption = get_line();
+        nextD = defenceOption.find(defencesearch);
+        refresh();
+      }
+       
+      if (nextD != string::npos) 
+      {  
+        printw ("You need to heal\n");
+        defenceResponse = defence_response();                  
+        pHealth = healing(defenceResponse, pHealth);
+        healingCounter = healingCounter + 1;
+        refresh();                     
+      }
+       
+      else if(pHealth <= 0)
+      {
+        startFinish = false;
+        printw ("You have died\n");
+        refresh();
+        return startFinish;
+      }
+       
+      else if(mHealth <= 0) 
+      {
+        startFinish = false;                  
+        printw ("You have killed the monster\n");
+        printw("You have been awarded with %i xp!\n", mEXP);
+        matt.levelingSystem(mEXP, attackCounter, healingCounter);
+        refresh();
+        return startFinish;
+      }
+    }
+    endwin();
+  }
+  
+  int startGame(){
+    printw ("There is something blocking your path\n");
+    printw ("What would you like to do?\n");
+    printw ("----- ");
+    refresh();
+    choice = get_line();        
+    togo = choice.find(responseSearch);
+    refresh();
+    if (togo != -1)
+    {
+       battle(); //starts the attacking of the monster 
+    }
+    else
+    {
+      printw ("Move along, move along\n");
+      refresh();
+    }
+  }
 };
 
 int main()
 {
     initscr();
     srand(time(NULL));
-    //User_Response initialise;
-    //initialise.name_selection(); - for the name selection make it part of laod screen to check if name is in db
     AttackTest go;
-    go.startGame();   
+    go.startGame();
+    //sleep(5);
+    //endwin();
 }
