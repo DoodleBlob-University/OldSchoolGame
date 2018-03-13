@@ -247,10 +247,10 @@ int updateDB(int a, int b, int asLevelUpPoint){
         upgrade = "Defence";
     };
             strcpy(upgradeChar, upgrade.c_str());
-            printw ("\nYour stats have increased!");
+            printw ("\nYour stats have increased!\n");
             printw ("You are %s level %i\n", upgradeChar, playerDB[a]);
             printw ("You have  %i EXP in %s\n", playerDB[b], upgradeChar);            
-            printw ("Next level at EXP.", asLevelUpPoint);            
+            printw ("Next level at EXP.\n", asLevelUpPoint);            
     }
 
     int statsLevelUp(int a, int b){
@@ -708,16 +708,16 @@ class AttackTest : public Attack, public Spells, public Defence, public monster,
   size_t nextA;
   size_t nextS;
   size_t nextD;
-  bool startFinish;
-  int attackCounter;
+  bool startFinish = true;
   int spellCounter;
-  int healingCounter;
   int combatAttack;
+  int attackCounter = 0;
+  int healingCounter = 0;
   string defenceOption;
   
   player matt;
   //int pHealth = matt.getHealth();
-  int pHealth = 22;
+  int pHealth = 30;
   int pAttackStrength = matt.getAttackStrength();
   int pMana = matt.getMana();
   int pMagicStrength = matt.getMagicStrength();
@@ -725,21 +725,18 @@ class AttackTest : public Attack, public Spells, public Defence, public monster,
   int pXP = matt.getEXP();
         
   monster bob;
-  //int mHealth = bob.getHealth();
-  int mHealth = 50;
+  int mHealth = bob.getHealth();
+  //int mHealth = 50;
   int mAttackStrength = bob.getAttackStrength();
   int mMana = bob.getMana();
   int mMagicStrength = bob.getMagicStrength();
   int mDef = bob.getDefence();
   int mEXP = bob.getEXP();
   public:
+  
   int battle(){
-    attackCounter = 0;
-    healingCounter = 0;
-    startFinish = true;
-    while(startFinish){
-      if(pHealth >=1 && mHealth >=1){
-        refresh();
+    while(true)
+    {
         printw ("What would you like to do? \n"); 
         printw ("-    Use an attack \n");
         printw ("-    Cast a spell \n");
@@ -753,62 +750,84 @@ class AttackTest : public Attack, public Spells, public Defence, public monster,
         {  
           attackCounter = attackCounter + 1;
           combatAttack = attack_response();
+          //mHealth = mHealth - combatAttack;
+          //pHealth = pHealth - mAttackStrength;
+
+
         }
         
-        else if (nextS != string::npos)
+        if (nextS != string::npos)
         {
           combatAttack = spells_response();
+          //mHealth = mHealth - combatAttack;
+          //pHealth = pHealth - mAttackStrength;
+
+
         }
-        else{
+        if(nextA == string::npos && nextS == string::npos)
+        {
           clear();
           printw("Type exactly what you want to do\n");
           refresh();
           battle();
         }
+      
         printw("Player Health = %i \n", pHealth);
         printw ("Your weapon's attack is %i\n", combatAttack);
-        mHealth = mHealth - combatAttack; // pAttackStrength); //(/mDef); //only an attack or spells option - no defence 
+        mHealth = mHealth - combatAttack;
         printw ("Monsters health after attack is %i\n", mHealth);  
-        printw ("\nMonsters time to attack\n");                                
-                  
-        printw ("The monster did %i damage!\n", mAttackStrength);
-        pHealth = pHealth - mAttackStrength; // / pDef); //balance;
+        
+        if(mHealth <= 0) 
+          {
+            //startFinish = false;
+            printw ("You have killed the monster\n");
+            printw("You have been awarded with %i xp!\n", mEXP);
+            matt.levelingSystem(mEXP, attackCounter, healingCounter);
+            refresh();
+            //return startFinish;
+            break;
+          }
+        else
+        {   
+            printw ("\nMonsters time to attack\n");
+            printw ("The monster did %i damage!\n", mAttackStrength);
+            pHealth = pHealth - mAttackStrength;
+        }
+        
+        if(pHealth <= 0)
+        {
+          startFinish = false;
+          printw ("You have died\n");
+          refresh();
+          return startFinish;
+          //break;
+        }
+       else
+       {
         printw ("\nYour health now is... %i\n", pHealth);  
         printw("Would you like to use a defence item? \n");
         printw("Type yes if you would like to heal ---- ");
         defenceOption = get_line();
         nextD = defenceOption.find(defencesearch);
         refresh();
-      }
        
-      if (nextD != string::npos) 
-      {  
-        printw ("You need to heal\n");
-        defenceResponse = defence_response();                  
-        pHealth = healing(defenceResponse, pHealth);
-        healingCounter = healingCounter + 1;
-        refresh();                     
-      }
-       
-      else if(pHealth <= 0)
-      {
-        startFinish = false;
-        printw ("You have died\n");
-        refresh();
-        return startFinish;
-      }
-       
-      else if(mHealth <= 0) 
-      {
-        startFinish = false;                  
-        printw ("You have killed the monster\n");
-        printw("You have been awarded with %i xp!\n", mEXP);
-        matt.levelingSystem(mEXP, attackCounter, healingCounter);
-        refresh();
-        return startFinish;
+        if (nextD != string::npos) 
+        {  
+          printw ("You need to heal\n");
+          defenceResponse = defence_response();                  
+          pHealth = healing(defenceResponse, pHealth);
+          healingCounter = healingCounter + 1;
+          refresh();                     
+        }
+         else{
+           //do noting
+         }
       }
     }
-    endwin();
+    printw("It has ended\n");
+    refresh();
+    //sleep(5);
+    //endwin();
   }
   
   int startGame(){
@@ -827,6 +846,7 @@ class AttackTest : public Attack, public Spells, public Defence, public monster,
     {
       printw ("Move along, move along\n");
       refresh();
+      //endwin();
     }
   }
 };
@@ -837,6 +857,5 @@ int main()
     srand(time(NULL));
     AttackTest go;
     go.startGame();
-    //sleep(5);
-    //endwin();
+    endwin();
 }
