@@ -19,25 +19,24 @@ private:
   WINDOW* game; WINDOW* stat; WINDOW* term;
   int coords[2]; int tilepos = 0;
   int map[35][106];
-  /*
-  void uploadMap(int map[35][105], WINDOW* win){
-    mvwprintw(win, 10, 3, "Please Wait!");
 
+  void uploadMap(int ID){
       sqlite::sqlite db( "gamedb.db" ); // open database
       for(int x = 1; x < 106; ++x){
         for(int y = 1; y < 35; ++y){
           auto cur = db.get_statement(); // create query
-          cur->set_sql( "INSERT INTO map(dungeonID, y, x, tileID) VALUES (7,?,?,?);" );
+          cur->set_sql( "INSERT INTO map(dungeonID, y, x, tileID) VALUES (?,?,?,?);" );
           cur->prepare();
-          cur->bind( 1, y );                // set placeholders
-          cur->bind( 2, x );
-          cur->bind( 3, map[y][x] );
+          cur->bind( 1, ID );
+          cur->bind( 2, y );                // set placeholders
+          cur->bind( 3, x );
+          cur->bind( 4, map[y][x] );
           cur->step();
 
       }
     }
   }
-  */
+
   void printTerminalText(string text){
     int y = 1;
     wmove(term, y, 1);
@@ -116,8 +115,26 @@ string getUserInput(){
     wattroff(stat,COLOR_PAIR(maptiles->tiles[tilepos].colour));
     wrefresh(stat);
   }
+  void eraseTerminal(){
+    werase(term);
+    box(term, 0, 0);
+    wrefresh(term);
+  }
+
+  bool getUserYN(){
+    while(true){
+      string input = getUserInput();
+      if(input == "y" || input == "yes" || input == "Y" || input == "YES"){
+        return true;
+      }else if(input == "n" || input == "no" || input == "N" || input == "NO"){
+        return false;
+      }else{
+        printTerminalText("\n\nSorry, I didn't understand that");
+      }
+    }
+  }
+
   int input(){
-    string mapname; int mapnum;
       switch(toupper(wgetch(game))){
         case 'W':
           if(coords[0]-1 != 0){coords[0] -= 1;}
@@ -150,22 +167,140 @@ string getUserInput(){
           if(tilepos+1 < maptiles->tiles.size()){tilepos += 1;}
           break;
 
-        case 'U'://upload
+        case 'U':{//upload
+          string mapname; string suggestedmapname; int mapnum; bool existing = false;
+          existing = false;
+          eraseTerminal();
 
+          while(true){//get userinput less than 15 char
+            printTerminalText("What would you like to call this map?\nMax 15 Characters!");
+            mapname = getUserInput();
 
-          //uploadMap(map, info);
-          break;
+            if(mapname.length() <= 15){break;}
+            eraseTerminal();
+            printTerminalText("\n\nName must be less than 15 characters!");
 
-        case 'L'://load
-          werase(term);
-          box(term, 0, 0);
-          wrefresh(term);
+          }
+
+          if(mapname.length() == 0){
+            eraseTerminal();
+            printTerminalText("Upload cancelled");
+            break;
+          }
+
+          {
+            sqlite::sqlite db( "gamedb.db" ); // open database
+            auto cur = db.get_statement();
+            cur->set_sql( "SELECT ID, name FROM dungeon WHERE name LIKE ?;" );
+            cur->prepare();
+            cur->bind(1, "%%"+mapname+"%%");
+            while( cur->step() ){
+               mapnum = cur->get_int(0);
+               suggestedmapname = cur->get_text(1);
+            }
+          }
+
+          if(suggestedmapname.substr(0, suggestedmapname.length()) == mapname){
+            eraseTerminal();
+            existing = true;
+            printTerminalText("This would overwrite " + suggestedmapname.substr(0, suggestedmapname.length()) + "!\nAre you sure? y/n");
+            if(getUserYN() == false){
+              eraseTerminal();
+              printTerminalText("Upload cancelled");
+              break;
+            }
+          }else if(suggestedmapname.length()>0){
+            eraseTerminal();
+            printTerminalText("Did you mean: " + suggestedmapname.substr(0, suggestedmapname.length()) + "?\ny/n");
+            if(getUserYN() == true){
+              eraseTerminal();
+              printTerminalText("This will overwrite the current " + suggestedmapname.substr(0, suggestedmapname.length()-1) + "\nAre you sure? y/n");
+              if(getUserYN() == true){
+                mapname = suggestedmapname.substr(0, suggestedmapname.length());
+              }else{
+                eraseTerminal();
+                printTerminalText("Upload cancelled");
+                break;
+              }
+            }
+          }
+          eraseTerminal();
+          printTerminalText("Uploading " + mapname + "...\nPlease wait");
+          if(existing == true){
+            {//delete previous map
+              {//get dungeon ID
+                sqlite::sqlite db( "gamedb.db" );
+                auto cur = db.get_statement();
+                cur->set_sql( "SELECT ID FROM dungeon WHERE name = ?;" );
+                cur->prepare();
+                cur->bind(1, mapname);
+                while( cur->step() ){
+                   mapnum = cur->get_int(0);
+                }
+              }
+              sqlite::sqlite db( "gamedb.db" );
+              for(int x = 1; x < 106; ++x){
+                for(int y = 1; y < 35; ++y){
+                  auto cur = db.get_statement();
+                  cur->set_sql( "DELETE FROM map WHERE dungeonID = ?" );
+                  cur->prepare();
+                  cur->bind( 1, mapnum );
+                  cur->step();
+                }
+              }
+            }
+          }else{
+            {//create a new dungeon
+              sqlite::sqlite db( "gamedb.db" );
+                  auto cur = db.get_statement();
+                  cur->set_sql( "INSERT INTO dungeon(name) VALUES (?);" );
+                  cur->prepare();
+                  cur->bind( 1, mapname );
+                  cur->step();
+            }
+            {//get dungeon ID
+              sqlite::sqlite db( "gamedb.db" );
+              auto cur = db.get_statement();
+              cur->set_sql( "SELECT ID FROM dungeon WHERE name = ?;" );
+              cur->prepare();
+              cur->bind(1, mapname);
+              while( cur->step() ){
+                 mapnum = cur->get_int(0);
+              }
+            }
+          }
+
+          while(true){
+            uploadMap(mapnum);
+            {//get dungeon ID
+              int tileno;
+              sqlite::sqlite db( "gamedb.db" );
+              auto cur = db.get_statement();
+              cur->set_sql( "SELECT COUNT(*) FROM map WHERE DungeonID = ?;" );
+              cur->prepare();
+              cur->bind(1, mapnum);
+              while( cur->step() ){
+                 tileno = cur->get_int(0);
+              }
+              if(tileno == 3570){
+                eraseTerminal();
+                printTerminalText(mapname + " uploaded");
+                refresh();
+                break;
+              }
+            }
+          }
+
+          break;}
+
+        case 'L':{//load
+          string mapname; int mapnum;
+          eraseTerminal();
 
           printTerminalText("Enter name of the map you would like to load:");
           mapname = getUserInput();
-          werase(term);
-          box(term, 0, 0);
-          wrefresh(term);
+          eraseTerminal();
+
           if(!mapname.length()){
             printTerminalText("Map Loading cancelled");
           }else{
@@ -188,16 +323,14 @@ string getUserInput(){
               loadMap(mapnum);
             }
           }
-          break;
+          break;}
 
         case 'H':
           printTerminalText("Move the cursor using 'W', 'A', 'S' and 'D'\nDraw your selected tile by pressing SPACEBAR\nChoose your tile by pressing 'O' or 'P'");
           break;
 
         case 'Q':
-          werase(term);
-          box(term, 0, 0);
-          wrefresh(term);
+          eraseTerminal();
           return 1;
           break;
       }
@@ -209,6 +342,12 @@ public:
     printOptions();
     curs_set(1);
     werase(game); box(game, 0, 0); coords[0] = 1; coords[1] = 1;
+
+    for(int y = 1; y < 35; ++y){
+      for(int x = 1; x < 106; ++x){
+        map[y][x] = 0;
+      }
+    }
 
     while(true){
       wmove(game, coords[0], coords[1]);
