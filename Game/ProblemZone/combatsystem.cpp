@@ -252,7 +252,6 @@ std::string TerminalFunctions::getUserInput(){
 
 int player::updateDB(int a, int b, int asLevelUpPoint){
     std::string upgrade;
-    char upgradeChar[60];
     playerDB[a] = playerDB[a]+1;
     if(a==3){
         upgrade = "Attack Strength";
@@ -268,8 +267,8 @@ int player::updateDB(int a, int b, int asLevelUpPoint){
     };
             strcpy(upgradeChar, upgrade.c_str());
             term->printTerminalText ("\nYour stats have increased!\n");
-            term->printTerminalText ("You are " + upgradeChar + " level " + std::to_string(playerDB[a]).c_str() + "\n");
-            term->printTerminalText ("You have " + std::to_string(playerDB[b]).c_str() + " EXP in " + upgradeChar + "\n");
+            term->printTerminalText ("You are " + upgrade + " level " + std::to_string(playerDB[a]).c_str() + "\n");
+            term->printTerminalText ("You have " + std::to_string(playerDB[b]).c_str() + " EXP in " + upgrade + "\n");
             term->printTerminalText ("Next level at EXP. " + std::to_string(asLevelUpPoint).c_str() + "\n");
     }
 
@@ -450,16 +449,12 @@ int Attack::attack_response() //player chooses desired weapon
 {
   clear();
 
-  strcpy(weaponOne, weaponOneString.c_str());   //can't make a function which returns a char array
-  strcpy(weaponTwo, weaponTwoString.c_str());   //so this is the conversion
-  strcpy(weaponThree, weaponThreeString.c_str());
-
 
     //printTerminalText ("These are the weapon stats %i, %i, %i \n", weaponStrengthOne, weaponStrengthTwo, weaponStrengthThree);
     term->printTerminalText ("These are the weapons you can use:\n" );
-    term->printTerminalText ("-    Deal damage with a " + weaponOne + "\n");
-    term->printTerminalText ("-    Destroy enemy whilst weilding a " +  weaponTwo + "\n");
-    term->printTerminalText ("-    Put them 6 feet under with your " + weaponThree + "\n");
+    term->printTerminalText ("-    Deal damage with a " + weaponOneString + "\n");
+    term->printTerminalText ("-    Destroy enemy whilst weilding a " +  weaponTwoString + "\n");
+    term->printTerminalText ("-    Put them 6 feet under with your " + weaponThreeString + "\n");
     term->printTerminalText ("What weapon would you like to use? \n");
     term->printTerminalText ("----- ");
     //attackResponse = getUserInput;
@@ -501,16 +496,12 @@ int Attack::attack_response() //player chooses desired weapon
 
 int Spells::spells_response(){
 
-  strcpy(spellOne, spellOneString.c_str());   //can't make a function which returns a char array
-  strcpy(spellTwo, spellTwoString.c_str());   //so this is the conversion
-  strcpy(spellThree, spellThreeString.c_str());
-
   clear();
   //printTerminalText ("These are the spell stats %i, %i, %i \n", spellStrengthOne, spellStrengthTwo, spellStrengthThree);
   term->printTerminalText ("These are the spells you can use:\n");
-  term->printTerminalText ("-    Cast " + spellOne + "\n", spellOne );
-  term->printTerminalText ("-    Cast " + spellTwo + "\n");
- term-> printTerminalText ("-    Cast " + spellThree + "\n");
+  term->printTerminalText ("-    Cast " + spellOneString + "\n");
+  term->printTerminalText ("-    Cast " + spellTwoString + "\n");
+  term-> printTerminalText ("-    Cast " + spellThreeString + "\n");
   term->printTerminalText ("What spell would you like to use?\n");
   term->printTerminalText ("----- ");
 
@@ -561,16 +552,13 @@ auto Defence::get_quantity(){
 
 int Defence::defence_response()
 {
-  strcpy(defenceOne, defenceOneString.c_str());   //can't make a function which returns a char array
-  strcpy(defenceTwo, defenceTwoString.c_str());   //so this is the conversion
-  strcpy(defenceThree, defenceThreeString.c_str());
   vectorOfQuantity = get_quantity();
 
   //printTerminalText ("These are the healing stats %i, %i, %i\n", defenceAmountOne, defenceAmountTwo, defenceAmountThree);
   term->printTerminalText ("These are the defences you can use: \n");
-  term->printTerminalText ("-    Use ability " + defenceOne + " which has " + std::to_string(vectorOfQuantity[0]).c_str() + " uses left\n");
-  term->printTerminalText ("-    Use ability " + defenceTwo + " which has " + std::to_string(vectorOfQuantity[1]).c_str() + " uses left\n");
-  term->printTerminalText ("-    Use ability " + defenceThree + " which has " + std::to_string(vectorOfQuantity[2]).c_str() + " uses left\n");
+  term->printTerminalText ("-    Use ability " + defenceOneString + " which has " + std::to_string(vectorOfQuantity[0]).c_str() + " uses left\n");
+  term->printTerminalText ("-    Use ability " + defenceTwoString + " which has " + std::to_string(vectorOfQuantity[1]).c_str() + " uses left\n");
+  term->printTerminalText ("-    Use ability " + defenceThreeString + " which has " + std::to_string(vectorOfQuantity[2]).c_str() + " uses left\n");
   term->printTerminalText ("What defence would you like to do? \n");
   term->printTerminalText ("----- ");
 
@@ -725,7 +713,7 @@ int AttackTest::battle(){
       term->printTerminalText("Would you like to use a defence item? \n");
       term->printTerminalText("Type yes if you would like to heal ---- ");
       //defenceOption = getUserInput();
-      defenceOption = defenceSearch;
+      defenceOption = defencesearch;
       nextD = defenceOption.find(defencesearch);
       refresh();
 
@@ -747,4 +735,3 @@ int AttackTest::battle(){
   //sleep(5);
   //endwin();
 }
-
