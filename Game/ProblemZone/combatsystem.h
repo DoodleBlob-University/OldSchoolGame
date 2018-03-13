@@ -92,9 +92,6 @@ class Attack : public Combat{ //array of strings containing the weapon names
     std::string weaponOneLower;
     std::string weaponTwoLower;
     std::string weaponThreeLower;
-    char weaponOne[20];
-    char weaponTwo[20];
-    char weaponThree[20];
     int weaponStrength;
     int weaponStrengthOne = database_assign_int_weapon(weaponOneString);
     int weaponStrengthTwo = database_assign_int_weapon(weaponTwoString);
@@ -120,9 +117,6 @@ class Spells : public Combat{
     std::string spellOneString = database_assign_name_spell(4);
     std::string spellTwoString = database_assign_name_spell(5);
     std::string spellThreeString = database_assign_name_spell(6);
-    char spellOne[20];
-    char spellTwo[20];
-    char spellThree[20];
     int spellStrengthOne = database_assign_int_spell(spellOneString);
     int spellStrengthTwo = database_assign_int_spell(spellTwoString);
     int spellStrengthThree = database_assign_int_spell(spellThreeString);
@@ -148,9 +142,6 @@ class Defence : public Combat{
     std::string defenceOneString = database_assign_name_defence(7);
     std::string defenceTwoString = database_assign_name_defence(8);
     std::string defenceThreeString = database_assign_name_defence(9);
-    char defenceOne[20];
-    char defenceTwo[20];
-    char defenceThree[20];
     int defenceAmountOne = database_assign_int_healing(defenceOneString);
     int defenceAmountTwo = database_assign_int_healing(defenceTwoString);
     int defenceAmountThree = database_assign_int_healing(defenceThreeString);
@@ -190,9 +181,6 @@ class AttackTest : public Attack, public Spells, public Defence, public monster,
   std::string attacksearch = "attack";
   std::string spellsearch = "spell";
   std::string defencesearch = "yes"; //can stay hardcoded or be json related
-  char attackSearch[7] = "attack";
-  char spellSearch[6] = "spell";
-  char defenceSearch[8] = "defence";
   std::string initialResponse;
   std::string fightingResponse;
   int defenceResponse;
@@ -265,4 +253,3 @@ class AttackTest : public Attack, public Spells, public Defence, public monster,
 };
 
 #endif
-
