@@ -9,7 +9,7 @@
 
 // -------------------------------
 
-void Defence::printTerminalText(std::string text){
+void TerminalFunctions::printTerminalText(std::string text){
   int y = 1;
   wmove(term, y, 1);
   for(int i = 0; i < text.length(); ++i){
@@ -21,7 +21,7 @@ void Defence::printTerminalText(std::string text){
   wrefresh(term);
 }
 
-std::string Defence::getUserInput(){
+std::string TerminalFunctions::getUserInput(){
   wmove(term, 10, 1);
   wprintw(term, ">");
   std::string userinput;
@@ -43,7 +43,7 @@ std::string Defence::getUserInput(){
   }
 }
 
-
+/*
 void AttackTest::printTerminalText(std::string text){
   int y = 1;
   wmove(term, y, 1);
@@ -148,22 +148,11 @@ std::string Attack::getUserInput(){
   }
 }
 
-
+*/
 
 
 
 // ------------------------------  COMBAT  ----------------------------------------
-
-    std::string Combat::get_line() //take input from the user and put it in lowercase so that doesn't affect it
-    {
-        getstr(response);
-        std::string again(response);
-        transform(again.begin(),
-                  again.end(),
-                  again.begin(),
-                  ::tolower);
-        return again;
-    }
 
     std::string Combat::database_assign_name_weapon(int ID) //gets the name of the weapons and spells used
       {
@@ -567,7 +556,9 @@ int Attack::attack_response() //player chooses desired weapon
     printw ("-    Put them 6 feet under with your %s\n", weaponThree);
     printw ("What weapon would you like to use? \n");
     printw ("----- ");
-    attackResponse = get_line();
+    //attackResponse = get_line();
+    attackResponse = weaponOneString;
+    getch();
 
     weaponOneLower = make_lower(weaponOneString); //made lower so user can't misplace and uppercase letter
     weaponTwoLower = make_lower(weaponTwoString);
@@ -617,7 +608,10 @@ int Spells::spells_response(){
   printw ("What spell would you like to use?\n");
   printw ("----- ");
 
-  spellResponse = get_line();
+  //spellResponse = get_line();
+  spellResponse = spellOneString;
+  getch();
+
   refresh();
   spellOneLower = make_lower(spellOneString); //made lower so user can't misplace and uppercase letter
   spellTwoLower = make_lower(spellTwoString); //either be in function or in the prirate section
@@ -675,7 +669,10 @@ int Defence::defence_response()
   printw ("What defence would you like to do? \n");
   printw ("----- ");
 
-  defenceResponse = get_line();
+  //defenceResponse = get_line();
+  defenceResponse = defenceOneString;
+  getch();
+
   refresh();
 
   defenceOneLower = make_lower(defenceOneString); //made lower so user can't misplace and uppercase letter
@@ -757,7 +754,10 @@ int AttackTest::battle(){
       printw ("-    Cast a spell \n");
       printw ("----- ");
 
-      fightingResponse = get_line();
+      //fightingResponse = get_line();
+      fightingResponse = attacksearch;
+      getch();
+
       refresh();
       nextA = fightingResponse.find(attacksearch);
       nextS = fightingResponse.find(spellsearch);
@@ -822,7 +822,10 @@ int AttackTest::battle(){
       printw ("\nYour health now is... %i\n", pHealth);
       printw("Would you like to use a defence item? \n");
       printw("Type yes if you would like to heal ---- ");
-      defenceOption = get_line();
+      //defenceOption = get_line();
+      defenceOption = defenceSearch;
+      getch();
+
       nextD = defenceOption.find(defencesearch);
       refresh();
 
