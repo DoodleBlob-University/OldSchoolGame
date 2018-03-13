@@ -117,8 +117,9 @@ int main(){
 
     struct sigaction resizeSignal;
     sigemptyset(&resizeSignal.sa_mask);
+    memset(&resizeSignal, 0, sizeof(resizeSignal));//reset all members of resizeSignal to 0
     resizeSignal.sa_flags = SA_RESTART;//restart functions if interupted by handler
-    resizeSignal.sa_handler = resizeHandler;//cannot give arguments to a function when called by handler
+    resizeSignal.sa_handler = resize;//cannot give arguments to a function when called by handler
     sigaction(SIGWINCH, &resizeSignal, NULL);//signal occurs upon terminal resizing
 
     resizeHandler(28);//resize to terminals current size
