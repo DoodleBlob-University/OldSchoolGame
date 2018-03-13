@@ -504,6 +504,7 @@ private:
       wrefresh(term);
       werase(term);
       box(term, 0, 0);
+
     }
   }
 
@@ -569,6 +570,9 @@ int main(){
 
     MapTile* maptiles = new MapTile();//load all maptiles from database and store in class
 
+    AttackTest ree(stat->getData(), term->getData(), 45);
+    getch();
+    
     Game startGame(game, stat, term, maptiles);//start game
 
     endwin();
