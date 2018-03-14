@@ -9,6 +9,8 @@ private:
 public:
   void printTerminalText(std::string);
   std::string getUserInput();
+  bool getUserYN();
+  void eraseTerminal();
   TerminalFunctions(WINDOW* _stat, WINDOW* _term, int _windowWidth){
     stat = _stat; term = _term; windowWidth = _windowWidth;
   }
@@ -47,7 +49,7 @@ private:
   int healthLevelUp();
   int updateDB(int a, int b, int asLevelUpPoint);
   int statsLevelUp(int a, int b);
-
+  TerminalFunctions* term;
 public:
   int getHealthLevelUp();
   int getLevelUp();
@@ -66,6 +68,7 @@ public:
   int getStatsLevelUp(int a, int b);
   int levelingSystem(int mEXP, int numOfAttacks, int numOfDefence);
   player();
+  player(TerminalFunctions* _term);
 };
 
 class monster{
@@ -258,7 +261,7 @@ private:
 public:
   int battle();
 
-  AttackTest(TerminalFunctions* _term) : Attack(_term), Spells(_term), Defence(_term){
+  AttackTest(TerminalFunctions* _term) : Attack(_term), Spells(_term), Defence(_term), player(_term){
     term = _term;
     monster* bob = new monster;
     enemy = bob;
@@ -266,7 +269,7 @@ public:
     term->printTerminalText("test");
   }
 
-  AttackTest(TerminalFunctions* _term, monster* phil) : Attack(_term), Spells(_term), Defence(_term){
+  AttackTest(TerminalFunctions* _term, monster* phil) : Attack(_term), Spells(_term), Defence(_term), player(_term){
     term = _term;
     enemy = phil;
     loadMonsterStats();

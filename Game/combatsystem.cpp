@@ -43,112 +43,26 @@ std::string TerminalFunctions::getUserInput(){
   }
 }
 
-/*
-void AttackTest::printTerminalText(std::string text){
-  int y = 1;
-  wmove(term, y, 1);
-  for(int i = 0; i < text.length(); ++i){
-    char cha = text[i];
-    if(cha == '\n'){y += 1; wmove(term, y, 1);}else{
-      wprintw(term, "%c", cha);
+bool TerminalFunctions::getUserYN(){
+  while(true){
+    std::string input = getUserInput();
+    if(input == "y" || input == "yes" || input == "Y" || input == "YES"){
+      return true;
+    }else if(input == "n" || input == "no" || input == "N" || input == "NO"){
+      return false;
+    }else{
+      printTerminalText("\n\nSorry, I didn't understand that");
     }
   }
+}
+
+
+void TerminalFunctions::eraseTerminal(){
+  werase(term);
+  box(term, 0, 0);
   wrefresh(term);
 }
 
-std::string AttackTest::getUserInput(){
-  wmove(term, 10, 1);
-  wprintw(term, ">");
-  std::string userinput;
-  for(int i = 1; i < 45; ++i){
-    int input = wgetch(term);
-    switch(input){
-      case 127:
-        if(userinput.length() > 0){userinput = userinput.substr(0,userinput.length()-1); mvwprintw(term, 10, i, " "); i -= 1; wmove(term, 10, i+1);}
-        i -= 1;
-        break;
-      case '\n':
-        return userinput;
-        break;
-      default:
-        userinput = userinput.append(1u, input);
-        wprintw(term, "%c", input);
-        break;
-    }
-  }
-}
-
-void Spells::printTerminalText(std::string text){
-  int y = 1;
-  wmove(term, y, 1);
-  for(int i = 0; i < text.length(); ++i){
-    char cha = text[i];
-    if(cha == '\n'){y += 1; wmove(term, y, 1);}else{
-      wprintw(term, "%c", cha);
-    }
-  }
-  wrefresh(term);
-}
-
-std::string Spells::getUserInput(){
-  wmove(term, 10, 1);
-  wprintw(term, ">");
-  std::string userinput;
-  for(int i = 1; i < 45; ++i){
-    int input = wgetch(term);
-    switch(input){
-      case 127:
-        if(userinput.length() > 0){userinput = userinput.substr(0,userinput.length()-1); mvwprintw(term, 10, i, " "); i -= 1; wmove(term, 10, i+1);}
-        i -= 1;
-        break;
-      case '\n':
-        return userinput;
-        break;
-      default:
-        userinput = userinput.append(1u, input);
-        wprintw(term, "%c", input);
-        break;
-    }
-  }
-}
-
-
-
-void Attack::printTerminalText(std::string text){
-  int y = 1;
-  wmove(term, y, 1);
-  for(int i = 0; i < text.length(); ++i){
-    char cha = text[i];
-    if(cha == '\n'){y += 1; wmove(term, y, 1);}else{
-      wprintw(term, "%c", cha);
-    }
-  }
-  wrefresh(term);
-}
-
-std::string Attack::getUserInput(){
-  wmove(term, 10, 1);
-  wprintw(term, ">");
-  std::string userinput;
-  for(int i = 1; i < 45; ++i){
-    int input = wgetch(term);
-    switch(input){
-      case 127:
-        if(userinput.length() > 0){userinput = userinput.substr(0,userinput.length()-1); mvwprintw(term, 10, i, " "); i -= 1; wmove(term, 10, i+1);}
-        i -= 1;
-        break;
-      case '\n':
-        return userinput;
-        break;
-      default:
-        userinput = userinput.append(1u, input);
-        wprintw(term, "%c", input);
-        break;
-    }
-  }
-}
-
-*/
 
 
 
@@ -192,9 +106,7 @@ std::string Attack::getUserInput(){
   {
     sqlite::sqlite db( "gamedb.db" );
         auto cur = db.get_statement();
-        cur-> set_sql("SELECT Weapons.damage FROM Inventory "
-                      "INNER JOIN Weapons ON Inventory.weapon_name = weapons.Weapon_name " //change it to item name not just weapon
-                      "WHERE ID = ?");
+        cur-> set_sql("SELECT Weapons.damage FROM Inventory, Weapons WHERE Inventory.weapon_name = weapons.Weapon_name AND Inventory.ID = ?;");
         cur-> prepare();
         cur-> bind(1, ID);
         cur-> step();
@@ -205,9 +117,7 @@ std::string Attack::getUserInput(){
   {
     sqlite::sqlite db( "gamedb.db");
     auto cur = db.get_statement();
-    cur-> set_sql("SELECT Spells.damage FROM Inventory "
-                  "INNER JOIN Spells ON Inventory.spell_name = Spells.spell_name "
-                  "WHERE ID = ?");
+    cur-> set_sql("SELECT Spells.damage FROM Inventory, Spells WHERE Inventory.spell_name = Spells.spell_name AND Inventory.ID = ?;");
     cur->prepare();
     cur->bind(1, ID);
     cur->step();
@@ -218,9 +128,7 @@ std::string Attack::getUserInput(){
   {
     sqlite::sqlite db( "gamedb.db");
     auto cur = db.get_statement();
-    cur->set_sql("SELECT Defence.healing_amount FROM Inventory "
-                 "INNER JOIN Defence ON Inventory.defence_name = Defence.defence_name "
-                 "WHERE ID = ?");
+    cur->set_sql("SELECT Defence.healing_amount FROM Inventory, Defence WHERE Inventory.defence_name = Defence.defence_name AND Inventory.ID = ?;");
     cur->prepare();
     cur->bind(1, ID);
     cur->step();
@@ -276,7 +184,7 @@ std::string Attack::getUserInput(){
             cur->bind( 1, xpGain );
 
             cur->step();
-            printw ("XP: %i \n", getEXP());
+            term->printTerminalText("XP: " + std::to_string(getEXP()) + "\n");
             return playerDB[7];
 }
     int player::pXPSplit(int mEXP,int attackNum,int defenceNum){
@@ -297,8 +205,8 @@ std::string Attack::getUserInput(){
             cur->bind( 4, defenceXPGain);
 
             cur->step();
-            printw ("Attack XP: %i \n", getASEXP());
-            printw ("Defence XP: %i \n", getDEXP());
+            term->printTerminalText("Attack XP: " + std::to_string(getASEXP()) +"\n");
+            term->printTerminalText("Defence XP: " + std::to_string(getDEXP()) +"\n");
 
         }
     int player::levelUp(){
@@ -307,8 +215,8 @@ std::string Attack::getUserInput(){
        int levelUpPoint = 40 *(level *1.2);
         if (EXP >= levelUpPoint){
             playerDB[1] = playerDB[1]+1;
-            printw ("\nYou have leveled up!\n");
-            printw ("You are level %i \n", playerDB[1]);
+            term->printTerminalText("\nYou have leveled up!\n");
+            term->printTerminalText("You are level " + std::to_string(playerDB[1]) + "\n");
 
 
             sqlite::sqlite db( "../Database.db" );
@@ -328,8 +236,8 @@ std::string Attack::getUserInput(){
        int levelUpPoint = 30 *(level *1.2);
         if (EXP >= levelUpPoint){
             playerDB[2] = playerDB[2]+1;
-            printw ("\nYour health has leveled up!\n");
-            printw ("You now have %i health.\n", playerDB[2]);
+            term->printTerminalText("\nYour health has leveled up!\n");
+            term->printTerminalText("You now have " + std::to_string(playerDB[2]) + " health.\n");
 
 
             sqlite::sqlite db( "../Database.db" );
@@ -361,10 +269,10 @@ int player::updateDB(int a, int b, int asLevelUpPoint){
         upgrade = "Defence";
     };
             strcpy(upgradeChar, upgrade.c_str());
-            printw ("\nYour stats have increased!\n");
-            printw ("You are %s level %i\n", upgradeChar, playerDB[a]);
-            printw ("You have  %i EXP in %s\n", playerDB[b], upgradeChar);
-            printw ("Next level at EXP.\n", asLevelUpPoint);
+            term->printTerminalText ("\nYour stats have increased!\n");
+            term->printTerminalText ("You are " + upgrade + " level " + std::to_string(playerDB[a]) + "\n");
+            term->printTerminalText ("You have " + std::to_string(playerDB[b]) + " EXP in " + upgrade + "\n");
+            term->printTerminalText ("Next level at EXP. " + std::to_string(asLevelUpPoint) + "\n");
     }
 
     int player::statsLevelUp(int a, int b){
@@ -481,6 +389,10 @@ int player::updateDB(int a, int b, int asLevelUpPoint){
     player::player(){
         playerDB = dbOpen();
     }
+    player::player(TerminalFunctions* _term){
+        playerDB = dbOpen();
+        term = _term;
+    }
 
 
 
@@ -549,13 +461,12 @@ int Attack::attack_response() //player chooses desired weapon
   strcpy(weaponThree, weaponThreeString.c_str());
 
 
-    printw ("These are the weapon stats %i, %i, %i \n", weaponStrengthOne, weaponStrengthTwo, weaponStrengthThree);
-    printw ("These are the weapons you can use:\n" );
-    printw ("-    Deal damage with a %s\n", weaponOne);
-    printw ("-    Destroy enemy whilst weilding a %s\n", weaponTwo);
-    printw ("-    Put them 6 feet under with your %s\n", weaponThree);
-    printw ("What weapon would you like to use? \n");
-    printw ("----- ");
+  term->printTerminalText ("These are the weapons you can use:\n" );
+  term->printTerminalText ("-    Deal damage with a " + weaponOneString + "\n");
+  term->printTerminalText ("-    Destroy enemy whilst weilding a " +  weaponTwoString + "\n");
+  term->printTerminalText ("-    Put them 6 feet under with your " + weaponThreeString + "\n");
+  term->printTerminalText ("What weapon would you like to use? \n");
+  term->printTerminalText ("----- ");
     //attackResponse = get_line();
     attackResponse = weaponOneString;
     getch();
@@ -584,7 +495,7 @@ int Attack::attack_response() //player chooses desired weapon
       return weaponStrengthThree;
     }
     else{
-        printw ("Please enter the name of your weapon \n");
+        term->printTerminalText ("Please enter the name of your weapon \n");
         refresh();
         attack_response();
     }
@@ -600,13 +511,12 @@ int Spells::spells_response(){
   strcpy(spellThree, spellThreeString.c_str());
 
   clear();
-  printw ("These are the spell stats %i, %i, %i \n", spellStrengthOne, spellStrengthTwo, spellStrengthThree);
-  printw ("These are the spells you can use:\n");
-  printw ("-    Cast %s\n", spellOne );
-  printw ("-    Cast %s\n", spellTwo);
-  printw ("-    Cast %s\n", spellThree);
-  printw ("What spell would you like to use?\n");
-  printw ("----- ");
+  term->printTerminalText ("These are the spells you can use:\n");
+  term->printTerminalText ("-    Cast " + spellOneString + "\n");
+  term->printTerminalText ("-    Cast " + spellTwoString + "\n");
+  term-> printTerminalText ("-    Cast " + spellThreeString + "\n");
+  term->printTerminalText ("What spell would you like to use?\n");
+  term->printTerminalText ("----- ");
 
   //spellResponse = get_line();
   spellResponse = spellOneString;
@@ -692,7 +602,7 @@ int Defence::defence_response()
     }
 
     else{
-      printw("You do not have enough of these in your inventory.\n");
+      term->printTerminalText("You do not have enough of these in your inventory.\n");
       refresh();
       defence_response();
     }
@@ -707,7 +617,7 @@ int Defence::defence_response()
     }
     else
     {
-      printw("You do not have enough of these in your inventory.\n");
+      term->printTerminalText("You do not have enough of these in your inventory.\n");
       refresh();
       defence_response();
     }
@@ -723,14 +633,14 @@ int Defence::defence_response()
     }
     else
     {
-      printw("You do not have enough of these in your inventory.\n");
+      term->printTerminalText("You do not have enough of these in your inventory.\n");
       refresh();
       defence_response();
     }
    }
   else
   {
-    printw("Please enter the name of the spell\n");
+    term->printTerminalText("Please enter the name of the spell\n");
     refresh();
     defence_response();
   }
@@ -738,7 +648,7 @@ int Defence::defence_response()
 int Defence::healing(int amount, int playerHealth)
 {
     playerHealth = playerHealth + amount;
-    printw ("Your health is now %i \n", playerHealth);
+    term->printTerminalText ("Your health is now " + std::to_string(playerHealth)+ "\n");
     refresh();
     return playerHealth;
 }
@@ -749,10 +659,10 @@ int Defence::healing(int amount, int playerHealth)
 int AttackTest::battle(){
   while(true)
   {
-      printw ("What would you like to do? \n");
-      printw ("-    Use an attack \n");
-      printw ("-    Cast a spell \n");
-      printw ("----- ");
+    term->printTerminalText ("What would you like to do? \n");
+   term-> printTerminalText ("-    Use an attack \n");
+   term-> printTerminalText ("-    Cast a spell \n");
+    term->printTerminalText ("----- ");
 
       //fightingResponse = get_line();
       fightingResponse = attacksearch;
@@ -782,21 +692,21 @@ int AttackTest::battle(){
       if(nextA == std::string::npos && nextS == std::string::npos)
       {
         clear();
-        printw("Type exactly what you want to do\n");
+        term->printTerminalText("Type exactly what you want to do\n");
         refresh();
         battle();
       }
 
-      printw("Player Health = %i \n", pHealth);
-      printw ("Your weapon's attack is %i\n", combatAttack);
+      term->printTerminalText("Player Health = " + std::to_string(pHealth) + "\n");
+      term->printTerminalText ("Your weapon's attack is " + std::to_string(combatAttack)+ "\n");
       mHealth = mHealth - combatAttack;
-      printw ("Monsters health after attack is %i\n", mHealth);
+      term->printTerminalText ("Monsters health after attack is " + std::to_string(mHealth) + "\n");
 
       if(mHealth <= 0)
         {
           //startFinish = false;
-          printw ("You have killed the monster\n");
-          printw("You have been awarded with %i xp!\n", mEXP);
+          term->printTerminalText ("You have killed the monster\n");
+          term->printTerminalText("You have been awarded with " + std::to_string(mEXP)+ " XP!\n");
           matt.levelingSystem(mEXP, attackCounter, healingCounter);
           refresh();
           //return startFinish;
@@ -804,24 +714,24 @@ int AttackTest::battle(){
         }
       else
       {
-          printw ("\nMonsters time to attack\n");
-          printw ("The monster did %i damage!\n", mAttackStrength);
+        term->printTerminalText ("\nMonsters time to attack\n");
+        term->printTerminalText ("The monster did " + std::to_string(mAttackStrength) + " damage!\n");
           pHealth = pHealth - mAttackStrength;
       }
 
       if(pHealth <= 0)
       {
         startFinish = false;
-        printw ("You have died\n");
+          term->printTerminalText ("You have died\n");
         refresh();
         return startFinish;
         //break;
       }
      else
      {
-      printw ("\nYour health now is... %i\n", pHealth);
-      printw("Would you like to use a defence item? \n");
-      printw("Type yes if you would like to heal ---- ");
+       term->printTerminalText ("\nYour health now is... " + std::to_string(pHealth) + "\n");
+       term->printTerminalText("Would you like to use a defence item? \n");
+       term->printTerminalText("Type yes if you would like to heal ---- ");
       //defenceOption = get_line();
       defenceOption = defenceSearch;
       getch();
@@ -831,7 +741,7 @@ int AttackTest::battle(){
 
       if (nextD != std::string::npos)
       {
-        printw ("You need to heal\n");
+        term->printTerminalText ("You need to heal\n");
         defenceResponse = defence_response();
         pHealth = healing(defenceResponse, pHealth);
         healingCounter = healingCounter + 1;
@@ -842,7 +752,7 @@ int AttackTest::battle(){
        }
     }
   }
-  printw("It has ended\n");
+  term->printTerminalText("It has ended\n");
   refresh();
   //sleep(5);
   //endwin();
