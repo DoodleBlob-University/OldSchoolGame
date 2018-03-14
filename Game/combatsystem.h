@@ -261,19 +261,9 @@ private:
 public:
   int battle();
 
-  AttackTest(TerminalFunctions* _term) : Attack(_term), Spells(_term), Defence(_term), player(_term){
-    term = _term;
-    monster* bob = new monster;
-    enemy = bob;
-    loadMonsterStats();
-    term->printTerminalText("test");
-  }
+  AttackTest(TerminalFunctions* _term);
 
-  AttackTest(TerminalFunctions* _term, monster* phil) : Attack(_term), Spells(_term), Defence(_term), player(_term){
-    term = _term;
-    enemy = phil;
-    loadMonsterStats();
-  }
+  AttackTest(TerminalFunctions* _term, monster* phil);
 };
 
 #endif
