@@ -443,9 +443,9 @@ int Spells::spells_response()
   spellTwoLower = make_lower(spellTwoString); //either be in function or in the prirate section 
   spellThreeLower = make_lower(spellThreeString);
 
-  spellOptionOne = spellResponse.find("1");
-  spellOptionTwo = spellResponse.find("2");
-  spellOptionThree = spellResponse.find("3");
+  spellOptionOneNo = spellResponse.find("1");
+  spellOptionTwoNo = spellResponse.find("2");
+  spellOptionThreeNo = spellResponse.find("3");
   spellOptionOne = spellResponse.find(spellOneLower);
   spellOptionTwo = spellResponse.find(spellTwoLower);
   spellOptionThree = spellResponse.find(spellThreeLower);
@@ -506,14 +506,14 @@ int Defence::defence_response()
   defenceOneLower = make_lower(defenceOneString); //made lower so user can't misplace and uppercase letter 
   defenceTwoLower = make_lower(defenceTwoString);
   defenceThreeLower = make_lower(defenceThreeString);
-  defenceOptionOne = defenceResponse.find("1"); //find function to check if the substr is in the main
-  defenceOptionTwo = defenceResponse.find("2");
-  defenceOptionThree = defenceResponse.find("3");
-  defenceOptionOneNo = defenceResponse.find(defenceOneLower); //find function to check if the substr is in the main
-  defenceOptionTwoNo = defenceResponse.find(defenceTwoLower);
-  defenceOptionThreeNo = defenceResponse.find(defenceThreeLower);
+  defenceOptionOneNo = defenceResponse.find("1"); //find function to check if the substr is in the main
+  defenceOptionTwoNo = defenceResponse.find("2");
+  defenceOptionThreeNo = defenceResponse.find("3");
+  defenceOptionOne = defenceResponse.find(defenceOneLower); //find function to check if the substr is in the main
+  defenceOptionTwo = defenceResponse.find(defenceTwoLower);
+  defenceOptionThree = defenceResponse.find(defenceThreeLower);
 
-  if (defenceOptionOne != std::string::npos || defenceOptionOne != std::string::npos)
+  if (defenceOptionOne != std::string::npos || defenceOptionOneNo != std::string::npos)
   {
 
     if(vectorOfQuantity[0]!=0){
@@ -527,7 +527,7 @@ int Defence::defence_response()
     }
   }
 
-  else if (defenceOptionTwo != std::string::npos || defenceOptionTwo != std::string::npos) //get amount of them that you have left in inventory
+  else if (defenceOptionTwo != std::string::npos || defenceOptionTwoNo != std::string::npos) //get amount of them that you have left in inventory
   {
     if(vectorOfQuantity[1]!=0)
     {
@@ -541,7 +541,7 @@ int Defence::defence_response()
     }
   }
 
-  else if (defenceOptionThree != std::string::npos || defenceOptionThree != std::string::npos)
+  else if (defenceOptionThree != std::string::npos || defenceOptionThreeNo != std::string::npos)
   {
     if(vectorOfQuantity[2]!=0)
     {
@@ -683,3 +683,4 @@ AttackTest::AttackTest(TerminalFunctions* _term, monster* phil) : Attack(_term),
   enemy = phil;
   loadMonsterStats();
 }
+
