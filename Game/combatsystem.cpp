@@ -636,46 +636,40 @@ Defence::Defence(TerminalFunctions* _term){
 int AttackTest::battle(){
   while(true)
   {
-    term->printTerminalText ("What would you like to do?");
-    term-> printTerminalText ("\n-    Use an attack");
-    term-> printTerminalText ("\n\n-    Cast a spell");
-    term->printTerminalText ("\n\n\n----- ");
+    term->printTerminalText ("The monster's health is... " + std::to_string(mHealth));
+    term->printTerminalText ("\nWhat would you like to do?");
+    term-> printTerminalText ("\n\n-    Use an attack");
+    term-> printTerminalText ("\n\n\n-    Cast a spell");
+    term->printTerminalText ("\n\n\n\n----- ");
 
       fightingResponse = term->getUserInput();
       term->eraseTerminal();
 
       nextA = fightingResponse.find(attacksearch);
       nextS = fightingResponse.find(spellsearch);
-    
-      if (pHealth>0 && mHealth>0)
+      if (nextA != std::string::npos)
       {
-        if (nextA != std::string::npos)
-        {
-          attackCounter = attackCounter + 1;
-          combatAttackWeapon = attack_response();
-          term->printTerminalText("Player Health = " + std::to_string(pHealth));
-          term->printTerminalText ("\nYour weapon's attack is " + std::to_string(combatAttackWeapon));
-          term->printTerminalText ("\n\nMonsters health after attack is " + std::to_string(mHealth));
-          mHealth = mHealth - combatAttackWeapon;
-          sleep(2);
-        }
-
-        /*if (nextS != std::string::npos)
-        {
-          combatAttackSpell = spells_response();
-          term->printTerminalText("Player Health = " + std::to_string(pHealth));
-          term->printTerminalText ("\nYour weapon's attack is " + std::to_string(combatAttackSpell));
-          term->printTerminalText ("\n\nMonsters health after attack is " + std::to_string(mHealth));
-          mHealth = mHealth - combatAttackSpell;
-          sleep(2);
-       }*/
-       else
-       {
-        term->eraseTerminal();
-        term->printTerminalText("\n\n\n\n\nType exactly what you want to do");
-        battle();
-       }
+        attackCounter = attackCounter + 1;
+        combatAttack = attack_response();         
       }
+
+     else if (nextS != std::string::npos)
+     {
+       combatAttack = spells_response();    
+     }
+     else
+     {
+       term->eraseTerminal();
+       term->printTerminalText("\n\n\n\n\nType exactly what you want to do");
+       battle();
+     }
+      
+    term->printTerminalText("Player Health = " + std::to_string(pHealth));
+    term->printTerminalText ("\nYour weapon's attack is " + std::to_string(combatAttack));
+    mHealth = mHealth - combatAttack;
+    term->printTerminalText ("\n\nMonsters health after attack is " + std::to_string(mHealth));
+    sleep(2);
+  
       if(mHealth <= 0)
       {
           term->eraseTerminal();
