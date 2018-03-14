@@ -544,7 +544,8 @@ auto Defence::get_quantity(){
 int Defence::defence_response()
 {
   vectorOfQuantity = get_quantity();
-  term->printTerminalText("These are healing stats " + std::to_string(vectorOfQuantity[0]) +", " + std::to_string(vectorOfQuantity[1]) +", " + std::to_string(vectorOfQuantity[2]));
+  //term->eraseTerminal();
+  term->printTerminalText("These are healing stats " + std::to_string(defenceAmountOne) +", " + std::to_string(defenceAmountTwo) +", " + std::to_string(defenceAmountThree));
   term->printTerminalText ("\nThese are the defences you can use:");
   term->printTerminalText ("\n\n-    Use " + defenceOneString + " which has " + std::to_string(vectorOfQuantity[0]) + " uses left");
   term->printTerminalText ("\n\n\n-    Use " +defenceTwoString + " which has " + std::to_string(vectorOfQuantity[1]) + " uses left");
@@ -569,7 +570,7 @@ int Defence::defence_response()
     }
 
     else{
-      term->printTerminalText("You do not have enough of these in your inventory.\n");
+      term->printTerminalText("\n\n\n\n\n\nYou do not have enough of these in your inventory.");
       defence_response();
     }
   }
@@ -583,7 +584,7 @@ int Defence::defence_response()
     }
     else
     {
-      term->printTerminalText("You do not have enough of these in your inventory.\n");
+      term->printTerminalText("\n\n\n\n\n\nYou do not have enough of these in your inventory.");
       defence_response();
     }
   }
@@ -597,23 +598,16 @@ int Defence::defence_response()
     }
     else
     {
-      term->printTerminalText("You do not have enough of these in your inventory.\n");
+      term->printTerminalText("\n\n\n\n\n\nYou do not have enough of these in your inventory.");
       defence_response();
     }
    }
   else
   {
-    term->printTerminalText("Please enter the name of the spell\n");
+    term->printTerminalText("\n\n\n\n\n\nPlease enter the name of the consumable");
     defence_response();
   }
 }
-int Defence::healing(int amount, int playerHealth)
-{
-    playerHealth = playerHealth + amount;
-    term->printTerminalText ("Your health is now " + std::to_string(playerHealth)+ "\n");
-    return playerHealth;
-}
-
 
 Defence::Defence(TerminalFunctions* _term){
     term = _term;
@@ -682,7 +676,7 @@ int AttackTest::battle(){
       term->eraseTerminal();
       term->printTerminalText ("Monsters time to attack");
       sleep(2);
-      term->printTerminalText ("\nThe monster did " + std::to_string(mAttackStrength) + " damage!");
+      term->printTerminalText ("\n\n\nThe monster did " + std::to_string(mAttackStrength) + " damage!");
       pHealth = pHealth - mAttackStrength;
       sleep(2);
      
@@ -697,21 +691,30 @@ int AttackTest::battle(){
       }
      else
      {
+       term->eraseTerminal();
        term->printTerminalText("Your health now is... " + std::to_string(pHealth));
        term->printTerminalText("\nWould you like to use a defence item?");
        term->printTerminalText("\n\nType yes if you would like to heal...");
        defenceOption = term->getUserYN();
-       term->eraseTerminal();
       if (defenceOption == true)
       {
         defenceResponse = defence_response();
-        pHealth = healing(defenceResponse, pHealth);
+        term->eraseTerminal();
+        pHealth = pHealth + defenceResponse;
+        term->printTerminalText("Your health is now... " + std::to_string(pHealth));
+        sleep(2);
+        term->eraseTerminal();
         healingCounter = healingCounter + 1;
       }
+       else{
+         term->eraseTerminal();
+       }
     }
   }
   term->eraseTerminal();
   term->printTerminalText("It has ended");
+  sleep(2);
+  term->eraseTerminal();
 }
 
 AttackTest::AttackTest(TerminalFunctions* _term) : Attack(_term), Spells(_term), Defence(_term), player(_term){
