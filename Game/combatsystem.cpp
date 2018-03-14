@@ -6,10 +6,11 @@
 #include <vector>
 #include <unistd.h>
 #include "libsqlite.hpp"
+#include "terminalfunc.h"
 #include "combatsystem.h"
 
 // -------------------------------
-
+/*
 void TerminalFunctions::printTerminalText(std::string text){
   int y = 1;
   wmove(term, y, 1);
@@ -67,7 +68,7 @@ void TerminalFunctions::eraseTerminal(){
 TerminalFunctions::TerminalFunctions(WINDOW* _stat, WINDOW* _term, int _windowWidth){
   stat = _stat; term = _term; windowWidth = _windowWidth;
 }
-
+*/
 
 // ------------------------------  COMBAT  ----------------------------------------
 
@@ -472,7 +473,7 @@ int Attack::attack_response() //player chooses desired weapon
       return weaponStrengthThree;
     }
     else{
-        term->printTerminalText ("\n\n\n\n\n\nPlease enter the name of your weapon");        
+        term->printTerminalText ("\n\n\n\n\n\nPlease enter the name of your weapon");
         attack_response();
     }
 }
@@ -515,7 +516,7 @@ int Spells::spells_response()
     return spellStrengthThree;
   }
   else{
-    term->printTerminalText ("\n\n\n\n\n\nPlease enter the name of your spell");        
+    term->printTerminalText ("\n\n\n\n\n\nPlease enter the name of your spell");
     spells_response();
   }
 }
@@ -629,17 +630,17 @@ int AttackTest::battle(){
 
       nextA = fightingResponse.find(attacksearch);
       nextS = fightingResponse.find(spellsearch);
-      
+
       if (nextS != std::string::npos)
       {
         attackCounter = attackCounter + 1;
-        combatAttack = spells_response();       
+        combatAttack = spells_response();
       }
 
      else if (nextA != std::string::npos)
      {
        attackCounter = attackCounter + 1;
-       combatAttack = attack_response();    
+       combatAttack = attack_response();
      }
      else
      {
@@ -647,13 +648,13 @@ int AttackTest::battle(){
        term->printTerminalText("\n\n\n\n\nType exactly what you want to do");
        battle();
      }
-      
+
     term->printTerminalText("Player Health = " + std::to_string(pHealth));
     term->printTerminalText ("\nYour weapon's attack is " + std::to_string(combatAttack));
     mHealth = mHealth - combatAttack;
     term->printTerminalText ("\n\nMonsters health after attack is " + std::to_string(mHealth));
     sleep(2);
-  
+
       if(mHealth <=0)
       {
           term->eraseTerminal();
@@ -663,7 +664,7 @@ int AttackTest::battle(){
           getXPSplit(mEXP, attackCounter, healingCounter);
           getLevelUp();
           getHealthLevelUp();
-          
+
           while(a<=6)
           {
             getStatsLevelUp(a, b);
@@ -679,8 +680,8 @@ int AttackTest::battle(){
       term->printTerminalText ("\n\n\nThe monster did " + std::to_string(mAttackStrength) + " damage!");
       pHealth = pHealth - mAttackStrength;
       sleep(2);
-     
-      
+
+
 
       if(pHealth <= 0)
       {

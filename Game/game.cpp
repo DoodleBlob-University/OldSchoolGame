@@ -11,6 +11,7 @@
 
 #include "window.h"
 #include "map.h"
+#include "terminalfunc.h"
 #include "combatsystem.h"
 
 using namespace std;
@@ -202,9 +203,7 @@ string getUserInput(){
                suggestedmapname = cur->get_text(1);
             }
           }
-          //eraseTerminal();
-          //printTerminalText(suggestedmapname + "\n" + mapname);
-          //break;
+
           if(suggestedmapname == mapname){
             eraseTerminal();
             existing = true;

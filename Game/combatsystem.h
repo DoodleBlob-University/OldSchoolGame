@@ -1,20 +1,6 @@
 #ifndef COMBATSYSTEM_H
 #define COMBATSYSTEM_H
 
-class TerminalFunctions{//Charles Barry
-private:
-  WINDOW* stat;
-  WINDOW* term;
-  int windowWidth;
-public:
-  void printTerminalText(std::string);
-  std::string getUserInput();
-  bool getUserYN();
-  void eraseTerminal();
-  TerminalFunctions(WINDOW* _stat, WINDOW* _term, int _windowWidth);
-};
-
-
 class Combat {//George Franklin
 private:
   char response[];
