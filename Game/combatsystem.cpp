@@ -438,14 +438,10 @@ int Spells::spells_response()
   term->printTerminalText ("\n\n\n\n\nWhat spell would you like to use?");
   spellResponse = term->getUserInput();
   term->eraseTerminal();
-<<<<<<< HEAD
-  spellOneLower = make_lower(spellOneString); //made lower so user can't misplace and uppercase letter
-  spellTwoLower = make_lower(spellTwoString); //either be in function or in the prirate section
-=======
 
   spellOneLower = make_lower(spellOneString); //made lower so user can't misplace and uppercase letter
   spellTwoLower = make_lower(spellTwoString); //either be in function or in the prirate section
->>>>>>> 39d8613421ffc31b259a236a7f3abcf73663a481
+
   spellThreeLower = make_lower(spellThreeString);
 
   spellOptionOneNo = spellResponse.find("1");
