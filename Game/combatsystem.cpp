@@ -416,7 +416,7 @@ int Attack::attack_response() //player chooses desired weapon
       return weaponStrengthThree;
     }
     else{
-        term->printTerminalText ("\n\n\n\n\n\nPlease enter the number slot or name of your weapon");
+        term->printTerminalText ("\n\n\n\n\n\nEnter number slot or name of weapon");
         attack_response();
     }
 }
@@ -438,6 +438,7 @@ int Spells::spells_response()
   term->printTerminalText ("\n\n\n\n\nWhat spell would you like to use?");
   spellResponse = term->getUserInput();
   term->eraseTerminal();
+  
   spellOneLower = make_lower(spellOneString); //made lower so user can't misplace and uppercase letter 
   spellTwoLower = make_lower(spellTwoString); //either be in function or in the prirate section 
   spellThreeLower = make_lower(spellThreeString);
@@ -462,7 +463,7 @@ int Spells::spells_response()
     return spellStrengthThree;
   }
   else{
-    term->printTerminalText ("\n\n\n\n\n\nPlease enter the number slot or name of your spell");
+    term->printTerminalText ("\n\n\n\n\n\nEnter number slot or name of spell");
     spells_response();
   }
 }
@@ -521,7 +522,7 @@ int Defence::defence_response()
     }
 
     else{
-      term->printTerminalText("\n\n\n\n\n\nYou do not have enough of these in your inventory.");
+      term->printTerminalText("\n\n\n\n\n\nNot enough of these in your inventory.");
       defence_response();
     }
   }
@@ -535,7 +536,7 @@ int Defence::defence_response()
     }
     else
     {
-      term->printTerminalText("\n\n\n\n\n\nYou do not have enough of these in your inventory.");
+      term->printTerminalText("\n\n\n\n\n\nNot enough of these in your inventory.");
       defence_response();
     }
   }
@@ -549,13 +550,13 @@ int Defence::defence_response()
     }
     else
     {
-      term->printTerminalText("\n\n\n\n\n\nYou do not have enough of these in your inventory.");
+      term->printTerminalText("\n\n\n\n\n\nNot enough of these in your inventory.");
       defence_response();
     }
    }
   else
   {
-    term->printTerminalText("\n\n\n\n\n\nPlease enter the number slot or name of the consumable");
+    term->printTerminalText("\n\n\n\n\n\nEnter number slot or name of consumable");
     defence_response();
   }
 }
@@ -603,7 +604,7 @@ int AttackTest::battle(){
      }
 
     term->printTerminalText("Player Health = " + std::to_string(pHealth));
-    term->printTerminalText ("\nYour weapon's attack is " + std::to_string(combatAttack));
+    term->printTerminalText ("\nYour attack = " + std::to_string(combatAttack));
     mHealth = mHealth - combatAttack;
     term->printTerminalText ("\n\nMonsters health after attack is " + std::to_string(mHealth));
     sleep(2);
