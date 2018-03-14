@@ -271,7 +271,7 @@ int player::updateDB(int a, int b, int asLevelUpPoint){
     if(a==6){
         upgrade = "Defence";
     };
-            sleep(1);
+            sleep(2);
             term->eraseTerminal();
             term->printTerminalText ("Your stats have increased!\n");
             term->printTerminalText ("\nYou are " + upgrade + " level " + std::to_string(playerDB[a]));
@@ -375,21 +375,6 @@ int player::updateDB(int a, int b, int asLevelUpPoint){
             return healthLevelUp();
         }
 
-        /*int player::levelingSystem(int mEXP, int numOfAttacks, int numOfDefence){
-            getXPGain(mEXP);
-            getXPSplit(mEXP, numOfAttacks, numOfDefence);
-            getLevelUp();
-            getHealthLevelUp();
-        int a=3;
-        int b = 9;
-        while(a<=6){
-
-            getStatsLevelUp(a, b);
-            a=a+1;
-            b=b+1;
-        }
-     }*/
-
     player::player(){
         playerDB = dbOpen();
     }
@@ -458,11 +443,12 @@ monster::monster(){
 
 int Attack::attack_response() //player chooses desired weapon
 {
-  term->printTerminalText ("These are the weapons you can use:");
-  term->printTerminalText ("\n-    Deal damage with a " + weaponOneString);
-  term->printTerminalText ("\n\n-    Destroy enemy with " +  weaponTwoString);
-  term->printTerminalText ("\n\n\n-    Slice them with " + weaponThreeString);
-  term->printTerminalText ("\n\n\n\nWhat weapon would you like to use?");
+  term->printTerminalText("These are damage stats " + std::to_string(weaponStrengthOne) +", " + std::to_string(weaponStrengthTwo) +", " + std::to_string(weaponStrengthThree));
+  term->printTerminalText ("\nThese are the weapons you can use:");
+  term->printTerminalText ("\n\n-    Deal damage with a " + weaponOneString);
+  term->printTerminalText ("\n\n\n-    Destroy enemy with " +  weaponTwoString);
+  term->printTerminalText ("\n\n\n\n-    Slice them with " + weaponThreeString);
+  term->printTerminalText ("\n\n\n\n\nWhat weapon would you like to use?");
   attackResponse = term->getUserInput();
   term->eraseTerminal();
 
@@ -500,11 +486,12 @@ Attack::Attack(TerminalFunctions* _term){
 
 int Spells::spells_response()
 {
-  term->printTerminalText ("These are the spells you can use:");
-  term->printTerminalText ("\n-    Cast " + spellOneString);
-  term->printTerminalText ("\n\n-    Cast " + spellTwoString);
-  term-> printTerminalText ("\n\n\n-    Cast " + spellThreeString);
-  term->printTerminalText ("\n\n\n\nWhat spell would you like to use?");
+  term->printTerminalText("These are damage stats " + std::to_string(spellStrengthOne) +", " + std::to_string(spellStrengthTwo) +", " + std::to_string(spellStrengthThree));
+  term->printTerminalText ("\nThese are the spells you can use:");
+  term->printTerminalText ("\n\n-    Cast " + spellOneString);
+  term->printTerminalText ("\n\n\n-    Cast " + spellTwoString);
+  term-> printTerminalText ("\n\n\n\n-    Cast " + spellThreeString);
+  term->printTerminalText ("\n\n\n\n\nWhat spell would you like to use?");
   spellResponse = term->getUserInput();
   term->eraseTerminal();
 
@@ -557,11 +544,12 @@ auto Defence::get_quantity(){
 int Defence::defence_response()
 {
   vectorOfQuantity = get_quantity();
-  term->printTerminalText ("These are the defences you can use:");
-  term->printTerminalText ("\n-    Use " + defenceOneString + " which has " + std::to_string(vectorOfQuantity[0]) + " uses left");
-  term->printTerminalText ("\n\n-    Use " +defenceTwoString + " which has " + std::to_string(vectorOfQuantity[1]) + " uses left");
-  term->printTerminalText ("\n\n\n-    Use " + defenceThreeString + " which has " + std::to_string(vectorOfQuantity[2]) + " uses left");
-  term->printTerminalText ("\n\n\n\n What defence would you like to do?");
+  term->printTerminalText("These are healing stats " + std::to_string(vectorOfQuantity[0]) +", " + std::to_string(vectorOfQuantity[1]) +", " + std::to_string(vectorOfQuantity[2]));
+  term->printTerminalText ("\nThese are the defences you can use:");
+  term->printTerminalText ("\n\n-    Use " + defenceOneString + " which has " + std::to_string(vectorOfQuantity[0]) + " uses left");
+  term->printTerminalText ("\n\n\n-    Use " +defenceTwoString + " which has " + std::to_string(vectorOfQuantity[1]) + " uses left");
+  term->printTerminalText ("\n\n\n\n-    Use " + defenceThreeString + " which has " + std::to_string(vectorOfQuantity[2]) + " uses left");
+  term->printTerminalText ("\n\n\n\n\n What defence would you like to do?");
 
   defenceResponse = term->getUserInput();
   term->eraseTerminal();
@@ -647,15 +635,17 @@ int AttackTest::battle(){
 
       nextA = fightingResponse.find(attacksearch);
       nextS = fightingResponse.find(spellsearch);
-      if (nextA != std::string::npos)
+      
+      if (nextS != std::string::npos)
       {
         attackCounter = attackCounter + 1;
-        combatAttack = attack_response();         
+        combatAttack = spells_response();       
       }
 
-     else if (nextS != std::string::npos)
+     else if (nextA != std::string::npos)
      {
-       combatAttack = spells_response();    
+       attackCounter = attackCounter + 1;
+       combatAttack = attack_response();    
      }
      else
      {
@@ -670,30 +660,31 @@ int AttackTest::battle(){
     term->printTerminalText ("\n\nMonsters health after attack is " + std::to_string(mHealth));
     sleep(2);
   
-      if(mHealth <= 0)
+      if(mHealth <=0)
       {
           term->eraseTerminal();
           term->printTerminalText ("You have killed the monster");
           term->printTerminalText("\nYou have been awarded with " + std::to_string(mEXP)+ " XP!");
           getXPGain(mEXP);
           getXPSplit(mEXP, attackCounter, healingCounter);
-          /*getLevelUp();
+          getLevelUp();
           getHealthLevelUp();
-          a = 3;
-          b = 9;
-          while(a<=6){
+          
+          while(a<=6)
+          {
             getStatsLevelUp(a, b);
             a=a+1;
             b=b+1;
-        }*/
+          }
           getch();
-          break;
+        break;
       }
       term->eraseTerminal();
       term->printTerminalText ("Monsters time to attack");
+      sleep(2);
       term->printTerminalText ("\nThe monster did " + std::to_string(mAttackStrength) + " damage!");
       pHealth = pHealth - mAttackStrength;
-      sleep(1);
+      sleep(2);
      
       
 
@@ -708,7 +699,7 @@ int AttackTest::battle(){
      {
        term->printTerminalText("Your health now is... " + std::to_string(pHealth));
        term->printTerminalText("\nWould you like to use a defence item?");
-       term->printTerminalText("\n\nType yes if you would like to heal ---- ");
+       term->printTerminalText("\n\nType yes if you would like to heal...");
        defenceOption = term->getUserYN();
        term->eraseTerminal();
       if (defenceOption == true)
@@ -717,15 +708,10 @@ int AttackTest::battle(){
         pHealth = healing(defenceResponse, pHealth);
         healingCounter = healingCounter + 1;
       }
-       else{
-         //do noting
-       }
     }
   }
   term->eraseTerminal();
   term->printTerminalText("It has ended");
-  //sleep(5);
-  //endwin();
 }
 
 AttackTest::AttackTest(TerminalFunctions* _term) : Attack(_term), Spells(_term), Defence(_term), player(_term){
@@ -733,7 +719,6 @@ AttackTest::AttackTest(TerminalFunctions* _term) : Attack(_term), Spells(_term),
   monster* bob = new monster;
   enemy = bob;
   loadMonsterStats();
-  //term->printTerminalText("test");
   battle();
 }
 
