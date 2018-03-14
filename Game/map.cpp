@@ -144,7 +144,6 @@ bool PeacefulMap::checkPlayerExit(){
   }
   return false;
 }
-
 void PeacefulMap::fetchExitCoords(){
   sqlite::sqlite db( "gamedb.db" );
   auto cur = db.get_statement();
@@ -201,5 +200,21 @@ PeacefulMap::PeacefulMap(int _ID, WINDOW* _win, MapTile* maptiles) : Map(_ID, _w
 
 //------------   DUNGEON   --------------------
 Dungeon::Dungeon(int _ID, WINDOW* _win, MapTile* maptiles) : PeacefulMap(_ID, _win, maptiles){
+sqlite::sqlite db( "gamedb.db" );   
+        auto cur = db.get_statement();
+                cur->set_sql("SELECT map.y, map.x FROM map WHERE map.tileID = 0 AND dungeonID = ? ORDER BY RANDOM() LIMIT 20;");
+                cur->prepare();
+                cur->bind(1, ID);
 
+                
+                while(cur->step()){
+                yMonsterSpaces[num] = cur->get_int(0);
+                xMonsterSpaces[num] = cur->get_int(1);
+                map[yMonsterSpaces[num]][xMonsterSpaces[num]] = 14;
+                num = num+1;
+                }
+                
+              printMap();
+              mvwprintw(_win, playerpos[0], playerpos[1],"X");
+              wrefresh(_win);
 }
