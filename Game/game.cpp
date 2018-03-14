@@ -193,15 +193,18 @@ string getUserInput(){
           {
             sqlite::sqlite db( "gamedb.db" ); // open database
             auto cur = db.get_statement();
-            cur->set_sql( "SELECT ID, name FROM dungeon WHERE name LIKE ?;" );
+            cur->set_sql( "SELECT ID, name FROM dungeon WHERE name LIKE ? OR name = ?;" );
             cur->prepare();
             cur->bind(1, "%%"+mapname+"%%");
+            cur->bind(2, mapname);
             while( cur->step() ){
                mapnum = cur->get_int(0);
                suggestedmapname = cur->get_text(1);
             }
           }
-
+          //eraseTerminal();
+          //printTerminalText(suggestedmapname + "\n" + mapname);
+          //break;
           if(suggestedmapname == mapname){
             eraseTerminal();
             existing = true;
