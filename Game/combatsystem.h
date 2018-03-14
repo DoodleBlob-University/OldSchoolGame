@@ -190,6 +190,8 @@ private:
   int defenceResponse;
   size_t nextA;
   size_t nextS;
+  size_t nextANo;
+  size_t nextSNo;
   int combatAttack;
   int attackCounter = 0;
   int healingCounter = 0;
