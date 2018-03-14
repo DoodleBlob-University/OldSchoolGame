@@ -91,6 +91,8 @@ public:
 class Attack : public Combat{//George Franklin
   //array of strings containing the weapon names
 private:
+  void printTerminalText(std::string);
+  std::string getUserInput();
   std::string attackResponse;
   std::string weaponOneString = database_assign_name_weapon(1);
   std::string weaponTwoString = database_assign_name_weapon(2);
@@ -123,6 +125,8 @@ public:
 
 class Spells : public Combat{//George Franklin
 private:
+  void printTerminalText(std::string);
+  std::string getUserInput();
   std::string spellResponse;
   std::string spellOneString = database_assign_name_spell(4);
   std::string spellTwoString = database_assign_name_spell(5);
@@ -153,6 +157,8 @@ public:
 
 class Defence : public Combat{//George Franklin
 private:
+  void printTerminalText(std::string);
+  std::string getUserInput();
   std::string defenceResponse;
   std::string defenceOneString = database_assign_name_defence(7);
   std::string defenceTwoString = database_assign_name_defence(8);
@@ -209,12 +215,13 @@ private:
   size_t nextA;
   size_t nextS;
   size_t nextD;
-  bool startFinish = true;
   int spellCounter;
   int combatAttack;
   int attackCounter = 0;
   int healingCounter = 0;
-  std::string defenceOption;
+  int a;
+  int b;
+  bool defenceOption;
 /*
   WINDOW* stat;
   WINDOW* term;
@@ -222,7 +229,7 @@ private:
 */
   player matt;
   //int pHealth = matt.getHealth();
-  int pHealth = 30;
+  int pHealth = 50;
   int pAttackStrength = matt.getAttackStrength();
   int pMana = matt.getMana();
   int pMagicStrength = matt.getMagicStrength();
