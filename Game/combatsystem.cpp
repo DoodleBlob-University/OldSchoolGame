@@ -391,20 +391,27 @@ int Attack::attack_response() //player chooses desired weapon
   term->printTerminalText ("\n\n\n\n\nWhat weapon would you like to use?");
   attackResponse = term->getUserInput();
   term->eraseTerminal();
+  weaponOneLower = make_lower(weaponOneString); //made lower so user can't misplace and uppercase letter 
+  weaponTwoLower = make_lower(weaponTwoString);
+  weaponThreeLower = make_lower(weaponThreeString);
+
 
   weaponOptionOne = attackResponse.find("1");
   weaponOptionTwo = attackResponse.find("2");
   weaponOptionThree = attackResponse.find("3"); //result will come out with -1 if it can't find substring
-
-    if (weaponOptionOne != std::string::npos)
+  weaponOptionOneNo = attackResponse.find(weaponOneLower);
+  weaponOptionTwoNo = attackResponse.find(weaponTwoLower);
+  weaponOptionThreeNo = attackResponse.find(weaponThreeLower);
+    
+  if (weaponOptionOne != std::string::npos || weaponOptionOneNo != std::string::npos)
     {
       return weaponStrengthOne;
     }
-    else if (weaponOptionTwo != std::string::npos)
+    else if (weaponOptionTwo != std::string::npos || weaponOptionTwoNo != std::string::npos)
     {
       return weaponStrengthTwo;
     }
-    else if (weaponOptionThree != std::string::npos)
+    else if (weaponOptionThree != std::string::npos || weaponOptionThreeNo != std::string::npos)
     {
       return weaponStrengthThree;
     }
@@ -431,20 +438,26 @@ int Spells::spells_response()
   term->printTerminalText ("\n\n\n\n\nWhat spell would you like to use?");
   spellResponse = term->getUserInput();
   term->eraseTerminal();
+  spellOneLower = make_lower(spellOneString); //made lower so user can't misplace and uppercase letter 
+  spellTwoLower = make_lower(spellTwoString); //either be in function or in the prirate section 
+  spellThreeLower = make_lower(spellThreeString);
 
   spellOptionOne = spellResponse.find("1");
   spellOptionTwo = spellResponse.find("2");
   spellOptionThree = spellResponse.find("3");
+  spellOptionOne = spellResponse.find(spellOneLower);
+  spellOptionTwo = spellResponse.find(spellTwoLower);
+  spellOptionThree = spellResponse.find(spellThreeLower);
 
-  if (spellOptionOne != std::string::npos)
+  if (spellOptionOne != std::string::npos || spellOptionOneNo != std::string::npos)
   {
     return spellStrengthOne;
   }
-  else if (spellOptionTwo != std::string::npos)
+  else if (spellOptionTwo != std::string::npos || spellOptionTwoNo != std::string::npos)
   {
     return spellStrengthTwo;
   }
-  else if (spellOptionThree != std::string::npos)
+  else if (spellOptionThree != std::string::npos || spellOptionThreeNo != std::string::npos)
   {
     return spellStrengthThree;
   }
@@ -488,11 +501,18 @@ int Defence::defence_response()
 
   defenceResponse = term->getUserInput();
   term->eraseTerminal();
+  
+  defenceOneLower = make_lower(defenceOneString); //made lower so user can't misplace and uppercase letter 
+  defenceTwoLower = make_lower(defenceTwoString);
+  defenceThreeLower = make_lower(defenceThreeString);
   defenceOptionOne = defenceResponse.find("1"); //find function to check if the substr is in the main
   defenceOptionTwo = defenceResponse.find("2");
   defenceOptionThree = defenceResponse.find("3");
+  defenceOptionOneNo = defenceResponse.find(defenceOneLower); //find function to check if the substr is in the main
+  defenceOptionTwoNo = defenceResponse.find(defenceTwoLower);
+  defenceOptionThreeNo = defenceResponse.find(defenceThreeLower);
 
-  if (defenceOptionOne != std::string::npos)
+  if (defenceOptionOne != std::string::npos || defenceOptionOne != std::string::npos)
   {
 
     if(vectorOfQuantity[0]!=0){
@@ -506,7 +526,7 @@ int Defence::defence_response()
     }
   }
 
-  else if (defenceOptionTwo != std::string::npos) //get amount of them that you have left in inventory
+  else if (defenceOptionTwo != std::string::npos || defenceOptionTwo != std::string::npos) //get amount of them that you have left in inventory
   {
     if(vectorOfQuantity[1]!=0)
     {
@@ -520,7 +540,7 @@ int Defence::defence_response()
     }
   }
 
-  else if (defenceOptionThree != std::string::npos)
+  else if (defenceOptionThree != std::string::npos || defenceOptionThree != std::string::npos)
   {
     if(vectorOfQuantity[2]!=0)
     {
