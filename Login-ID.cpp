@@ -6,7 +6,7 @@
 #include <fstream>
 #include <string>
 #include "sqllibrary.h"
-sqlite::sqlite db("Database.db");
+sqlite::sqlite db("UserID.db");
 //#include "functions2SQL.h"
 using namespace std;
 
