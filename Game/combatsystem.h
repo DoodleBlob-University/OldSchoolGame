@@ -11,9 +11,7 @@ public:
   std::string getUserInput();
   bool getUserYN();
   void eraseTerminal();
-  TerminalFunctions(WINDOW* _stat, WINDOW* _term, int _windowWidth){
-    stat = _stat; term = _term; windowWidth = _windowWidth;
-  }
+  TerminalFunctions(WINDOW* _stat, WINDOW* _term, int _windowWidth);
 };
 
 
@@ -120,9 +118,7 @@ TerminalFunctions* term;
 public:
 
   int attack_response();
-  Attack(TerminalFunctions* _term){
-    term = _term;
-  }
+  Attack(TerminalFunctions* _term);
 };
 
 class Spells : public Combat{//George Franklin
@@ -152,9 +148,7 @@ TerminalFunctions* term;
 public:
   int spells_response();
 
-  Spells(TerminalFunctions* _term){
-    term = _term;
-  }
+  Spells(TerminalFunctions* _term);
 };
 
 class Defence : public Combat{//George Franklin
@@ -189,9 +183,7 @@ TerminalFunctions* term;
 public:
   int defence_response();
   int healing(int amount, int playerHealth);
-  Defence(TerminalFunctions* _term){
-      term = _term;
-  }
+  Defence(TerminalFunctions* _term);
 };
 
 class AttackTest : public Attack, public Spells, public Defence, public monster, public player{//George Franklin
@@ -262,7 +254,6 @@ public:
   int battle();
 
   AttackTest(TerminalFunctions* _term);
-
   AttackTest(TerminalFunctions* _term, monster* phil);
 };
 

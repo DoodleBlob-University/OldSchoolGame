@@ -63,7 +63,9 @@ void TerminalFunctions::eraseTerminal(){
   wrefresh(term);
 }
 
-
+TerminalFunctions::TerminalFunctions(WINDOW* _stat, WINDOW* _term, int _windowWidth){
+  stat = _stat; term = _term; windowWidth = _windowWidth;
+}
 
 
 // ------------------------------  COMBAT  ----------------------------------------
@@ -501,6 +503,10 @@ int Attack::attack_response() //player chooses desired weapon
     }
 }
 
+Attack::Attack(TerminalFunctions* _term){
+  term = _term;
+}
+
 
 // ----------------------- SPELLS ------------------------------------
 
@@ -544,7 +550,9 @@ int Spells::spells_response(){
     return spellStrengthThree;
   }
 }
-
+Spells::Spells(TerminalFunctions* _term){
+  term = _term;
+}
 
 
 //-------------------------- DEFENCE  ----------------------------------
@@ -653,6 +661,10 @@ int Defence::healing(int amount, int playerHealth)
     return playerHealth;
 }
 
+
+Defence::Defence(TerminalFunctions* _term){
+    term = _term;
+}
 
 
 // ------------------------  ATTACKTEST ---------------------------
