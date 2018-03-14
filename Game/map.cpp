@@ -104,15 +104,19 @@ int PeacefulMap::interact(int pos[2]){
       interact(temppos);
   }
   if(map[pos[0] - 1][pos[1]] == 9){
+    map[pos[0]-1][pos[1]] = 0;
     return 1;
   }
   if(map[pos[0]][pos[1] - 1] == 9){
+    map[pos[0]][pos[1] - 1] = 0;
     return 1;
   }
   if(map[pos[0] + 1][pos[1]] == 9){
+    map[pos[0] + 1][pos[1]] = 0;
     return 1;
   }
   if(map[pos[0]][pos[1] + 1] == 9){
+    map[pos[0]][pos[1] + 1] = 0;
     return 1;
   }
   return 0;

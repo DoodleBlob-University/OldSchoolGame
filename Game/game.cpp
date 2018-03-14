@@ -386,7 +386,7 @@ private:
   }
 
   void chests(){
-    mvwprintw(term->getData(), 1, 1, "ree");
+    mvwprintw(term->getData(), 2, 1, "You have opened a chest!!");
     wrefresh(term->getData());
   }
 
