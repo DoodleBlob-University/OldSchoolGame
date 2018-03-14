@@ -216,8 +216,7 @@ private:
   size_t nextS;
   size_t nextD;
   int spellCounter;
-  int combatAttackWeapon;
-  int combatAttackSpell;
+  int combatAttack;
   int attackCounter = 0;
   int healingCounter = 0;
   int a;
