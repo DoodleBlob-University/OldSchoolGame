@@ -4,6 +4,7 @@
 #include <ncurses.h>
 #include <signal.h>
 #include <cstring>
+#include <stdlib.h>
 #include <unistd.h>
 
 #include "libsqlite.hpp"
@@ -386,8 +387,17 @@ private:
   }
 
   void chests(){
+    int getRanNum;
     mvwprintw(term->getData(), 2, 1, "You have opened a chest!!");
     wrefresh(term->getData());
+    getRanNum = rand() % 100 + 1;
+    if(getRanNum < 70){
+    mvwprintw(term->getData(), 3, 1, "You have receieved Gold");
+    wrefresh(term->getData());
+    }else{
+    mvwprintw(term->getData(), 3, 1, "You have receieved an Item");
+    wrefresh(term->getData());
+    }
   }
 
   void printDungeonName(string dungeonname, int windowWidth){

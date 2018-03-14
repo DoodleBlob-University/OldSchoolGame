@@ -82,7 +82,7 @@ void PeacefulMap::fetchPlayerCoords(){
   playerpos[1] = cur->get_int(1);}
 }
 
-int PeacefulMap::interact(int pos[2]){
+int PeacefulMap::interact(int pos[2]){ // Opens doors checking case ID 
   if(map[pos[0]-1][pos[1]] == 8){
       map[pos[0]-1][pos[1]] = 0;
       int temppos[] = {pos[0]-1,pos[1]};
