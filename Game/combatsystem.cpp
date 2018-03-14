@@ -271,7 +271,8 @@ int player::updateDB(int a, int b, int asLevelUpPoint){
     if(a==6){
         upgrade = "Defence";
     };
-            strcpy(upgradeChar, upgrade.c_str());
+            sleep(1);
+            term->eraseTerminal();
             term->printTerminalText ("Your stats have increased!\n");
             term->printTerminalText ("\nYou are " + upgrade + " level " + std::to_string(playerDB[a]));
             term->printTerminalText ("\n\nYou have " + std::to_string(playerDB[b]) + " EXP in " + upgrade);
@@ -505,7 +506,7 @@ int Spells::spells_response(){
   term->printTerminalText ("These are the spells you can use:");
   term->printTerminalText ("\n-    Cast " + spellOneString);
   term->printTerminalText ("\n\n-    Cast " + spellTwoString);
-  term-> printTerminalText ("\n\n\n-    Cast " + spellThreeString + "");
+  term-> printTerminalText ("\n\n\n-    Cast " + spellThreeString);
   term->printTerminalText ("\n\n\n\nWhat spell would you like to use?");
   spellResponse = term->getUserInput();
   term->eraseTerminal();
@@ -657,7 +658,7 @@ int AttackTest::battle(){
 
       }
 
-      else if (nextS != std::string::npos)
+      if (nextS != std::string::npos)
       {
         combatAttack = spells_response();
 
@@ -674,7 +675,7 @@ int AttackTest::battle(){
       term->printTerminalText ("\nYour weapon's attack is " + std::to_string(combatAttack));
       term->printTerminalText ("\n\nMonsters health after attack is " + std::to_string(mHealth));
       mHealth = mHealth - combatAttack;
-      sleep(2);
+      sleep(1);
       if(mHealth <= 0)
       {
           term->eraseTerminal();
@@ -699,7 +700,7 @@ int AttackTest::battle(){
       term->printTerminalText ("Monsters time to attack");
       term->printTerminalText ("\nThe monster did " + std::to_string(mAttackStrength) + " damage!");
       pHealth = pHealth - mAttackStrength;
-      sleep(2);
+      sleep(1);
      
       
 
@@ -731,7 +732,7 @@ int AttackTest::battle(){
     }
   }
   term->eraseTerminal();
-  term->printTerminalText("\nIt has ended");
+  term->printTerminalText("It has ended");
   //sleep(5);
   //endwin();
 }
