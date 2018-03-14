@@ -394,12 +394,17 @@ private:
     textRan = rand() % 4;
     mvwprintw(term->getData(), 2, 1, "%s", textArray[textRan].c_str());
     wrefresh(term->getData());
-    getRanNum = rand() % 100 + 1;
-    if(getRanNum < 70){
-    mvwprintw(term->getData(), 3, 1, "You have receieved Gold");
+    getRanNum = rand() % 20 + 1;
+    if(getRanNum < 15){
+    int getRanGold;
+    getRanGold = rand() % 30 + 5;
+    mvwprintw(term->getData(), 3, 1, "You have received %i Gold!", getRanGold);
+    wrefresh(term->getData());
+    }else if(getRanNum == 20){
+    mvwprintw(term->getData(), 3, 1, "You have received an item and gold!");
     wrefresh(term->getData());
     }else{
-    mvwprintw(term->getData(), 3, 1, "You have receieved an Item");
+    mvwprintw(term->getData(), 3, 1, "You have received an Item");
     wrefresh(term->getData());
     }
   }
