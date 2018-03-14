@@ -131,15 +131,9 @@ private:
   std::string spellOneString = database_assign_name_spell(4);
   std::string spellTwoString = database_assign_name_spell(5);
   std::string spellThreeString = database_assign_name_spell(6);
-  char spellOne[20];
-  char spellTwo[20];
-  char spellThree[20];
   int spellStrengthOne = database_assign_int_spell(4);
   int spellStrengthTwo = database_assign_int_spell(5);
   int spellStrengthThree = database_assign_int_spell(6);
-  std::string spellOneLower;
-  std::string spellTwoLower;
-  std::string spellThreeLower;
   size_t spellOptionOne;
   size_t spellOptionTwo;
   size_t spellOptionThree;
@@ -163,15 +157,9 @@ private:
   std::string defenceOneString = database_assign_name_defence(7);
   std::string defenceTwoString = database_assign_name_defence(8);
   std::string defenceThreeString = database_assign_name_defence(9);
-  char defenceOne[20];
-  char defenceTwo[20];
-  char defenceThree[20];
   int defenceAmountOne = database_assign_int_healing(7);
   int defenceAmountTwo = database_assign_int_healing(8);
   int defenceAmountThree = database_assign_int_healing(9);
-  std::string defenceOneLower;
-  std::string defenceTwoLower;
-  std::string defenceThreeLower;
   size_t defenceOptionOne;
   size_t defenceOptionTwo;
   size_t defenceOptionThree;
@@ -200,20 +188,10 @@ private:
   std::string response;
   std::string attacksearch = "attack";
   std::string spellsearch = "spell";
-  std::string defencesearch = "yes"; //can stay hardcoded or be json related
-  char attackSearch[7] = "attack";
-  char spellSearch[6] = "spell";
-  char defenceSearch[8] = "defence";
-  std::string initialResponse;
   std::string fightingResponse;
   int defenceResponse;
-  int attackPoint;
-  int spellsPoint;
-  int weaponStrength;
-  int togo;
   size_t nextA;
   size_t nextS;
-  size_t nextD;
   int combatAttack;
   int attackCounter = 0;
   int healingCounter = 0;
@@ -227,7 +205,6 @@ private:
 */
   player matt;
   int pHealth = matt.getHealth();
-  //int pHealth = 50;
   int pAttackStrength = matt.getAttackStrength();
   int pMana = matt.getMana();
   int pMagicStrength = matt.getMagicStrength();
@@ -236,7 +213,6 @@ private:
 
   monster* enemy;
   int mHealth;
-  //int mHealth = 50;
   int mAttackStrength;
   int mMana;
   int mMagicStrength;
@@ -263,3 +239,4 @@ public:
 };
 
 #endif
+
