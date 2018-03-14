@@ -11,6 +11,7 @@
 #include "map.h"
 #include "terminalfunc.h"
 #include "combatsystem.h"
+#include "login.h"
 
 using namespace std;
 
@@ -530,7 +531,6 @@ class Game{
     }
 
     int gameSequence(){
-
       while(true){
         Map main(1, game->getData(), maptiles);
 
@@ -539,7 +539,8 @@ class Game{
         if(menuoption == 1){return 1;}else if(menuoption == 0){break;}
       }
 
-      //GET SAVE DATA FROM DATABASE HERE
+      LoginClass login(func);
+      login.getUser();
 
       int temppos[2];
       PeacefulMap World(2, game->getData(), maptiles);
@@ -591,7 +592,7 @@ class Game{
 
       MapTile* maptiles = new MapTile();//load all maptiles from database and store in class
       TerminalFunctions* func = new TerminalFunctions(stat->getData(),term->getData(),45);
-      AttackTest ree(func);
+      //AttackTest ree(func);
       //getch();
 
       Game startGame(game, stat, term, maptiles, func);//start game

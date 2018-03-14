@@ -391,7 +391,7 @@ int Attack::attack_response() //player chooses desired weapon
   term->printTerminalText ("\n\n\n\n\nWhat weapon would you like to use?");
   attackResponse = term->getUserInput();
   term->eraseTerminal();
-  weaponOneLower = make_lower(weaponOneString); //made lower so user can't misplace and uppercase letter 
+  weaponOneLower = make_lower(weaponOneString); //made lower so user can't misplace and uppercase letter
   weaponTwoLower = make_lower(weaponTwoString);
   weaponThreeLower = make_lower(weaponThreeString);
 
@@ -402,7 +402,7 @@ int Attack::attack_response() //player chooses desired weapon
   weaponOptionOneNo = attackResponse.find(weaponOneLower);
   weaponOptionTwoNo = attackResponse.find(weaponTwoLower);
   weaponOptionThreeNo = attackResponse.find(weaponThreeLower);
-    
+
   if (weaponOptionOne != std::string::npos || weaponOptionOneNo != std::string::npos)
     {
       return weaponStrengthOne;
@@ -438,8 +438,8 @@ int Spells::spells_response()
   term->printTerminalText ("\n\n\n\n\nWhat spell would you like to use?");
   spellResponse = term->getUserInput();
   term->eraseTerminal();
-  spellOneLower = make_lower(spellOneString); //made lower so user can't misplace and uppercase letter 
-  spellTwoLower = make_lower(spellTwoString); //either be in function or in the prirate section 
+  spellOneLower = make_lower(spellOneString); //made lower so user can't misplace and uppercase letter
+  spellTwoLower = make_lower(spellTwoString); //either be in function or in the prirate section
   spellThreeLower = make_lower(spellThreeString);
 
   spellOptionOne = spellResponse.find("1");
@@ -501,8 +501,8 @@ int Defence::defence_response()
 
   defenceResponse = term->getUserInput();
   term->eraseTerminal();
-  
-  defenceOneLower = make_lower(defenceOneString); //made lower so user can't misplace and uppercase letter 
+
+  defenceOneLower = make_lower(defenceOneString); //made lower so user can't misplace and uppercase letter
   defenceTwoLower = make_lower(defenceTwoString);
   defenceThreeLower = make_lower(defenceThreeString);
   defenceOptionOne = defenceResponse.find("1"); //find function to check if the substr is in the main
