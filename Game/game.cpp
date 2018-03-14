@@ -531,16 +531,18 @@ class Game{
     }
 
     int gameSequence(){
+      LoginClass login(func);
       while(true){
         Map main(1, game->getData(), maptiles);
 
         printDungeonName(main.getName());
         int menuoption = MainMenu(main);
-        if(menuoption == 1){return 1;}else if(menuoption == 0){break;}
+        if(menuoption == 1){
+          return 1;
+        }else if(menuoption == 0){
+          if(login.getUser() > 0){break;};
+        }
       }
-
-      LoginClass login(func);
-      login.getUser();
 
       int temppos[2];
       PeacefulMap World(2, game->getData(), maptiles);

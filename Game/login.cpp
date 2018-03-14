@@ -61,9 +61,11 @@
       return 1;
     }else if(input == "2"){
       return 2;
-    }else{
+    }else if(input.length() > 0){//allows the user to quit the login screen -Charlie
       func->printTerminalText("\n\n\n^^^^^^^^^^^^^");
       return 3;
+    }else{
+      return 0;
     }
     }
 
@@ -122,7 +124,8 @@ int LoginClass::getUser(){
       int Decision =  UserDecision();
       switch(Decision)
       {
-
+      case 0:
+        return 0;
       case 1:
           registerCharater();
           func->printTerminalText("Registration is complete");
