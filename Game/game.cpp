@@ -202,10 +202,10 @@ string getUserInput(){
             }
           }
 
-          if(suggestedmapname.substr(0, suggestedmapname.length()) == mapname){
+          if(suggestedmapname == mapname){
             eraseTerminal();
             existing = true;
-            printTerminalText("This would overwrite " + suggestedmapname.substr(0, suggestedmapname.length()) + "!\nAre you sure? y/n");
+            printTerminalText("This would overwrite " + suggestedmapname + "!\nAre you sure? y/n");
             if(getUserYN() == false){
               eraseTerminal();
               printTerminalText("Upload cancelled");
@@ -213,12 +213,13 @@ string getUserInput(){
             }
           }else if(suggestedmapname.length()>0){
             eraseTerminal();
-            printTerminalText("Did you mean: " + suggestedmapname.substr(0, suggestedmapname.length()) + "?\ny/n");
+            printTerminalText("Did you mean: " + suggestedmapname + "?\ny/n");
             if(getUserYN() == true){
               eraseTerminal();
-              printTerminalText("This will overwrite the current " + suggestedmapname.substr(0, suggestedmapname.length()-1) + "\nAre you sure? y/n");
+              printTerminalText("This will overwrite the current " + suggestedmapname + "\nAre you sure? y/n");
               if(getUserYN() == true){
-                mapname = suggestedmapname.substr(0, suggestedmapname.length());
+                mapname = suggestedmapname;
+                existing = true;
               }else{
                 eraseTerminal();
                 printTerminalText("Upload cancelled");
