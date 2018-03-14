@@ -86,9 +86,6 @@ private:
   std::string weaponOneLower;
   std::string weaponTwoLower;
   std::string weaponThreeLower;
-  char weaponOne[20];
-  char weaponTwo[20];
-  char weaponThree[20];
   int weaponStrength;
   int weaponStrengthOne = database_assign_int_weapon(1);
   int weaponStrengthTwo = database_assign_int_weapon(2);
@@ -96,6 +93,9 @@ private:
   size_t weaponOptionOne;
   size_t weaponOptionTwo;
   size_t weaponOptionThree;
+  size_t weaponOptionOneNo;
+  size_t weaponOptionTwoNo;
+  size_t weaponOptionThreeNo;
   /*
     WINDOW* stat;
     WINDOW* term;
@@ -120,9 +120,15 @@ private:
   int spellStrengthOne = database_assign_int_spell(4);
   int spellStrengthTwo = database_assign_int_spell(5);
   int spellStrengthThree = database_assign_int_spell(6);
+  std::string spellOneLower;
+  std::string spellTwoLower;
+  std::string spellThreeLower;
   size_t spellOptionOne;
   size_t spellOptionTwo;
   size_t spellOptionThree;
+  size_t spellOptionOneNo;
+  size_t spellOptionTwoNo;
+  size_t spellOptionThreeNo;
   /*
     WINDOW* stat;
     WINDOW* term;
@@ -146,9 +152,15 @@ private:
   int defenceAmountOne = database_assign_int_healing(7);
   int defenceAmountTwo = database_assign_int_healing(8);
   int defenceAmountThree = database_assign_int_healing(9);
+  std::string defenceOneLower;
+  std::string defenceTwoLower;
+  std::string defenceThreeLower;
   size_t defenceOptionOne;
   size_t defenceOptionTwo;
   size_t defenceOptionThree;
+  size_t defenceOptionOneNo;
+  size_t defenceOptionTwoNo;
+  size_t defenceOptionThreeNo;
   std::vector<int> vectorOfQuantity;
   int amountHealed;
   int numLeft;
@@ -225,4 +237,3 @@ public:
 };
 
 #endif
-
