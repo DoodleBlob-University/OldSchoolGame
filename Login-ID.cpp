@@ -15,7 +15,7 @@ string UserName;
 char creatCharacter(auto& username,auto& password)
     {
     auto query= db.get_statement();
-    query->set_sql("INSERT INTO UserInfo(Username,Password) VALUES (?,'"+password+"'); ");
+    query->set_sql("INSERT INTO User(Username,Password) VALUES (?,'"+password+"'); ");
     query->prepare();
     query->bind(1,username);
     query->step();
@@ -25,7 +25,7 @@ char creatCharacter(auto& username,auto& password)
 int showID(string username)
 {
     auto query= db.get_statement();
-    query->set_sql("SELECT * FROM UserInfo WHERE Username=?; ");
+    query->set_sql("SELECT * FROM User WHERE Username=?; ");
     query->prepare();
     query->bind(1,username);
     while(query->step())
@@ -37,7 +37,7 @@ int showID(string username)
 int userCheck(string username)
 {
     auto query= db.get_statement();
-    query->set_sql("SELECT COUNT(*) FROM UserInfo WHERE Username=?; ");
+    query->set_sql("SELECT COUNT(*) FROM User WHERE Username=?; ");
     query->prepare();
     query->bind(1,username);
     while(query->step())
