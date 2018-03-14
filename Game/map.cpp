@@ -1,34 +1,10 @@
 #include <ncurses.h>
 #include <string>
 #include <vector>
+
+#include "maptile.h"
 #include "map.h"
 #include "libsqlite.hpp"
-
-//-----------------------   MAPTILES   -----------------------------
-int MapTile::getMapTileNo(){
-  sqlite::sqlite db( "gamedb.db" );
-  auto cur = db.get_statement();
-  cur->set_sql( "SELECT COUNT(*) FROM maptiles;" );
-  cur->prepare();
-  while( cur->step() ){
-  return cur->get_int(0);}
-}
-
-void MapTile::loadMapTiles(){
-  sqlite::sqlite db( "gamedb.db" );
-  auto cur = db.get_statement();
-  cur->set_sql( "SELECT * FROM maptiles;" );
-  cur->prepare();
-  while( cur->step() ){
-  int selectedtile = cur->get_int(0);
-  tiles[selectedtile].character = cur->get_text(1).c_str(); tiles[selectedtile].colour = cur->get_int(2);}
-}
-
-MapTile::MapTile(){
-  tiles.resize(getMapTileNo());
-  loadMapTiles();
-}
-
 
 //-----------------------   MAP   -----------------------------
 void Map::printMap(){
@@ -82,7 +58,7 @@ void PeacefulMap::fetchPlayerCoords(){
   playerpos[1] = cur->get_int(1);}
 }
 
-int PeacefulMap::interact(int pos[2]){ // Opens doors checking case ID 
+int PeacefulMap::interact(int pos[2]){ // Opens doors checking case ID
   if(map[pos[0]-1][pos[1]] == 8){
       map[pos[0]-1][pos[1]] = 0;
       int temppos[] = {pos[0]-1,pos[1]};
@@ -202,16 +178,16 @@ PeacefulMap::PeacefulMap(int _ID, WINDOW* _win, MapTile* maptiles) : Map(_ID, _w
 Dungeon::Dungeon(int _ID, WINDOW* _win, MapTile* maptiles) : PeacefulMap(_ID, _win, maptiles){
  int num = 0;
     int numberOfMonsters = 20;
-     
+
      {
-     sqlite::sqlite db( "gamedb.db" );   
+     sqlite::sqlite db( "gamedb.db" );
         auto cur = db.get_statement();
                 cur->set_sql("SELECT map.y, map.x FROM map WHERE map.tileID = 0 AND dungeonID = ? ORDER BY RANDOM() LIMIT ?;");
                 cur->prepare();
                 cur->bind(1, ID);
                 cur->bind(2, numberOfMonsters);
 
-                
+
                 while(cur->step()){
                 map[cur->get_int(0)][cur->get_int(1)] = 14;
                 num = num+1;
@@ -220,7 +196,7 @@ Dungeon::Dungeon(int _ID, WINDOW* _win, MapTile* maptiles) : PeacefulMap(_ID, _w
               printMap();
               mvwprintw(_win, playerpos[0], playerpos[1],"X");
               wrefresh(_win);
-                
-        
+
+
 
 }

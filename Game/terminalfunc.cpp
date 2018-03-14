@@ -1,5 +1,4 @@
 #include <ncurses.h>
-#include <cstring>
 #include <string>
 #include "terminalfunc.h"
 

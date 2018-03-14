@@ -1,19 +1,6 @@
 #ifndef MAP_H
 #define MAP_H
 
-class MapTile{
-private:
-  struct tile {
-    std::string character;
-    int colour;
-  } ;
-  int getMapTileNo();
-  void loadMapTiles();
-public:
-  std::vector<tile> tiles;
-  MapTile();
-};
-
 class Map{
 private:
   std::string name;

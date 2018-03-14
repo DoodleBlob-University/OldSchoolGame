@@ -7,6 +7,7 @@ private:
   WINDOW* term;
   int windowWidth;
 public:
+  int getWindowWidth(){return windowWidth;}
   void printTerminalText(std::string text);
   std::string getUserInput();
   bool getUserYN();
