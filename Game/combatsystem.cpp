@@ -239,8 +239,8 @@ TerminalFunctions::TerminalFunctions(WINDOW* _stat, WINDOW* _term, int _windowWi
        int levelUpPoint = 30 *(level *1.2);
         if (EXP >= levelUpPoint){
             playerDB[2] = playerDB[2]+1;
-            term->printTerminalText("\n\n\n\n\n\nYour health has leveled up!");
-            term->printTerminalText("\n\n\n\n\n\n\nYou now have " + std::to_string(playerDB[2]) + " health.");
+            term->printTerminalText("\n\n\n\n\n\n\n\nYour health has leveled up!");
+            term->printTerminalText("\n\n\n\n\n\n\n\n\nYou now have " + std::to_string(playerDB[2]) + " health.");
 
 
             sqlite::sqlite db( "../Database.db" );
@@ -477,7 +477,6 @@ int Attack::attack_response() //player chooses desired weapon
     {
       return weaponStrengthOne;
     }
-
     else if (weaponOptionTwo != std::string::npos)
     {
       return weaponStrengthTwo;
@@ -487,8 +486,7 @@ int Attack::attack_response() //player chooses desired weapon
       return weaponStrengthThree;
     }
     else{
-        term->printTerminalText ("Please enter the name of your weapon \n");
-        refresh();
+        term->printTerminalText ("\n\n\n\n\n\nPlease enter the name of your weapon");        
         attack_response();
     }
 }
@@ -500,9 +498,8 @@ Attack::Attack(TerminalFunctions* _term){
 
 // ----------------------- SPELLS ------------------------------------
 
-int Spells::spells_response(){
-
-  clear();
+int Spells::spells_response()
+{
   term->printTerminalText ("These are the spells you can use:");
   term->printTerminalText ("\n-    Cast " + spellOneString);
   term->printTerminalText ("\n\n-    Cast " + spellTwoString);
@@ -529,6 +526,10 @@ int Spells::spells_response(){
   else if (spellOptionThree != std::string::npos)
   {
     return spellStrengthThree;
+  }
+  else{
+    term->printTerminalText ("\n\n\n\n\n\nPlease enter the name of your spell");        
+    spells_response();
   }
 }
 Spells::Spells(TerminalFunctions* _term){
@@ -581,7 +582,6 @@ int Defence::defence_response()
 
     else{
       term->printTerminalText("You do not have enough of these in your inventory.\n");
-      refresh();
       defence_response();
     }
   }
@@ -596,7 +596,6 @@ int Defence::defence_response()
     else
     {
       term->printTerminalText("You do not have enough of these in your inventory.\n");
-      refresh();
       defence_response();
     }
   }
@@ -606,20 +605,17 @@ int Defence::defence_response()
     if(vectorOfQuantity[2]!=0)
     {
       database_remove_amount(9);
-      std::string sqliteFile = "gamedb.db";
       return defenceAmountThree;
     }
     else
     {
       term->printTerminalText("You do not have enough of these in your inventory.\n");
-      refresh();
       defence_response();
     }
    }
   else
   {
     term->printTerminalText("Please enter the name of the spell\n");
-    refresh();
     defence_response();
   }
 }
@@ -650,41 +646,44 @@ int AttackTest::battle(){
 
       nextA = fightingResponse.find(attacksearch);
       nextS = fightingResponse.find(spellsearch);
-      if (nextA != std::string::npos)
+    
+      if (pHealth>0 && mHealth>0)
       {
-        attackCounter = attackCounter + 1;
-        combatAttack = attack_response();
+        if (nextA != std::string::npos)
+        {
+          attackCounter = attackCounter + 1;
+          combatAttackWeapon = attack_response();
+          term->printTerminalText("Player Health = " + std::to_string(pHealth));
+          term->printTerminalText ("\nYour weapon's attack is " + std::to_string(combatAttackWeapon));
+          term->printTerminalText ("\n\nMonsters health after attack is " + std::to_string(mHealth));
+          mHealth = mHealth - combatAttackWeapon;
+          sleep(2);
+        }
 
-
-      }
-
-      if (nextS != std::string::npos)
-      {
-        combatAttack = spells_response();
-
-
-      }
-      else
-      {
+        /*if (nextS != std::string::npos)
+        {
+          combatAttackSpell = spells_response();
+          term->printTerminalText("Player Health = " + std::to_string(pHealth));
+          term->printTerminalText ("\nYour weapon's attack is " + std::to_string(combatAttackSpell));
+          term->printTerminalText ("\n\nMonsters health after attack is " + std::to_string(mHealth));
+          mHealth = mHealth - combatAttackSpell;
+          sleep(2);
+       }*/
+       else
+       {
         term->eraseTerminal();
-        term->printTerminalText("Type exactly what you want to do");
+        term->printTerminalText("\n\n\n\n\nType exactly what you want to do");
         battle();
+       }
       }
-      
-      term->printTerminalText("Player Health = " + std::to_string(pHealth));
-      term->printTerminalText ("\nYour weapon's attack is " + std::to_string(combatAttack));
-      term->printTerminalText ("\n\nMonsters health after attack is " + std::to_string(mHealth));
-      mHealth = mHealth - combatAttack;
-      sleep(1);
       if(mHealth <= 0)
       {
           term->eraseTerminal();
           term->printTerminalText ("You have killed the monster");
           term->printTerminalText("\nYou have been awarded with " + std::to_string(mEXP)+ " XP!");
-          //matt.levelingSystem(mEXP, attackCounter, healingCounter);
           getXPGain(mEXP);
           getXPSplit(mEXP, attackCounter, healingCounter);
-          getLevelUp();
+          /*getLevelUp();
           getHealthLevelUp();
           a = 3;
           b = 9;
@@ -692,7 +691,7 @@ int AttackTest::battle(){
             getStatsLevelUp(a, b);
             a=a+1;
             b=b+1;
-        }
+        }*/
           getch();
           break;
       }
@@ -720,11 +719,9 @@ int AttackTest::battle(){
        term->eraseTerminal();
       if (defenceOption == true)
       {
-        term->printTerminalText("You need to heal");
         defenceResponse = defence_response();
         pHealth = healing(defenceResponse, pHealth);
         healingCounter = healingCounter + 1;
-        refresh();
       }
        else{
          //do noting
