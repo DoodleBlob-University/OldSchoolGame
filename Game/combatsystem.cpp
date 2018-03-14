@@ -416,7 +416,7 @@ int Attack::attack_response() //player chooses desired weapon
       return weaponStrengthThree;
     }
     else{
-        term->printTerminalText ("\n\n\n\n\n\nPlease enter the number slot of your weapon");
+        term->printTerminalText ("\n\n\n\n\n\nPlease enter the number slot or name of your weapon");
         attack_response();
     }
 }
@@ -462,7 +462,7 @@ int Spells::spells_response()
     return spellStrengthThree;
   }
   else{
-    term->printTerminalText ("\n\n\n\n\n\nPlease enter the number slot of your spell");
+    term->printTerminalText ("\n\n\n\n\n\nPlease enter the number slot or name of your spell");
     spells_response();
   }
 }
@@ -555,7 +555,7 @@ int Defence::defence_response()
    }
   else
   {
-    term->printTerminalText("\n\n\n\n\n\nPlease enter the number slot of the consumable");
+    term->printTerminalText("\n\n\n\n\n\nPlease enter the number slot or name of the consumable");
     defence_response();
   }
 }
