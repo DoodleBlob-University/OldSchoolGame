@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <array>
 #include <vector>
+#include <unistd.h>
 #include "libsqlite.hpp"
 #include "combatsystem.h"
 
@@ -186,7 +187,7 @@ TerminalFunctions::TerminalFunctions(WINDOW* _stat, WINDOW* _term, int _windowWi
             cur->bind( 1, xpGain );
 
             cur->step();
-            term->printTerminalText("XP: " + std::to_string(getEXP()) + "\n");
+            term->printTerminalText("\n\n\n\n\nXP: " + std::to_string(getEXP()));
             return playerDB[7];
 }
     int player::pXPSplit(int mEXP,int attackNum,int defenceNum){
@@ -207,8 +208,8 @@ TerminalFunctions::TerminalFunctions(WINDOW* _stat, WINDOW* _term, int _windowWi
             cur->bind( 4, defenceXPGain);
 
             cur->step();
-            term->printTerminalText("Attack XP: " + std::to_string(getASEXP()) +"\n");
-            term->printTerminalText("Defence XP: " + std::to_string(getDEXP()) +"\n");
+            term->printTerminalText("\n\n\nAttack XP: " + std::to_string(getASEXP()));
+            term->printTerminalText("\n\n\n\nDefence XP: " + std::to_string(getDEXP()));
 
         }
     int player::levelUp(){
@@ -217,8 +218,8 @@ TerminalFunctions::TerminalFunctions(WINDOW* _stat, WINDOW* _term, int _windowWi
        int levelUpPoint = 40 *(level *1.2);
         if (EXP >= levelUpPoint){
             playerDB[1] = playerDB[1]+1;
-            term->printTerminalText("\nYou have leveled up!\n");
-            term->printTerminalText("You are level " + std::to_string(playerDB[1]) + "\n");
+            term->printTerminalText("\n\n\n\n\n\nYou have leveled up!");
+            term->printTerminalText("\n\n\n\n\n\n\nYou are level " + std::to_string(playerDB[1]));
 
 
             sqlite::sqlite db( "../Database.db" );
@@ -238,8 +239,8 @@ TerminalFunctions::TerminalFunctions(WINDOW* _stat, WINDOW* _term, int _windowWi
        int levelUpPoint = 30 *(level *1.2);
         if (EXP >= levelUpPoint){
             playerDB[2] = playerDB[2]+1;
-            term->printTerminalText("\nYour health has leveled up!\n");
-            term->printTerminalText("You now have " + std::to_string(playerDB[2]) + " health.\n");
+            term->printTerminalText("\n\n\n\n\n\nYour health has leveled up!");
+            term->printTerminalText("\n\n\n\n\n\n\nYou now have " + std::to_string(playerDB[2]) + " health.");
 
 
             sqlite::sqlite db( "../Database.db" );
@@ -271,10 +272,10 @@ int player::updateDB(int a, int b, int asLevelUpPoint){
         upgrade = "Defence";
     };
             strcpy(upgradeChar, upgrade.c_str());
-            term->printTerminalText ("\nYour stats have increased!\n");
-            term->printTerminalText ("You are " + upgrade + " level " + std::to_string(playerDB[a]) + "\n");
-            term->printTerminalText ("You have " + std::to_string(playerDB[b]) + " EXP in " + upgrade + "\n");
-            term->printTerminalText ("Next level at EXP. " + std::to_string(asLevelUpPoint) + "\n");
+            term->printTerminalText ("Your stats have increased!\n");
+            term->printTerminalText ("\nYou are " + upgrade + " level " + std::to_string(playerDB[a]));
+            term->printTerminalText ("\n\nYou have " + std::to_string(playerDB[b]) + " EXP in " + upgrade);
+            term->printTerminalText ("\n\n\nNext level at EXP. " + std::to_string(asLevelUpPoint));
     }
 
     int player::statsLevelUp(int a, int b){
@@ -373,7 +374,7 @@ int player::updateDB(int a, int b, int asLevelUpPoint){
             return healthLevelUp();
         }
 
-        int player::levelingSystem(int mEXP, int numOfAttacks, int numOfDefence){
+        /*int player::levelingSystem(int mEXP, int numOfAttacks, int numOfDefence){
             getXPGain(mEXP);
             getXPSplit(mEXP, numOfAttacks, numOfDefence);
             getLevelUp();
@@ -386,7 +387,7 @@ int player::updateDB(int a, int b, int asLevelUpPoint){
             a=a+1;
             b=b+1;
         }
-     }
+     }*/
 
     player::player(){
         playerDB = dbOpen();
@@ -456,32 +457,20 @@ monster::monster(){
 
 int Attack::attack_response() //player chooses desired weapon
 {
-  clear();
+  term->printTerminalText ("These are the weapons you can use:");
+  term->printTerminalText ("\n-    Deal damage with a " + weaponOneString);
+  term->printTerminalText ("\n\n-    Destroy enemy with " +  weaponTwoString);
+  term->printTerminalText ("\n\n\n-    Slice them with " + weaponThreeString);
+  term->printTerminalText ("\n\n\n\nWhat weapon would you like to use?");
+  attackResponse = term->getUserInput();
+  term->eraseTerminal();
 
-  strcpy(weaponOne, weaponOneString.c_str());   //can't make a function which returns a char array
-  strcpy(weaponTwo, weaponTwoString.c_str());   //so this is the conversion
-  strcpy(weaponThree, weaponThreeString.c_str());
-
-
-  term->printTerminalText ("These are the weapons you can use:\n" );
-  term->printTerminalText ("-    Deal damage with a " + weaponOneString + "\n");
-  term->printTerminalText ("-    Destroy enemy whilst weilding a " +  weaponTwoString + "\n");
-  term->printTerminalText ("-    Put them 6 feet under with your " + weaponThreeString + "\n");
-  term->printTerminalText ("What weapon would you like to use? \n");
-  term->printTerminalText ("----- ");
-    //attackResponse = get_line();
-    attackResponse = weaponOneString;
-    getch();
-
-    weaponOneLower = make_lower(weaponOneString); //made lower so user can't misplace and uppercase letter
-    weaponTwoLower = make_lower(weaponTwoString);
-    weaponThreeLower = make_lower(weaponThreeString);
-    refresh();
-
-
-    weaponOptionOne = attackResponse.find(weaponOneLower);
-    weaponOptionTwo = attackResponse.find(weaponTwoLower);
-    weaponOptionThree = attackResponse.find(weaponThreeLower); //result will come out with -1 if it can't find substring
+  weaponOneLower = make_lower(weaponOneString); //made lower so user can't misplace and uppercase letter
+  weaponTwoLower = make_lower(weaponTwoString);
+  weaponThreeLower = make_lower(weaponThreeString);
+  weaponOptionOne = attackResponse.find(weaponOneLower);
+  weaponOptionTwo = attackResponse.find(weaponTwoLower);
+  weaponOptionThree = attackResponse.find(weaponThreeLower); //result will come out with -1 if it can't find substring
 
     if (weaponOptionOne != std::string::npos)
     {
@@ -512,27 +501,18 @@ Attack::Attack(TerminalFunctions* _term){
 
 int Spells::spells_response(){
 
-  strcpy(spellOne, spellOneString.c_str());   //can't make a function which returns a char array
-  strcpy(spellTwo, spellTwoString.c_str());   //so this is the conversion
-  strcpy(spellThree, spellThreeString.c_str());
-
   clear();
-  term->printTerminalText ("These are the spells you can use:\n");
-  term->printTerminalText ("-    Cast " + spellOneString + "\n");
-  term->printTerminalText ("-    Cast " + spellTwoString + "\n");
-  term-> printTerminalText ("-    Cast " + spellThreeString + "\n");
-  term->printTerminalText ("What spell would you like to use?\n");
-  term->printTerminalText ("----- ");
+  term->printTerminalText ("These are the spells you can use:");
+  term->printTerminalText ("\n-    Cast " + spellOneString);
+  term->printTerminalText ("\n\n-    Cast " + spellTwoString);
+  term-> printTerminalText ("\n\n\n-    Cast " + spellThreeString + "");
+  term->printTerminalText ("\n\n\n\nWhat spell would you like to use?");
+  spellResponse = term->getUserInput();
+  term->eraseTerminal();
 
-  //spellResponse = get_line();
-  spellResponse = spellOneString;
-  getch();
-
-  refresh();
   spellOneLower = make_lower(spellOneString); //made lower so user can't misplace and uppercase letter
   spellTwoLower = make_lower(spellTwoString); //either be in function or in the prirate section
   spellThreeLower = make_lower(spellThreeString);
-
   spellOptionOne = spellResponse.find(spellOneLower);
   spellOptionTwo = spellResponse.find(spellTwoLower);
   spellOptionThree = spellResponse.find(spellThreeLower);
@@ -574,30 +554,19 @@ auto Defence::get_quantity(){
 
 int Defence::defence_response()
 {
-  strcpy(defenceOne, defenceOneString.c_str());   //can't make a function which returns a char array
-  strcpy(defenceTwo, defenceTwoString.c_str());   //so this is the conversion
-  strcpy(defenceThree, defenceThreeString.c_str());
   vectorOfQuantity = get_quantity();
+  term->printTerminalText ("These are the defences you can use:");
+  term->printTerminalText ("\n-    Use " + defenceOneString + " which has " + std::to_string(vectorOfQuantity[0]) + " uses left");
+  term->printTerminalText ("\n\n-    Use " +defenceTwoString + " which has " + std::to_string(vectorOfQuantity[1]) + " uses left");
+  term->printTerminalText ("\n\n\n-    Use " + defenceThreeString + " which has " + std::to_string(vectorOfQuantity[2]) + " uses left");
+  term->printTerminalText ("\n\n\n\n What defence would you like to do?");
 
-  //printw ("These are the healing stats %i, %i, %i\n", defenceAmountOne, defenceAmountTwo, defenceAmountThree);
-  printw ("These are the defences you can use: \n");
-  printw ("-    Use ability %s which has %i uses left\n", defenceOne, vectorOfQuantity[0]);
-  printw ("-    Use ability %s which has %i uses left\n", defenceTwo, vectorOfQuantity[1]);
-  printw ("-    Use ability %s which has %i uses left\n", defenceThree, vectorOfQuantity[2]);
-  printw ("What defence would you like to do? \n");
-  printw ("----- ");
-
-  //defenceResponse = get_line();
-  defenceResponse = defenceOneString;
-  getch();
-
-  refresh();
-
+  defenceResponse = term->getUserInput();
+  term->eraseTerminal();
   defenceOneLower = make_lower(defenceOneString); //made lower so user can't misplace and uppercase letter
   defenceTwoLower = make_lower(defenceTwoString);
   defenceThreeLower = make_lower(defenceThreeString);
-
-  defenceOptionOne = defenceResponse.find(defenceOneLower);
+  defenceOptionOne = defenceResponse.find(defenceOneLower); //find function to check if the substr is in the main
   defenceOptionTwo = defenceResponse.find(defenceTwoLower);
   defenceOptionThree = defenceResponse.find(defenceThreeLower);
 
@@ -657,7 +626,6 @@ int Defence::healing(int amount, int playerHealth)
 {
     playerHealth = playerHealth + amount;
     term->printTerminalText ("Your health is now " + std::to_string(playerHealth)+ "\n");
-    refresh();
     return playerHealth;
 }
 
@@ -671,89 +639,87 @@ Defence::Defence(TerminalFunctions* _term){
 int AttackTest::battle(){
   while(true)
   {
-    term->printTerminalText ("What would you like to do? \n");
-   term-> printTerminalText ("-    Use an attack \n");
-   term-> printTerminalText ("-    Cast a spell \n");
-    term->printTerminalText ("----- ");
+    term->printTerminalText ("What would you like to do?");
+    term-> printTerminalText ("\n-    Use an attack");
+    term-> printTerminalText ("\n\n-    Cast a spell");
+    term->printTerminalText ("\n\n\n----- ");
 
-      //fightingResponse = get_line();
-      fightingResponse = attacksearch;
-      getch();
+      fightingResponse = term->getUserInput();
+      term->eraseTerminal();
 
-      refresh();
       nextA = fightingResponse.find(attacksearch);
       nextS = fightingResponse.find(spellsearch);
       if (nextA != std::string::npos)
       {
         attackCounter = attackCounter + 1;
         combatAttack = attack_response();
-        //mHealth = mHealth - combatAttack;
-        //pHealth = pHealth - mAttackStrength;
 
 
       }
 
-      if (nextS != std::string::npos)
+      else if (nextS != std::string::npos)
       {
         combatAttack = spells_response();
-        //mHealth = mHealth - combatAttack;
-        //pHealth = pHealth - mAttackStrength;
 
 
       }
-      if(nextA == std::string::npos && nextS == std::string::npos)
-      {
-        clear();
-        term->printTerminalText("Type exactly what you want to do\n");
-        refresh();
-        battle();
-      }
-
-      term->printTerminalText("Player Health = " + std::to_string(pHealth) + "\n");
-      term->printTerminalText ("Your weapon's attack is " + std::to_string(combatAttack)+ "\n");
-      mHealth = mHealth - combatAttack;
-      term->printTerminalText ("Monsters health after attack is " + std::to_string(mHealth) + "\n");
-
-      if(mHealth <= 0)
-        {
-          //startFinish = false;
-          term->printTerminalText ("You have killed the monster\n");
-          term->printTerminalText("You have been awarded with " + std::to_string(mEXP)+ " XP!\n");
-          matt.levelingSystem(mEXP, attackCounter, healingCounter);
-          refresh();
-          //return startFinish;
-          break;
-        }
       else
       {
-        term->printTerminalText ("\nMonsters time to attack\n");
-        term->printTerminalText ("The monster did " + std::to_string(mAttackStrength) + " damage!\n");
-          pHealth = pHealth - mAttackStrength;
+        term->eraseTerminal();
+        term->printTerminalText("Type exactly what you want to do");
+        battle();
       }
+      
+      term->printTerminalText("Player Health = " + std::to_string(pHealth));
+      term->printTerminalText ("\nYour weapon's attack is " + std::to_string(combatAttack));
+      term->printTerminalText ("\n\nMonsters health after attack is " + std::to_string(mHealth));
+      mHealth = mHealth - combatAttack;
+      sleep(2);
+      if(mHealth <= 0)
+      {
+          term->eraseTerminal();
+          term->printTerminalText ("You have killed the monster");
+          term->printTerminalText("\nYou have been awarded with " + std::to_string(mEXP)+ " XP!");
+          //matt.levelingSystem(mEXP, attackCounter, healingCounter);
+          getXPGain(mEXP);
+          getXPSplit(mEXP, attackCounter, healingCounter);
+          getLevelUp();
+          getHealthLevelUp();
+          a = 3;
+          b = 9;
+          while(a<=6){
+            getStatsLevelUp(a, b);
+            a=a+1;
+            b=b+1;
+        }
+          getch();
+          break;
+      }
+      term->eraseTerminal();
+      term->printTerminalText ("Monsters time to attack");
+      term->printTerminalText ("\nThe monster did " + std::to_string(mAttackStrength) + " damage!");
+      pHealth = pHealth - mAttackStrength;
+      sleep(2);
+     
+      
 
       if(pHealth <= 0)
       {
-        startFinish = false;
-          term->printTerminalText ("You have died\n");
-        refresh();
-        return startFinish;
-        //break;
+          term->eraseTerminal();
+          term->printTerminalText ("You have died");
+          getch();
+          break;
       }
      else
      {
-       term->printTerminalText ("\nYour health now is... " + std::to_string(pHealth) + "\n");
-       term->printTerminalText("Would you like to use a defence item? \n");
-       term->printTerminalText("Type yes if you would like to heal ---- ");
-      //defenceOption = get_line();
-      defenceOption = defenceSearch;
-      getch();
-
-      nextD = defenceOption.find(defencesearch);
-      refresh();
-
-      if (nextD != std::string::npos)
+       term->printTerminalText("Your health now is... " + std::to_string(pHealth));
+       term->printTerminalText("\nWould you like to use a defence item?");
+       term->printTerminalText("\n\nType yes if you would like to heal ---- ");
+       defenceOption = term->getUserYN();
+       term->eraseTerminal();
+      if (defenceOption == true)
       {
-        term->printTerminalText ("You need to heal\n");
+        term->printTerminalText("You need to heal");
         defenceResponse = defence_response();
         pHealth = healing(defenceResponse, pHealth);
         healingCounter = healingCounter + 1;
@@ -764,8 +730,8 @@ int AttackTest::battle(){
        }
     }
   }
-  term->printTerminalText("It has ended\n");
-  refresh();
+  term->eraseTerminal();
+  term->printTerminalText("\nIt has ended");
   //sleep(5);
   //endwin();
 }
@@ -775,7 +741,8 @@ AttackTest::AttackTest(TerminalFunctions* _term) : Attack(_term), Spells(_term),
   monster* bob = new monster;
   enemy = bob;
   loadMonsterStats();
-  term->printTerminalText("test");
+  //term->printTerminalText("test");
+  battle();
 }
 
 AttackTest::AttackTest(TerminalFunctions* _term, monster* phil) : Attack(_term), Spells(_term), Defence(_term), player(_term){
