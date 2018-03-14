@@ -388,7 +388,11 @@ private:
 
   void chests(){
     int getRanNum;
-    mvwprintw(term->getData(), 2, 1, "You have opened a chest!!");
+    int textRan;
+    srand(time(0));
+    string textArray[] = {"The chest swings open!", "The chest creaks open!", "The chest slowly creaks open!", "The chest thuds open!"};
+    textRan = rand() % 4;
+    mvwprintw(term->getData(), 2, 1, "%s", textArray[textRan].c_str());
     wrefresh(term->getData());
     getRanNum = rand() % 100 + 1;
     if(getRanNum < 70){
