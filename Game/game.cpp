@@ -532,21 +532,21 @@ class Game{
 
     int gameSequence(){
       LoginClass login(func);
-      while(true){
-        Map main(1, game->getData(), maptiles);
-
+      Map main(1, game->getData(), maptiles);
+      
+      while(true){//Main Menu loop
         printDungeonName(main.getName());
         int menuoption = MainMenu(main);
         if(menuoption == 1){
           return 1;
         }else if(menuoption == 0){
-          if(login.getUser() > 0){break;};
-        }
+          if(login.getUser() > 0){break;}}
+        main.printMap();
       }
 
       int temppos[2];
       PeacefulMap World(2, game->getData(), maptiles);
-      while(true){
+      while(true){//Gameplay loop
         //PeacefulMap World(2, game.getData());
         int selecteddungeon = WorldMap(game->getData(), stat->getData(), term->getData(), World, temppos);
         if(selecteddungeon == 7){
@@ -591,11 +591,9 @@ class Game{
       Window* stat = new Window(main->getData(),24,47,1,110);//statistics subwindow
       Window* term = new Window(main->getData(),12,47,25,110);//user terminal subwindow
 
-
       MapTile* maptiles = new MapTile();//load all maptiles from database and store in class
       TerminalFunctions* func = new TerminalFunctions(stat->getData(),term->getData(),45);
       //AttackTest ree(func);
-      //getch();
 
       Game startGame(game, stat, term, maptiles, func);//start game
 

@@ -13,7 +13,9 @@ void Map::printMap(){
       if(maptiles->tiles[map[y][x]].colour > 0){wattron(win,COLOR_PAIR(maptiles->tiles[map[y][x]].colour));}
       mvwprintw(win, y, x, maptiles->tiles[map[y][x]].character.c_str());
       wattroff(win,COLOR_PAIR(maptiles->tiles[map[y][x]].colour));
-}}}
+    }}
+    wrefresh(win);
+}
 
 const char* Map::getName(){
   return name.c_str();
