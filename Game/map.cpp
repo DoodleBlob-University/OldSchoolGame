@@ -221,6 +221,6 @@ Dungeon::Dungeon(int _ID, WINDOW* _win, MapTile* maptiles) : PeacefulMap(_ID, _w
               mvwprintw(_win, playerpos[0], playerpos[1],"X");
               wrefresh(_win);
                 
-        }
+        
 
 }
