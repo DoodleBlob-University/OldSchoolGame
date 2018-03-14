@@ -198,7 +198,6 @@ private:
   std::string getUserInput();
   std::string choice;
   std::string response;
-  std::string responseSearch = "engage";
   std::string attacksearch = "attack";
   std::string spellsearch = "spell";
   std::string defencesearch = "yes"; //can stay hardcoded or be json related
@@ -215,12 +214,11 @@ private:
   size_t nextA;
   size_t nextS;
   size_t nextD;
-  int spellCounter;
   int combatAttack;
   int attackCounter = 0;
   int healingCounter = 0;
-  int a;
-  int b;
+  int a = 3;
+  int b = 9;
   bool defenceOption;
 /*
   WINDOW* stat;
@@ -228,8 +226,8 @@ private:
   int windowWidth;
 */
   player matt;
-  //int pHealth = matt.getHealth();
-  int pHealth = 50;
+  int pHealth = matt.getHealth();
+  //int pHealth = 50;
   int pAttackStrength = matt.getAttackStrength();
   int pMana = matt.getMana();
   int pMagicStrength = matt.getMagicStrength();
