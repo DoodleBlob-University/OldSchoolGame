@@ -416,7 +416,7 @@ int Attack::attack_response() //player chooses desired weapon
       return weaponStrengthThree;
     }
     else{
-        term->printTerminalText ("\n\n\n\n\n\nPlease enter the number slot of your weapon");
+        term->printTerminalText ("\n\n\n\n\n\nEnter number slot or name of weapon");
         attack_response();
     }
 }
@@ -438,13 +438,19 @@ int Spells::spells_response()
   term->printTerminalText ("\n\n\n\n\nWhat spell would you like to use?");
   spellResponse = term->getUserInput();
   term->eraseTerminal();
+<<<<<<< HEAD
   spellOneLower = make_lower(spellOneString); //made lower so user can't misplace and uppercase letter
   spellTwoLower = make_lower(spellTwoString); //either be in function or in the prirate section
+=======
+
+  spellOneLower = make_lower(spellOneString); //made lower so user can't misplace and uppercase letter
+  spellTwoLower = make_lower(spellTwoString); //either be in function or in the prirate section
+>>>>>>> 39d8613421ffc31b259a236a7f3abcf73663a481
   spellThreeLower = make_lower(spellThreeString);
 
-  spellOptionOne = spellResponse.find("1");
-  spellOptionTwo = spellResponse.find("2");
-  spellOptionThree = spellResponse.find("3");
+  spellOptionOneNo = spellResponse.find("1");
+  spellOptionTwoNo = spellResponse.find("2");
+  spellOptionThreeNo = spellResponse.find("3");
   spellOptionOne = spellResponse.find(spellOneLower);
   spellOptionTwo = spellResponse.find(spellTwoLower);
   spellOptionThree = spellResponse.find(spellThreeLower);
@@ -462,7 +468,7 @@ int Spells::spells_response()
     return spellStrengthThree;
   }
   else{
-    term->printTerminalText ("\n\n\n\n\n\nPlease enter the number slot of your spell");
+    term->printTerminalText ("\n\n\n\n\n\nEnter number slot or name of spell");
     spells_response();
   }
 }
@@ -505,14 +511,14 @@ int Defence::defence_response()
   defenceOneLower = make_lower(defenceOneString); //made lower so user can't misplace and uppercase letter
   defenceTwoLower = make_lower(defenceTwoString);
   defenceThreeLower = make_lower(defenceThreeString);
-  defenceOptionOne = defenceResponse.find("1"); //find function to check if the substr is in the main
-  defenceOptionTwo = defenceResponse.find("2");
-  defenceOptionThree = defenceResponse.find("3");
-  defenceOptionOneNo = defenceResponse.find(defenceOneLower); //find function to check if the substr is in the main
-  defenceOptionTwoNo = defenceResponse.find(defenceTwoLower);
-  defenceOptionThreeNo = defenceResponse.find(defenceThreeLower);
+  defenceOptionOneNo = defenceResponse.find("1"); //find function to check if the substr is in the main
+  defenceOptionTwoNo = defenceResponse.find("2");
+  defenceOptionThreeNo = defenceResponse.find("3");
+  defenceOptionOne = defenceResponse.find(defenceOneLower); //find function to check if the substr is in the main
+  defenceOptionTwo = defenceResponse.find(defenceTwoLower);
+  defenceOptionThree = defenceResponse.find(defenceThreeLower);
 
-  if (defenceOptionOne != std::string::npos || defenceOptionOne != std::string::npos)
+  if (defenceOptionOne != std::string::npos || defenceOptionOneNo != std::string::npos)
   {
 
     if(vectorOfQuantity[0]!=0){
@@ -521,12 +527,12 @@ int Defence::defence_response()
     }
 
     else{
-      term->printTerminalText("\n\n\n\n\n\nYou do not have enough of these in your inventory.");
+      term->printTerminalText("\n\n\n\n\n\nNot enough of these in your inventory.");
       defence_response();
     }
   }
 
-  else if (defenceOptionTwo != std::string::npos || defenceOptionTwo != std::string::npos) //get amount of them that you have left in inventory
+  else if (defenceOptionTwo != std::string::npos || defenceOptionTwoNo != std::string::npos) //get amount of them that you have left in inventory
   {
     if(vectorOfQuantity[1]!=0)
     {
@@ -535,12 +541,12 @@ int Defence::defence_response()
     }
     else
     {
-      term->printTerminalText("\n\n\n\n\n\nYou do not have enough of these in your inventory.");
+      term->printTerminalText("\n\n\n\n\n\nNot enough of these in your inventory.");
       defence_response();
     }
   }
 
-  else if (defenceOptionThree != std::string::npos || defenceOptionThree != std::string::npos)
+  else if (defenceOptionThree != std::string::npos || defenceOptionThreeNo != std::string::npos)
   {
     if(vectorOfQuantity[2]!=0)
     {
@@ -549,13 +555,13 @@ int Defence::defence_response()
     }
     else
     {
-      term->printTerminalText("\n\n\n\n\n\nYou do not have enough of these in your inventory.");
+      term->printTerminalText("\n\n\n\n\n\nNot enough of these in your inventory.");
       defence_response();
     }
    }
   else
   {
-    term->printTerminalText("\n\n\n\n\n\nPlease enter the number slot of the consumable");
+    term->printTerminalText("\n\n\n\n\n\nEnter number slot or name of consumable");
     defence_response();
   }
 }
@@ -571,8 +577,8 @@ int AttackTest::battle(){
   {
     term->printTerminalText ("The monster's health is... " + std::to_string(mHealth));
     term->printTerminalText ("\nWhat would you like to do?");
-    term-> printTerminalText ("\n\n-    Use an attack");
-    term-> printTerminalText ("\n\n\n-    Cast a spell");
+    term-> printTerminalText ("\n\n-1    Cast a spell");
+    term-> printTerminalText ("\n\n\n-2    Use an attack");
     term->printTerminalText ("\n\n\n\n----- ");
 
       fightingResponse = term->getUserInput();
@@ -580,14 +586,17 @@ int AttackTest::battle(){
 
       nextA = fightingResponse.find(attacksearch);
       nextS = fightingResponse.find(spellsearch);
+      nextSNo = fightingResponse.find("1");
+      nextANo = fightingResponse.find("2");
 
-      if (nextS != std::string::npos)
+
+      if (nextSNo != std::string::npos || nextS != std::string::npos)
       {
         attackCounter = attackCounter + 1;
         combatAttack = spells_response();
       }
 
-     else if (nextA != std::string::npos)
+     else if (nextANo != std::string::npos || nextA != std::string::npos)
      {
        attackCounter = attackCounter + 1;
        combatAttack = attack_response();
@@ -600,7 +609,7 @@ int AttackTest::battle(){
      }
 
     term->printTerminalText("Player Health = " + std::to_string(pHealth));
-    term->printTerminalText ("\nYour weapon's attack is " + std::to_string(combatAttack));
+    term->printTerminalText ("\nYour attack = " + std::to_string(combatAttack));
     mHealth = mHealth - combatAttack;
     term->printTerminalText ("\n\nMonsters health after attack is " + std::to_string(mHealth));
     sleep(2);

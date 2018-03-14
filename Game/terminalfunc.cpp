@@ -44,7 +44,7 @@ bool TerminalFunctions::getUserYN(){
     }else if(input == "n" || input == "no" || input == "N" || input == "NO"){
       return false;
     }else{
-      printTerminalText("\n\nSorry, I didn't understand that");
+      printTerminalText("\n\n\n\nSorry, I didn't understand that");
     }
   }
 }
