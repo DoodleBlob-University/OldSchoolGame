@@ -571,8 +571,8 @@ int AttackTest::battle(){
   {
     term->printTerminalText ("The monster's health is... " + std::to_string(mHealth));
     term->printTerminalText ("\nWhat would you like to do?");
-    term-> printTerminalText ("\n\n-    Use an attack");
-    term-> printTerminalText ("\n\n\n-    Cast a spell");
+    term-> printTerminalText ("\n\n-1    Cast a spell");
+    term-> printTerminalText ("\n\n\n-2    Use an attack");
     term->printTerminalText ("\n\n\n\n----- ");
 
       fightingResponse = term->getUserInput();
@@ -580,14 +580,17 @@ int AttackTest::battle(){
 
       nextA = fightingResponse.find(attacksearch);
       nextS = fightingResponse.find(spellsearch);
+      nextSNo = fightingResponse.find("1");
+      nextANo = fightingResponse.find("2");
+       
 
-      if (nextS != std::string::npos)
+      if (nextSNo != std::string::npos || nextS != std::string::npos)
       {
         attackCounter = attackCounter + 1;
         combatAttack = spells_response();
       }
 
-     else if (nextA != std::string::npos)
+     else if (nextANo != std::string::npos || nextA != std::string::npos)
      {
        attackCounter = attackCounter + 1;
        combatAttack = attack_response();
