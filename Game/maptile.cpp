@@ -12,7 +12,7 @@ int MapTile::getMapTileNo(){//William Smith
   cur->prepare();
   cur->step(); //Runs Query
   return cur->get_int(0);}//Get amount of map tiles and return it
-}
+
 
 void MapTile::loadMapTiles(){//William Smith
   sqlite::sqlite db( "gamedb.db" ); //Function select everything from map tiles; ID, Character, Colour.
