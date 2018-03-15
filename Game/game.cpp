@@ -400,9 +400,9 @@ class Game{//Charles Barry
             break;
           case 'H':
               func->eraseTerminal();
-              func->printTerminalText("Move the cursor using 'W', 'A', 'S' and 'D'\nPress SPACE to Confirm");
+              func->printTerminalText("Move the cursor using 'W', 'A', 'S' and 'D'\nPress SPACE or ENTER to Confirm");
               break;
-          case ' ':
+          case ' ': case '\n':
             switch(selected){
               case 0:
                 {switch(suboption){
@@ -412,7 +412,7 @@ class Game{//Charles Barry
                   {MapCreator creator(game->getData(), stat->getData(), term->getData(), maptiles, func);} return 2; break;
                   case 2:
                   func->eraseTerminal();
-                  func->printTerminalText("Game created by:\nCharlie Barry, Will Smith, Matt Fretwell\nGeorge Franklin, Kai Arnold, Shirin Shahali\n\nOur inspiration for the game was taken from\nZork, Hobbit, D&D board game.\n\nEnjoy Not a Dungeon Crawler!!");
+                  func->printTerminalText("Game created by:\nCharlie Barry, Will Smith, Matt Fretwell\nGeorge Franklin, Kai Arnold, Shirin Shahali\n\nOur inspiration for the game was taken from\nZork (1980), The Hobbit (1982) and\nDungeons and Dragons.\n\n\nEnjoy 'Not a Dungeon Crawler'!!");
                   break;
                 }}
                 break;

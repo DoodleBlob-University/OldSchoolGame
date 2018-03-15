@@ -71,7 +71,7 @@ int PeacefulMap::interact(int pos[2]){//William Smith
   if(map[pos[0]][pos[1] - 1] == 8){
       map[pos[0]][pos[1] - 1] = 0;
       int temppos[] = {pos[0],pos[1]-1};
-      interact(temppos); 
+      interact(temppos);
   }
   if(map[pos[0] + 1][pos[1]] == 8){
       map[pos[0] + 1][pos[1]] = 0;
@@ -160,7 +160,7 @@ int PeacefulMap::movement(){//William Smith & Charles Barry
          }
          break;
     case 'E':
-        if(interact(playerpos)){return 2;}; 
+        if(interact(playerpos)){return 2;};
         break;
     break;
   }
@@ -179,7 +179,7 @@ PeacefulMap::PeacefulMap(int _ID, WINDOW* _win, MapTile* maptiles) : Map(_ID, _w
 
 
 //------------   DUNGEON   --------------------
-Dungeon::Dungeon(int _ID, WINDOW* _win, MapTile* maptiles) : PeacefulMap(_ID, _win, maptiles){
+Dungeon::Dungeon(int _ID, WINDOW* _win, MapTile* maptiles) : PeacefulMap(_ID, _win, maptiles){//Charles Barry
     int numberOfMonsters = 20;
     {//Spawn monsters randomly across map //Matthew Fretwell
       sqlite::sqlite db( "gamedb.db" );
@@ -219,19 +219,19 @@ int Dungeon::checkForMonsters(){//Charles Barry
     mvwprintw(win, playerpos[0]-1, playerpos[1], " ");//remove the monster visually
     return movementflag;
   }else if((map[playerpos[0]][playerpos[1] - 1] == 13) || (map[playerpos[0]][playerpos[1] - 1] == 14) && (playerpos[1] - 1 > 0)){//LEFT
-    int movementflag = map[playerpos[0]][playerpos[1]-1] - 10;//takes away 10 to make values either 3 or 4
-    map[playerpos[0]][playerpos[1]-1] = 0;//remove the monster on the map
-    mvwprintw(win, playerpos[0], playerpos[1]-1, " ");//remove the monster visually
+    int movementflag = map[playerpos[0]][playerpos[1]-1] - 10;
+    map[playerpos[0]][playerpos[1]-1] = 0;
+    mvwprintw(win, playerpos[0], playerpos[1]-1, " ");
     return movementflag;
   }else if((map[playerpos[0]+1][playerpos[1]] == 13) || (map[playerpos[0]+1][playerpos[1]] == 14) && (playerpos[0] + 1 <= height - 1)){//DOWN
-    int movementflag = map[playerpos[0]+1][playerpos[1]] - 10;//takes away 10 to make values either 3 or 4
-    map[playerpos[0]+1][playerpos[1]] = 0;//remove the monster on the map
-    mvwprintw(win, playerpos[0]+1, playerpos[1], " ");//remove the monster visually
+    int movementflag = map[playerpos[0]+1][playerpos[1]] - 10;
+    map[playerpos[0]+1][playerpos[1]] = 0;
+    mvwprintw(win, playerpos[0]+1, playerpos[1], " ");
     return movementflag;
   }else if((map[playerpos[0]][playerpos[1] + 1] == 13) || (map[playerpos[0]][playerpos[1] + 1] == 14) && (playerpos[1] + 1 <= width)){//RIGHT
-    int movementflag = map[playerpos[0]][playerpos[1] + 1] - 10;//takes away 10 to make values either 3 or 4
-    map[playerpos[0]][playerpos[1] + 1] = 0;//remove the monster on the map
-    mvwprintw(win, playerpos[0], playerpos[1]+1 , " ");//remove the monster visually
+    int movementflag = map[playerpos[0]][playerpos[1] + 1] - 10;
+    map[playerpos[0]][playerpos[1] + 1] = 0;
+    mvwprintw(win, playerpos[0], playerpos[1]+1 , " ");
     return movementflag;
   }
   return 0;
