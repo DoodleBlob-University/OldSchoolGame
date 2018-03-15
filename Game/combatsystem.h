@@ -76,14 +76,13 @@ public:
 };
 
 class Attack : public Combat{//George Franklin
-  //array of strings containing the weapon names
 private:
   void printTerminalText(std::string);
   std::string getUserInput();
   std::string attackResponse;
   std::string weaponOneString = database_assign_name_weapon(1);
   std::string weaponTwoString = database_assign_name_weapon(2);
-  std::string weaponThreeString = database_assign_name_weapon(3); //gets weapon name from DB - will make sense with inventory table
+  std::string weaponThreeString = database_assign_name_weapon(3);
   std::string weaponOneLower;
   std::string weaponTwoLower;
   std::string weaponThreeLower;
@@ -97,16 +96,12 @@ private:
   size_t weaponOptionOneNo;
   size_t weaponOptionTwoNo;
   size_t weaponOptionThreeNo;
-  /*
-    WINDOW* stat;
-    WINDOW* term;
-    int windowWidth;
-  */
-TerminalFunctions* term;
+  TerminalFunctions* term;
 
 public:
 
   int attack_response();
+  
   Attack(TerminalFunctions* _term);//Charles Barry
 };
 
@@ -130,12 +125,7 @@ private:
   size_t spellOptionOneNo;
   size_t spellOptionTwoNo;
   size_t spellOptionThreeNo;
-  /*
-    WINDOW* stat;
-    WINDOW* term;
-    int windowWidth;
-  */
-TerminalFunctions* term;
+  TerminalFunctions* term;
 public:
   int spells_response();
 
@@ -166,16 +156,12 @@ private:
   int amountHealed;
   int numLeft;
   auto get_quantity();
-/*
-  WINDOW* stat;
-  WINDOW* term;
-  int windowWidth;
-*/
-TerminalFunctions* term;
+  TerminalFunctions* term;
 
 public:
   int defence_response();
   int healing(int amount, int playerHealth);
+  
   Defence(TerminalFunctions* _term);//Charles Barry
 };
 
@@ -199,23 +185,26 @@ private:
   int a = 3;
   int b = 9;
   bool defenceOption;
-  player matt;
+
+  player matt;//Matt Fretwell
   int pHealth = matt.getHealth();
   int pAttackStrength = matt.getAttackStrength();
   int pMana = matt.getMana();
   int pMagicStrength = matt.getMagicStrength();
   int pDef = matt.getDefence();
   int pXP = matt.getEXP();
+  WINDOW* substat;
 
-  monster* enemy;
+  monster* enemy;//Matt Fretwell
   int mHealth;
   int mAttackStrength;
   int mMana;
   int mMagicStrength;
   int mDef;
   int mEXP;
+  std::string length = std::string(mHealth, 'X');
 
-  void loadMonsterStats(){
+  void loadMonsterStats(){//Matt Fretwell
     mHealth = enemy->getHealth();
     //int mHealth = 50;
     mAttackStrength = enemy->getAttackStrength();
