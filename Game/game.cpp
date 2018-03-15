@@ -1,5 +1,5 @@
 //Charles Barry
-//g++ -std=c++14 game.cpp maptile.cpp terminalfunc.cpp map.cpp window.cpp combatsystem.cpp login.cpp -o game -lncursesw -lsqlite3
+//g++-5 -std=c++14 game.cpp maptile.cpp terminalfunc.cpp map.cpp window.cpp combatsystem.cpp login.cpp -o game -lncursesw -lsqlite3
 #include <locale>
 #include <cstring>
 
@@ -343,22 +343,22 @@ class Game{//Charles Barry
     void chests(){//William Smith
       int getRanNum;
       int textRan;
-      srand(time(0)); //Initialize Random Seed
+      srand(time(0));
       string textArray[] = {"The chest swings open!", "The chest creaks open!", "The chest slowly creaks open!", "The chest thuds open!"};
-      textRan = rand() % 4; // Randomise 0-3
-      mvwprintw(term->getData(), 2, 1, "%s", textArray[textRan].c_str()); //returns random string from textArray according to random number
+      textRan = rand() % 4;
+      mvwprintw(term->getData(), 2, 1, "%s", textArray[textRan].c_str());
       wrefresh(term->getData());
-      getRanNum = rand() % 20 + 1; // Randomize 1-20
+      getRanNum = rand() % 20 + 1;
       if(getRanNum < 15){
       int getRanGold;
-      getRanGold = rand() % 30 + 5; // Randomize 5-35
-      mvwprintw(term->getData(), 3, 1, "You have received %i Gold!", getRanGold); // Prints string depending on amount randomized 
+      getRanGold = rand() % 30 + 5;
+      mvwprintw(term->getData(), 3, 1, "You have received %i Gold!", getRanGold);
       wrefresh(term->getData());
       }else if(getRanNum == 20){
-      mvwprintw(term->getData(), 3, 1, "You have received an item and gold!"); //Prints String in Term Win
+      mvwprintw(term->getData(), 3, 1, "You have received an item and gold!");
       wrefresh(term->getData());
       }else{
-      mvwprintw(term->getData(), 3, 1, "You have received an Item"); //Prints String in Term Win
+      mvwprintw(term->getData(), 3, 1, "You have received an Item");
       wrefresh(term->getData());
       }
     }
@@ -471,6 +471,7 @@ class Game{//Charles Barry
       printDungeonName(dungeon.getName());
 
       while(true){
+        AttackTest* go;
         int movementflag = dungeon.movement();
         switch(movementflag){
           case 1://Exit dungeon
@@ -481,9 +482,13 @@ class Game{//Charles Barry
             break;
           case 3:
             //Combat with normal monsters
+            //AttackTest ree(func);
+            go = new AttackTest(func);
             break;
           case 4:
             //Combat with bosses
+            //AttackTest ree(func);
+            go = new AttackTest(func);
             break;
         }
         mvwprintw(term, 1, 1, "(%i,%i)", dungeon.playerpos[0], dungeon.playerpos[1]);
