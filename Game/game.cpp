@@ -407,7 +407,9 @@ class Game{//Charles Barry
               case 0:
                 {switch(suboption){
                   case 0: return 0; break;
-                  case 1: {MapCreator creator(game->getData(), stat->getData(), term->getData(), maptiles, func);} return 2; break;
+                  case 1: 
+                  func->eraseTerminal();
+                  {MapCreator creator(game->getData(), stat->getData(), term->getData(), maptiles, func);} return 2; break;
                   case 2: 
                   func->eraseTerminal();
                   func->printTerminalText("Game created by:\nCharlie Barry, Will Smith, Matt Fretwell\nGeorge Franklin, Kai Arnold, Shirin Shahali\n\nOur inspiration for the game was taken from\nZork, Hobbit, D&D board game.\n\nEnjoy Not a Dungeon Crawler!!");
