@@ -523,6 +523,9 @@ class Game{//Charles Barry
           return 1;
         }else if(menuoption == 0){
           playerID = login.getUser();
+          wprintw(stat->getData(), "%i", playerID);
+          wrefresh(stat->getData());
+          getch();
           if(playerID > 0){break;}}
         main.printMap();
       }

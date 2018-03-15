@@ -100,23 +100,22 @@
 
 // ------------------------  PLAYER  ------------------------------------
 
-    auto player::dbOpen(){//Matthew Fretwell
+     void player::dbOpen(TerminalFunctions* _term, int _playerid){//Matthew Fretwell
+       term = _term; playerid = _playerid;
         sqlite::sqlite db( "gamedb.db" );
         auto cur = db.get_statement();
-        cur->set_sql( "SELECT * FROM Player WHERE ID = ?");
+        cur->set_sql( "SELECT * FROM PlayerStats WHERE PlayerID = ?");
         cur->prepare();
         cur->bind(1, playerid);
         cur->step();
         int num = 1;
-        std::array<int, 13>arrayOfStatsP;
         while(num<14){
-            arrayOfStatsP[num-1] = cur->get_int(num-1);;
+            playerDB[num-1] = cur->get_int(num-1);
             num = num +1;
         }
-     return arrayOfStatsP;
 
     }
-    std::array<int, 13>playerDB;
+
     int player::pXPGain(int mEXP){//Matthew Fretwell
            int xpGain = playerDB[7] + mEXP;
             playerDB[7] = xpGain;
@@ -141,7 +140,7 @@
             int defenceXPGain = playerDB[12] + defenceXP;
             sqlite::sqlite db( "gamedb.db" );
             auto cur = db.get_statement();
-            cur->set_sql("UPDATE Player SET ASEXP = ?, MEXP = ?, MSEXP = ?, DEXP = ? WHERE PlayerID = ?;");
+            cur->set_sql("UPDATE PlayerStats SET ASEXP = ?, MEXP = ?, MSEXP = ?, DEXP = ? WHERE PlayerID = ?;");
             cur->prepare();
 
             cur->bind( 1, attackXPGain );
@@ -166,7 +165,7 @@
 
             sqlite::sqlite db( "gamedb.db" );
             auto cur = db.get_statement();
-            cur->set_sql("UPDATE Player SET Level = ? WHERE PlayerID = ?;");
+            cur->set_sql("UPDATE PlayerStats SET Level = ? WHERE PlayerID = ?;");
             cur->prepare();
 
             cur->bind( 1, playerDB[1] );
@@ -188,7 +187,7 @@
 
             sqlite::sqlite db( "gamedb.db" );
             auto cur = db.get_statement();
-            cur->set_sql("UPDATE Player SET Health = ? WHERE PlayerID = ?;");
+            cur->set_sql("UPDATE PlayerStats SET Health = ? WHERE PlayerID = ?;");
             cur->prepare();
 
             cur->bind( 1, playerDB[2] );
@@ -224,7 +223,7 @@ int player::updateDB(int a, int b, int asLevelUpPoint){//Matthew Fretwell
             term->printTerminalText ("\n\n\nNext level at EXP. " + std::to_string(asLevelUpPoint));
     }
 
-    int player::statsLevelUp(int a, int b){//Matthew Fretwell
+    void player::statsLevelUp(int a, int b){//Matthew Fretwell
 
             int asLevel = playerDB[a];
             int asEXP = playerDB[b];
@@ -262,17 +261,13 @@ int player::updateDB(int a, int b, int asLevelUpPoint){//Matthew Fretwell
             if(a==6&& asEXP >= asLevelUpPoint){
                sqlite::sqlite db( "gamedb.db" );
                 auto cur = db.get_statement();
-                cur->set_sql("UPDATE PlayerStats SET Defence = ? WHERE PlayerName = ?;");
+                cur->set_sql("UPDATE PlayerStats SET Defence = ? WHERE PlayerID = ?;");
                 updateDB(6, 12, asLevelUpPoint);
                 cur->prepare();
                 cur->bind( 1, playerDB[a] );
                 cur->bind( 2, playerid);
                 cur->step();
             }
-    else{
-        return 0;
-    }
-
     }
 
     int player::getLevelUp(){//Matthew Fretwell
@@ -318,39 +313,28 @@ int player::updateDB(int a, int b, int asLevelUpPoint){//Matthew Fretwell
         }
 
         int player::getStatsLevelUp(int a, int b){//Matthew Fretwell
-            return statsLevelUp(a, b);
+            statsLevelUp(a, b);
         }
         int player::getHealthLevelUp(){//Matthew Fretwell
             return healthLevelUp();
         }
 
-    player::player(){//Matthew Fretwell
-        playerDB = dbOpen();
-    }
-    player::player(TerminalFunctions* _term, int _playerid){//Matthew Fretwell & Charles Barry
-        playerDB = dbOpen();
-        playerid = _playerid;
-        term = _term;
-    }
 
 
 
 // -----------------------  MONSTER -----------------------------
 
-auto monster::dbOpen(){//Matthew Fretwell
+void monster::dbOpen(){//Matthew Fretwell
     sqlite::sqlite db( "gamedb.db" );
     auto cur = db.get_statement();
     cur->set_sql( "SELECT * FROM Monster WHERE MonsterName = 'Goblin'");
     cur->prepare();
     cur->step();
     int num = 1;
-    std::array<int, 9>arrayofstats;
     while(num<10){
-        arrayofstats[num-1] = cur->get_int(num-1);
+        monsterDB[num-1] = cur->get_int(num-1);
         num = num +1;
     }
-
- return arrayofstats;
 }
 
 
@@ -382,11 +366,6 @@ auto monster::dbOpen(){//Matthew Fretwell
         dbOpen();
         return 0;
     }
-
-monster::monster(){//Matthew Fretwell
-    monsterDB = dbOpen();
-    int ID;
-}
 
 
 
@@ -702,17 +681,23 @@ int AttackTest::battle(){  //George Franklin
   term->eraseTerminal();
 }
 
-AttackTest::AttackTest(TerminalFunctions* _term, int playerid) : Attack(_term), Spells(_term), Defence(_term), player(_term, playerid){//Charles Barry
+AttackTest::AttackTest(TerminalFunctions* _term, int _playerid) : Attack(_term), Spells(_term), Defence(_term){//Charles Barry
   term = _term;
-  monster* bob = new monster;
-  enemy = bob;
+  enemy = new monster();
+  matt = new player();
+
+  matt->dbOpen(_term, _playerid);
+  enemy->dbOpen();
+  //player* please = new player(term, _playerid);
   loadMonsterStats();
+  loadPlayerStats();
   battle();
 }
 
-AttackTest::AttackTest(TerminalFunctions* _term, int playerid, monster* phil) : Attack(_term), Spells(_term), Defence(_term), player(_term, playerid){//Charles Barry
+AttackTest::AttackTest(TerminalFunctions* _term, int _playerid, monster* phil) : Attack(_term), Spells(_term), Defence(_term){//Charles Barry
   term = _term;
   enemy = phil;
+  //player* please = new player(term, _playerid);
   loadMonsterStats();
   battle();
 }

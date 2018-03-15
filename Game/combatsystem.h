@@ -26,17 +26,17 @@ public:
 
 class player{//Matthew Fretwell
 private:
-  auto dbOpen();
   std::array<int, 13>playerDB;
   int pXPGain(int mEXP);
   int pXPSplit(int mEXP,int attackNum,int defenceNum);
   int levelUp();
   int healthLevelUp();
   int updateDB(int a, int b, int asLevelUpPoint);
-  int statsLevelUp(int a, int b);
+  void statsLevelUp(int a, int b);
   TerminalFunctions* term;
   int playerid;
 public:
+  void dbOpen(TerminalFunctions* _term, int _playerid);
   int getHealthLevelUp();
   int getLevelUp();
   int getLevel();
@@ -53,17 +53,13 @@ public:
   int getXPSplit(int mEXP, int attackNum, int defenceNum);
   int getStatsLevelUp(int a, int b);
   int levelingSystem(int mEXP, int numOfAttacks, int numOfDefence);
-  player();
-  player(TerminalFunctions* _term, int _playerid);//Charles Barry
 };
 
 class monster{//Matthew Fretwell
 private:
-  auto dbOpen();
   std::array<int, 9>monsterDB;
-
 public:
-
+  void dbOpen();
   int getLevel();
   int getHealth();
   int getAttackStrength();
@@ -73,7 +69,6 @@ public:
   int getEXP();
   int getGold();
   int updateDB();
-  monster();
 };
 
 class Attack : public Combat{//George Franklin
@@ -187,13 +182,23 @@ private:
   int b = 9;
   bool defenceOption;
 
-  player matt;//Matt Fretwell
-  int pHealth = matt.getHealth();
-  int pAttackStrength = matt.getAttackStrength();
-  int pMana = matt.getMana();
-  int pMagicStrength = matt.getMagicStrength();
-  int pDef = matt.getDefence();
-  int pXP = matt.getEXP();
+  player* matt;//Matt Fretwell
+  int pHealth;
+  int pAttackStrength;
+  int pMana;
+  int pMagicStrength;
+  int pDef;
+  int pXP;
+
+  void loadPlayerStats(){
+    pHealth = matt->getHealth();
+    pAttackStrength = matt->getAttackStrength();
+    pMana = matt->getMana();
+    pMagicStrength = matt->getMagicStrength();
+    pDef = matt->getDefence();
+    pXP = matt->getEXP();
+  }
+
   WINDOW* substat;
 
   monster* enemy;//Matt Fretwell
@@ -203,7 +208,6 @@ private:
   int mMagicStrength;
   int mDef;
   int mEXP;
-  std::string length = std::string(mHealth, 'X');
 
   void loadMonsterStats(){//Matt Fretwell
     mHealth = enemy->getHealth();
@@ -216,6 +220,7 @@ private:
   }
 
   TerminalFunctions* term;
+  player* please;
 
 public:
   int battle();

@@ -76,23 +76,23 @@
     {
 
     func->eraseTerminal();
-    std::string Username_entered, Password_entered;
+    std::string Password_entered;
     func->printTerminalText("Enter Username: ");
-    Username_entered = func->getUserInput();
-    while(userCheck(Username_entered)==1)
+    UserN = func->getUserInput();
+    while(userCheck(UserN)==1)
     {
           func->eraseTerminal();
     func->printTerminalText("Sorry, you can't use that username");
     func->printTerminalText("\nIt has been taken by another user");
     func->printTerminalText("\n\n\nEnter a more unqiue username: ");
-    Username_entered = func->getUserInput();
-    userCheck(Username_entered);
+    UserN = func->getUserInput();
+    userCheck(UserN);
 
     }
         func->eraseTerminal();
     func->printTerminalText("Enter Password: ");
     Password_entered = func->getUserInput(true);
-    creatCharacter(Username_entered,Password_entered);
+    creatCharacter(UserN,Password_entered);
 
     }
 
@@ -139,8 +139,7 @@ int LoginClass::getUser(){//Shirin Shahali
             query->bind(1,UserIdNum);
             query->step();
           }
-          break;
-      break;
+          return UserIdNum;
 
       case 2:
       {
