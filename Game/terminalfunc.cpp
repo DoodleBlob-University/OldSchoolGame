@@ -37,6 +37,28 @@ std::string TerminalFunctions::getUserInput(){//Charles Barry
   }
 }
 
+std::string TerminalFunctions::getUserInput(bool secure){//Charles Barry
+  wmove(term, 10, 1);
+  wprintw(term, ">");
+  std::string userinput;
+  for(int i = 1; i < 45; ++i){
+    int input = wgetch(term);
+    switch(input){
+      case 127:
+        if(userinput.length() > 0){userinput = userinput.substr(0,userinput.length()-1); mvwprintw(term, 10, i, " "); i -= 1; wmove(term, 10, i+1);}
+        i -= 1;
+        break;
+      case '\n':
+        return userinput;
+        break;
+      default:
+        userinput = userinput.append(1u, input);
+        wprintw(term, "*");
+        break;
+    }
+  }
+}
+
 bool TerminalFunctions::getUserYN(){//Charles Barry
   while(true){
     std::string input = getUserInput();

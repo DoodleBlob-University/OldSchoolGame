@@ -91,7 +91,7 @@
     }
         func->eraseTerminal();
     func->printTerminalText("Enter Password: ");
-    Password_entered = func->getUserInput();
+    Password_entered = func->getUserInput(true);
     creatCharacter(Username_entered,Password_entered);
 
     }
@@ -105,7 +105,7 @@
     UserN = func->getUserInput();
     func->eraseTerminal();
     func->printTerminalText("Enter Password: ");
-    Password_entered = func->getUserInput();
+    Password_entered = func->getUserInput(true);
     sqlite::sqlite db("gamedb.db");
     auto query= db.get_statement();
     //query->set_sql("SELECT COUNT(*) FROM User WHERE Username=? AND Password='"+Password_entered+"'; ");  <--- DON'T DO THIS!!! - Charlie
