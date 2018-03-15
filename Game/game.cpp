@@ -382,6 +382,7 @@ class Game{//Charles Barry
         printDungeonName(dungeonname);
         mvwprintw(stat->getData(), 20, centreTextCursorPos("h: Help"), "h: Help");
 
+
         for(int i = 0; i < MenuOptions[suboption].size(); ++i){
           if(i == selected){wattron(stat->getData(),COLOR_PAIR(2));}
           mvwprintw(stat->getData(), i+5, centreTextCursorPos(MenuOptions[suboption][i]), MenuOptions[suboption][i].c_str());
@@ -398,9 +399,8 @@ class Game{//Charles Barry
             if(selected != (MenuOptions[suboption].size())-1){selected += 1;}
             break;
           case 'H':
-            func->eraseTerminal();
-            func->printTerminalText("Move the cursor using 'W', 'A', 'S' and 'D'\nPress SPACE to Confirm");
-            break;
+              func->eraseTerminal();
+              func->printTerminalText("Move the cursor using 'W', 'A', 'S' and 'D'\nPress SPACE to Confirm");
           case ' ':
             switch(selected){
               case 0:
