@@ -401,6 +401,7 @@ class Game{//Charles Barry
           case 'H':
               func->eraseTerminal();
               func->printTerminalText("Move the cursor using 'W', 'A', 'S' and 'D'\nPress SPACE to Confirm");
+              break;
           case ' ':
             switch(selected){
               case 0:
@@ -417,7 +418,9 @@ class Game{//Charles Barry
                 {switch(suboption){
                   case 0: dungeonname = "Extras"; suboption += 1; selected = 0; break;
                   case 1: dungeonname = main.getName(); suboption -= 1; selected = 0; return 2; break;
-                  case 2: dungeonname = main.getName(); suboption -= 2; selected = 0; return 2; break;
+                  case 2: 
+                  func->eraseTerminal();
+                  dungeonname = main.getName(); suboption -= 2; selected = 0; return 2; break;
                 }}
                 break;
               case 2:
