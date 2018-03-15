@@ -343,22 +343,22 @@ class Game{//Charles Barry
     void chests(){//William Smith
       int getRanNum;
       int textRan;
-      srand(time(0));
+      srand(time(0)); //Initialize Random Seed
       string textArray[] = {"The chest swings open!", "The chest creaks open!", "The chest slowly creaks open!", "The chest thuds open!"};
-      textRan = rand() % 4;
-      mvwprintw(term->getData(), 2, 1, "%s", textArray[textRan].c_str());
+      textRan = rand() % 4; // Randomise 0-3
+      mvwprintw(term->getData(), 2, 1, "%s", textArray[textRan].c_str()); //returns random string from textArray according to random number
       wrefresh(term->getData());
-      getRanNum = rand() % 20 + 1;
+      getRanNum = rand() % 20 + 1; // Randomize 1-20
       if(getRanNum < 15){
       int getRanGold;
-      getRanGold = rand() % 30 + 5;
-      mvwprintw(term->getData(), 3, 1, "You have received %i Gold!", getRanGold);
+      getRanGold = rand() % 30 + 5; // Randomize 5-35
+      mvwprintw(term->getData(), 3, 1, "You have received %i Gold!", getRanGold); // Prints string depending on amount randomized 
       wrefresh(term->getData());
       }else if(getRanNum == 20){
-      mvwprintw(term->getData(), 3, 1, "You have received an item and gold!");
+      mvwprintw(term->getData(), 3, 1, "You have received an item and gold!"); //Prints String in Term Win
       wrefresh(term->getData());
       }else{
-      mvwprintw(term->getData(), 3, 1, "You have received an Item");
+      mvwprintw(term->getData(), 3, 1, "You have received an Item"); //Prints String in Term Win
       wrefresh(term->getData());
       }
     }

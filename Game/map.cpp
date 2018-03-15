@@ -65,13 +65,13 @@ int PeacefulMap::interact(int pos[2]){//William Smith
   // Opens doors checking case ID
   if(map[pos[0]-1][pos[1]] == 8){
       map[pos[0]-1][pos[1]] = 0;
-      int temppos[] = {pos[0]-1,pos[1]};
-      interact(temppos);
+      int temppos[] = {pos[0]-1,pos[1]}; //Temporarily moves pos allowing double doors to be open
+      interact(temppos); //Recursion call to rerun code to open doors
   }
   if(map[pos[0]][pos[1] - 1] == 8){
       map[pos[0]][pos[1] - 1] = 0;
       int temppos[] = {pos[0],pos[1]-1};
-      interact(temppos);
+      interact(temppos); 
   }
   if(map[pos[0] + 1][pos[1]] == 8){
       map[pos[0] + 1][pos[1]] = 0;
@@ -83,8 +83,8 @@ int PeacefulMap::interact(int pos[2]){//William Smith
       int temppos[] = {pos[0],pos[1]+1};
       interact(temppos);
   }
-  if(map[pos[0] - 1][pos[1]] == 9){
-    map[pos[0]-1][pos[1]] = 0;
+  if(map[pos[0] - 1][pos[1]] == 9){ //Checks if space is a chest (Case ID = 9)
+    map[pos[0]-1][pos[1]] = 0; //If so change TileID to 0 removing the chest
     return 1;
   }
   if(map[pos[0]][pos[1] - 1] == 9){
@@ -160,7 +160,7 @@ int PeacefulMap::movement(){//William Smith & Charles Barry
          }
          break;
     case 'E':
-        if(interact(playerpos)){return 2;};
+        if(interact(playerpos)){return 2;}; 
         break;
     break;
   }
