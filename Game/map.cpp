@@ -194,15 +194,6 @@ Dungeon::Dungeon(int _ID, WINDOW* _win, MapTile* maptiles) : PeacefulMap(_ID, _w
         num = num+1;
       }
     }
-    {//Spawn boss on the map //Charles Barry
-      sqlite::sqlite db( "gamedb.db" );
-      auto cur = db.get_statement();
-      cur->set_sql("SELECT dungeon.bossy, dungeon.bossx FROM dungeon WHERE ID = ?;");
-      cur->prepare();
-      cur->bind(1, ID);
-      cur->step();
-      map[cur->get_int(0)][cur->get_int(1)] = 14;
-    }
     printMap();//reprints map with monsters displaying
     mvwprintw(_win, playerpos[0], playerpos[1],"X");//draws player onto screen
     wrefresh(_win);

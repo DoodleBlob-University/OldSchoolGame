@@ -380,6 +380,7 @@ class Game{//Charles Barry
       vector<vector<string>> MenuOptions = {{"Play Game","Extra", "Options", "Exit"},{"MapCreator","Back"},{"----","Back"}};
       while(true){
         printDungeonName(dungeonname);
+        mvwprintw(stat->getData(), 20, centreTextCursorPos("h: Help"), "h: Help");
 
         for(int i = 0; i < MenuOptions[suboption].size(); ++i){
           if(i == selected){wattron(stat->getData(),COLOR_PAIR(2));}
@@ -395,6 +396,10 @@ class Game{//Charles Barry
             break;
           case 'S':
             if(selected != (MenuOptions[suboption].size())-1){selected += 1;}
+            break;
+          case 'H':
+            func->eraseTerminal();
+            func->printTerminalText("Move the cursor using 'W', 'A', 'S' and 'D'\nPress SPACE to Confirm");
             break;
           case ' ':
             switch(selected){
