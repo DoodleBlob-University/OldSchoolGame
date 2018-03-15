@@ -27,7 +27,7 @@
     sqlite::sqlite db("gamedb.db");
     auto query= db.get_statement();
     //query->set_sql("INSERT INTO player(Name,Password) VALUES (?,'"+password+"'); ");
-    query->set_sql("INSERT INTO player(Name,Password) VALUES (?,?); ");
+    query->set_sql("INSERT INTO player(Name,Password) VALUES (?,?);");
     query->prepare();
     query->bind(1,username);
     query->bind(2,password);
@@ -130,6 +130,15 @@ int LoginClass::getUser(){//Shirin Shahali
       case 1:
           registerCharater();
           func->printTerminalText("Registration is complete");
+          UserIdNum = showID();
+          {
+            sqlite::sqlite db("gamedb.db");
+            auto query= db.get_statement();
+            query->set_sql("INSERT INTO PlayerStats(PlayerID) VALUES(?);");
+            query->prepare();
+            query->bind(1,UserIdNum);
+            query->step();
+          }
           break;
       break;
 
@@ -137,10 +146,10 @@ int LoginClass::getUser(){//Shirin Shahali
       {
           while(loginCharater()!=1)
           {
-                func->eraseTerminal();
+            func->eraseTerminal();
             func->printTerminalText("\nCredencials do not match to the database!");
-              func->printTerminalText("\n\nPlease try again");
-              //loginCharater();
+            func->printTerminalText("\n\nPlease try again");
+            //loginCharater();
           }
 
           func->printTerminalText("Game starting...");
