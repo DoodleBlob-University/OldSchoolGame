@@ -10,8 +10,8 @@ private:
 public:
   int getWindowWidth(){return windowWidth;}
   void printTerminalText(std::string text);
-  virtual std::string getUserInput();
-  virtual std::string getUserInput(bool secure);
+  WINDOW* getStat(){return stat;}
+  std::string getUserInput();
   bool getUserYN();
   void eraseTerminal();
   TerminalFunctions(WINDOW* _stat, WINDOW* _term, int _windowWidth);
