@@ -687,4 +687,5 @@ AttackTest::AttackTest(TerminalFunctions* _term, monster* phil) : Attack(_term),
   term = _term;
   enemy = phil;
   loadMonsterStats();
+  battle();
 }
