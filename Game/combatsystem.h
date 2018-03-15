@@ -35,6 +35,7 @@ private:
   int updateDB(int a, int b, int asLevelUpPoint);
   int statsLevelUp(int a, int b);
   TerminalFunctions* term;
+  int playerid;
 public:
   int getHealthLevelUp();
   int getLevelUp();
@@ -53,7 +54,7 @@ public:
   int getStatsLevelUp(int a, int b);
   int levelingSystem(int mEXP, int numOfAttacks, int numOfDefence);
   player();
-  player(TerminalFunctions* _term);//Charles Barry
+  player(TerminalFunctions* _term, int _playerid);//Charles Barry
 };
 
 class monster{//Matthew Fretwell
@@ -101,7 +102,7 @@ private:
 public:
 
   int attack_response();
-  
+
   Attack(TerminalFunctions* _term);//Charles Barry
 };
 
@@ -161,7 +162,7 @@ private:
 public:
   int defence_response();
   int healing(int amount, int playerHealth);
-  
+
   Defence(TerminalFunctions* _term);//Charles Barry
 };
 
@@ -219,8 +220,8 @@ private:
 public:
   int battle();
 
-  AttackTest(TerminalFunctions* _term);//Charles Barry
-  AttackTest(TerminalFunctions* _term, monster* phil);//Charles Barry
+  AttackTest(TerminalFunctions* _term, int playerid);//Charles Barry
+  AttackTest(TerminalFunctions* _term, int playerid, monster* phil);//Charles Barry
 };
 
 #endif

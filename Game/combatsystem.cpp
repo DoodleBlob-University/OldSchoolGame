@@ -12,7 +12,7 @@
 
 // ------------------------------  COMBAT  ----------------------------------------
 
-    //all calls below get the name and stats for each of the spells, weapons and defence abilities 
+    //all calls below get the name and stats for each of the spells, weapons and defence abilities
     std::string Combat::database_assign_name_weapon(int ID) //George Franklin
       {
         sqlite::sqlite db( "gamedb.db" );
@@ -198,6 +198,7 @@
 int player::updateDB(int a, int b, int asLevelUpPoint){//Matthew Fretwell
     std::string upgrade;
     char upgradeChar[60];
+    int playerid;
     playerDB[a] = playerDB[a]+1;
     if(a==3){
         upgrade = "Attack Strength";
@@ -318,8 +319,9 @@ int player::updateDB(int a, int b, int asLevelUpPoint){//Matthew Fretwell
     player::player(){//Matthew Fretwell
         playerDB = dbOpen();
     }
-    player::player(TerminalFunctions* _term){//Matthew Fretwell & Charles Barry
+    player::player(TerminalFunctions* _term, int _playerid){//Matthew Fretwell & Charles Barry
         playerDB = dbOpen();
+        playerid = _playerid;
         term = _term;
     }
 
@@ -398,8 +400,8 @@ int Attack::attack_response() //player chooses desired weapon  //George Franklin
 
   weaponOptionOne = attackResponse.find("1");
   weaponOptionTwo = attackResponse.find("2");
-  weaponOptionThree = attackResponse.find("3"); 
-  weaponOptionOneNo = attackResponse.find(weaponOneLower); 
+  weaponOptionThree = attackResponse.find("3");
+  weaponOptionOneNo = attackResponse.find(weaponOneLower);
   weaponOptionTwoNo = attackResponse.find(weaponTwoLower);
   weaponOptionThreeNo = attackResponse.find(weaponThreeLower);
 
@@ -691,7 +693,7 @@ int AttackTest::battle(){  //George Franklin
   term->eraseTerminal();
 }
 
-AttackTest::AttackTest(TerminalFunctions* _term) : Attack(_term), Spells(_term), Defence(_term), player(_term){//Charles Barry
+AttackTest::AttackTest(TerminalFunctions* _term, int playerid) : Attack(_term), Spells(_term), Defence(_term), player(_term, playerid){//Charles Barry
   term = _term;
   monster* bob = new monster;
   enemy = bob;
@@ -699,7 +701,7 @@ AttackTest::AttackTest(TerminalFunctions* _term) : Attack(_term), Spells(_term),
   battle();
 }
 
-AttackTest::AttackTest(TerminalFunctions* _term, monster* phil) : Attack(_term), Spells(_term), Defence(_term), player(_term){//Charles Barry
+AttackTest::AttackTest(TerminalFunctions* _term, int playerid, monster* phil) : Attack(_term), Spells(_term), Defence(_term), player(_term, playerid){//Charles Barry
   term = _term;
   enemy = phil;
   loadMonsterStats();

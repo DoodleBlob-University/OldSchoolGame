@@ -407,10 +407,10 @@ class Game{//Charles Barry
               case 0:
                 {switch(suboption){
                   case 0: return 0; break;
-                  case 1: 
+                  case 1:
                   func->eraseTerminal();
                   {MapCreator creator(game->getData(), stat->getData(), term->getData(), maptiles, func);} return 2; break;
-                  case 2: 
+                  case 2:
                   func->eraseTerminal();
                   func->printTerminalText("Game created by:\nCharlie Barry, Will Smith, Matt Fretwell\nGeorge Franklin, Kai Arnold, Shirin Shahali\n\nOur inspiration for the game was taken from\nZork, Hobbit, D&D board game.\n\nEnjoy Not a Dungeon Crawler!!");
                   break;
@@ -420,7 +420,7 @@ class Game{//Charles Barry
                 {switch(suboption){
                   case 0: dungeonname = "Extras"; suboption += 1; selected = 0; break;
                   case 1: dungeonname = main.getName(); suboption -= 1; selected = 0; return 2; break;
-                  case 2: 
+                  case 2:
                   func->eraseTerminal();
                   dungeonname = main.getName(); suboption -= 2; selected = 0; return 2; break;
                 }}
@@ -496,12 +496,12 @@ class Game{//Charles Barry
           case 3:
             //Combat with normal monsters
             //AttackTest ree(func);
-            go = new AttackTest(func);
+            go = new AttackTest(func, playerID);
             break;
           case 4:
             //Combat with bosses
             //AttackTest ree(func);
-            go = new AttackTest(func);
+            go = new AttackTest(func, playerID);
             break;
         }
         mvwprintw(term, 1, 1, "(%i,%i)", dungeon.playerpos[0], dungeon.playerpos[1]);
