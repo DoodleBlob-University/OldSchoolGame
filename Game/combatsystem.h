@@ -58,8 +58,11 @@ public:
 class monster{//Matthew Fretwell
 private:
   std::array<int, 9>monsterDB;
+  int monsterid;
+  std::string monstername;
 public:
-  void dbOpen();
+  std::string getName();
+  void dbOpen(int _monsterid);
   int getLevel();
   int getHealth();
   int getAttackStrength();
@@ -68,7 +71,7 @@ public:
   int getDefence();
   int getEXP();
   int getGold();
-  int updateDB();
+  void updateDB();
 };
 
 class Attack : public Combat{//George Franklin
@@ -226,7 +229,7 @@ public:
   int battle();
 
   AttackTest(TerminalFunctions* _term, int playerid);//Charles Barry
-  AttackTest(TerminalFunctions* _term, int playerid, monster* phil);//Charles Barry
+  AttackTest(TerminalFunctions* _term, int playerid, int monsterid);//Charles Barry
 };
 
 #endif

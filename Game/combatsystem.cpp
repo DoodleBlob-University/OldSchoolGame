@@ -324,47 +324,51 @@ int player::updateDB(int a, int b, int asLevelUpPoint){//Matthew Fretwell
 
 // -----------------------  MONSTER -----------------------------
 
-void monster::dbOpen(){//Matthew Fretwell
+void monster::dbOpen(int _monsterid){//Matthew Fretwell
+    monsterid = _monsterid;
     sqlite::sqlite db( "gamedb.db" );
     auto cur = db.get_statement();
-    cur->set_sql( "SELECT * FROM Monster WHERE MonsterName = 'Goblin'");
+    cur->set_sql( "SELECT MonsterName, Level, Health, AttackStrength, Mana, MagicStrength, Defence, EXP, Gold FROM Monster WHERE ID = ?");
     cur->prepare();
+    cur->bind(1, monsterid);
     cur->step();
     int num = 1;
-    while(num<10){
-        monsterDB[num-1] = cur->get_int(num-1);
+    monstername = cur->get_text(0);
+    while(num<8){
+        monsterDB[num-1] = cur->get_int(num);
         num = num +1;
     }
 }
 
-
+    std::string monster::getName(){
+      return monstername;
+    }
     int monster::getLevel(){//Matthew Fretwell
-        return monsterDB[1];
+        return monsterDB[0];
     }
     int monster::getHealth(){//Matthew Fretwell
-        return monsterDB[2];
+        return monsterDB[1];
     }
     int monster::getAttackStrength(){//Matthew Fretwell
-        return monsterDB[3];
+        return monsterDB[2];
     }
     int monster::getMana(){//Matthew Fretwell
-        return monsterDB[4];
+        return monsterDB[3];
     }
     int monster::getMagicStrength(){//Matthew Fretwell
-        return monsterDB[5];
+        return monsterDB[4];
     }
     int monster::getDefence(){//Matthew Fretwell
-        return monsterDB[6];
+        return monsterDB[5];
     }
     int monster::getEXP(){//Matthew Fretwell
-        return monsterDB[7];
+        return monsterDB[6];
     }
     int monster::getGold(){//Matthew Fretwell
-        return monsterDB[8];
+        return monsterDB[7];
     }
-    int monster::updateDB(){//Matthew Fretwell
-        dbOpen();
-        return 0;
+    void monster::updateDB(){//Matthew Fretwell
+        dbOpen(monsterid);
     }
 
 
@@ -563,7 +567,7 @@ int AttackTest::battle(){  //George Franklin
   {
     substat = derwin(term->getStat(), 9,43,3,1);
     //term->printTerminalText ("The monster's health is... " + std::to_string(mHealth));
-    term->printTerminalText ("What would you like to do?");
+    term->printTerminalText ("What would you like to do?" + enemy->getName());
     term-> printTerminalText ("\n-1    Cast a spell");
     term-> printTerminalText ("\n\n-2    Use an attack");
     term->printTerminalText ("\n\n\n----- ");
@@ -614,7 +618,7 @@ int AttackTest::battle(){  //George Franklin
           term->eraseTerminal();
           term->printTerminalText ("You have killed the monster");
           term->printTerminalText("\nYou have been awarded with " + std::to_string(mEXP)+ " XP!");
-          getXPGain(mEXP);// Matthew Fretwell
+          /*getXPGain(mEXP);// Matthew Fretwell
           getXPSplit(mEXP, attackCounter, healingCounter);
           getLevelUp();
           getHealthLevelUp();
@@ -626,7 +630,7 @@ int AttackTest::battle(){  //George Franklin
             getStatsLevelUp(a, b);
             a=a+1;
             b=b+1;
-          }
+          }*/
           sleep(2);
         break;
       }
@@ -687,17 +691,22 @@ AttackTest::AttackTest(TerminalFunctions* _term, int _playerid) : Attack(_term),
   matt = new player();
 
   matt->dbOpen(_term, _playerid);
-  enemy->dbOpen();
+  enemy->dbOpen(1);
   //player* please = new player(term, _playerid);
   loadMonsterStats();
   loadPlayerStats();
   battle();
 }
 
-AttackTest::AttackTest(TerminalFunctions* _term, int _playerid, monster* phil) : Attack(_term), Spells(_term), Defence(_term){//Charles Barry
+AttackTest::AttackTest(TerminalFunctions* _term, int _playerid, int monsterid) : Attack(_term), Spells(_term), Defence(_term){//Charles Barry
   term = _term;
-  enemy = phil;
+  enemy = new monster();
+  matt = new player();
+
+  matt->dbOpen(_term, _playerid);
+  enemy->dbOpen(monsterid);
   //player* please = new player(term, _playerid);
   loadMonsterStats();
+  loadPlayerStats();
   battle();
 }
