@@ -1,3 +1,4 @@
+//Shirin Shahali
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -8,7 +9,7 @@
 
 #include "libsqlite.hpp"
 
-    int LoginClass::userCheck(std::string username)
+    int LoginClass::userCheck(std::string username)//Shirin Shahali
     {
     sqlite::sqlite db("gamedb.db");
     auto query= db.get_statement();
@@ -21,7 +22,7 @@
     }
     }
 
-    char LoginClass::creatCharacter(auto& username,auto& password)
+    char LoginClass::creatCharacter(auto& username,auto& password)//Shirin Shahali
     {
     sqlite::sqlite db("gamedb.db");
     auto query= db.get_statement();
@@ -33,7 +34,7 @@
     query->step();
     }
 
-    int LoginClass::showID()
+    int LoginClass::showID()//Shirin Shahali
     {
           sqlite::sqlite db("gamedb.db");
     auto query= db.get_statement();
@@ -48,7 +49,7 @@
     }
 
 
-    int LoginClass::UserDecision()
+    int LoginClass::UserDecision()//Shirin Shahali
     {
 
     func->printTerminalText("1: Would you like to Register?");
@@ -71,7 +72,7 @@
 
 
 
-    void LoginClass::registerCharater()
+    void LoginClass::registerCharater()//Shirin Shahali
     {
 
     func->eraseTerminal();
@@ -97,7 +98,7 @@
 
 
 
-    char LoginClass::loginCharater()
+    char LoginClass::loginCharater()//Shirin Shahali
     {
     std::string Password_entered;
     func->printTerminalText("Enter Username: ");
@@ -117,7 +118,7 @@
     }
 
 
-int LoginClass::getUser(){
+int LoginClass::getUser(){//Shirin Shahali
     int UserIdNum = 0;
     while(UserIdNum == 0){
           func->eraseTerminal();
@@ -136,15 +137,16 @@ int LoginClass::getUser(){
       {
           while(loginCharater()!=1)
           {
-            func->printTerminalText("Credencials do not match to the database!");
-              func->printTerminalText("\nPlease try again");
-              loginCharater();
+                func->eraseTerminal();
+            func->printTerminalText("\nCredencials do not match to the database!");
+              func->printTerminalText("\n\nPlease try again");
+              //loginCharater();
           }
 
           func->printTerminalText("Game starting...");
           UserIdNum = showID();
         //func->printTerminalText("\nHello user number " + std::to_string(UserIdNum));
-          func->printTerminalText("\nWelcome Back " + UserN + "!");
+          func->printTerminalText("\nWelcome back, " + UserN + "!");
       }
       break;
 

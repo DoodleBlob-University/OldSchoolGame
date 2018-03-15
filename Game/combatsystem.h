@@ -1,3 +1,4 @@
+//Charles Barry
 #ifndef COMBATSYSTEM_H
 #define COMBATSYSTEM_H
 
@@ -23,7 +24,7 @@ public:
 
 };
 
-class player{
+class player{//Matthew Fretwell
 private:
   auto dbOpen();
   std::array<int, 13>playerDB;
@@ -52,10 +53,10 @@ public:
   int getStatsLevelUp(int a, int b);
   int levelingSystem(int mEXP, int numOfAttacks, int numOfDefence);
   player();
-  player(TerminalFunctions* _term);
+  player(TerminalFunctions* _term);//Charles Barry
 };
 
-class monster{
+class monster{//Matthew Fretwell
 private:
   auto dbOpen();
   std::array<int, 9>monsterDB;
@@ -106,7 +107,7 @@ TerminalFunctions* term;
 public:
 
   int attack_response();
-  Attack(TerminalFunctions* _term);
+  Attack(TerminalFunctions* _term);//Charles Barry
 };
 
 class Spells : public Combat{//George Franklin
@@ -138,7 +139,7 @@ TerminalFunctions* term;
 public:
   int spells_response();
 
-  Spells(TerminalFunctions* _term);
+  Spells(TerminalFunctions* _term);//Charles Barry
 };
 
 class Defence : public Combat{//George Franklin
@@ -175,7 +176,7 @@ TerminalFunctions* term;
 public:
   int defence_response();
   int healing(int amount, int playerHealth);
-  Defence(TerminalFunctions* _term);
+  Defence(TerminalFunctions* _term);//Charles Barry
 };
 
 class AttackTest : public Attack, public Spells, public Defence, public monster, public player{//George Franklin
@@ -198,11 +199,6 @@ private:
   int a = 3;
   int b = 9;
   bool defenceOption;
-/*
-  WINDOW* stat;
-  WINDOW* term;
-  int windowWidth;
-*/
   player matt;
   int pHealth = matt.getHealth();
   int pAttackStrength = matt.getAttackStrength();
@@ -234,8 +230,8 @@ private:
 public:
   int battle();
 
-  AttackTest(TerminalFunctions* _term);
-  AttackTest(TerminalFunctions* _term, monster* phil);
+  AttackTest(TerminalFunctions* _term);//Charles Barry
+  AttackTest(TerminalFunctions* _term, monster* phil);//Charles Barry
 };
 
 #endif

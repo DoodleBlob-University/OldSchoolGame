@@ -1,7 +1,8 @@
+//Shirin Shahali
 #ifndef LOGIN_H
 #define LOGIN_H
 
-class LoginClass//
+class LoginClass//Shirin Shahali
 {
     private:
     int userCheck(std::string username);
@@ -16,7 +17,7 @@ class LoginClass//
   public:
     int getUser();
 
-    LoginClass(TerminalFunctions* _func){
+    LoginClass(TerminalFunctions* _func){//Charles Barry
       func = _func;
     }
 };

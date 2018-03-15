@@ -1,3 +1,4 @@
+//Charles Barry
 #ifndef TERMINALFUNC_H
 #define TERMINALFUNC_H
 

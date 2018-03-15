@@ -1,7 +1,8 @@
+//Charles Barry
 #ifndef WINDOW_H
 #define WINDOW_H
 
-class Window{
+class Window{//Charles Barry
 private:
   int width, height, x, y;
   WINDOW* win;

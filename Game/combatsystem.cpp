@@ -1,3 +1,4 @@
+//Charles Barry
 #include <ncurses.h>
 #include <iostream>
 #include <cstring>
@@ -11,7 +12,7 @@
 
 // ------------------------------  COMBAT  ----------------------------------------
 
-    std::string Combat::database_assign_name_weapon(int ID) //gets the name of the weapons and spells used
+    std::string Combat::database_assign_name_weapon(int ID) //gets the name of the weapons and spells used  //George Franklin
       {
         sqlite::sqlite db( "gamedb.db" );
         auto cur = db.get_statement();
@@ -22,7 +23,7 @@
         nameW = cur->get_text(0);
         return nameW;
       }
-  std::string Combat::database_assign_name_spell(int ID) //gets the name of the weapons and spells used
+  std::string Combat::database_assign_name_spell(int ID) //gets the name of the weapons and spells used  //George Franklin
       {
         sqlite::sqlite db( "gamedb.db" );
         auto cur = db.get_statement();
@@ -33,7 +34,7 @@
         nameS = cur->get_text(0);
         return nameS;
       }
-  std::string Combat::database_assign_name_defence(int ID) //gets the name of the weapons and spells used
+  std::string Combat::database_assign_name_defence(int ID) //gets the name of the weapons and spells used  //George Franklin
       {
         sqlite::sqlite db( "gamedb.db" );
         auto cur = db.get_statement();
@@ -45,7 +46,7 @@
         return nameD;
       }
 
-  int Combat::database_assign_int_weapon(int ID)
+  int Combat::database_assign_int_weapon(int ID)  //George Franklin
   {
     sqlite::sqlite db( "gamedb.db" );
         auto cur = db.get_statement();
@@ -56,7 +57,7 @@
         weaponAmount = cur->get_int(0);
         return weaponAmount;
   }
-  int Combat::database_assign_int_spell(int ID)
+  int Combat::database_assign_int_spell(int ID)  //George Franklin
   {
     sqlite::sqlite db( "gamedb.db");
     auto cur = db.get_statement();
@@ -67,7 +68,7 @@
     spellAmount = cur->get_int(0);
     return spellAmount;
   }
-  int Combat::database_assign_int_healing(int ID)
+  int Combat::database_assign_int_healing(int ID)  //George Franklin
   {
     sqlite::sqlite db( "gamedb.db");
     auto cur = db.get_statement();
@@ -79,7 +80,7 @@
     return healingAmount;
   }
 
-  int Combat::database_remove_amount(int ID)
+  int Combat::database_remove_amount(int ID)  //George Franklin
   {
     sqlite::sqlite db( "gamedb.db");
     auto cur = db.get_statement();
@@ -89,7 +90,7 @@
           cur->step();
   }
 
-  std::string Combat::make_lower(std::string attach){ //allows user input to match the name of the weapon or spell
+  std::string Combat::make_lower(std::string attach){ //allows user input to match the name of the weapon or spell  //George Franklin
     for(int length = 0; length < attach.length(); ++length){
       attach[length] = tolower(attach[length]);
     }
@@ -100,7 +101,7 @@
 
 // ------------------------  PLAYER  ------------------------------------
 
-    auto player::dbOpen(){
+    auto player::dbOpen(){//Matthew Fretwell
         sqlite::sqlite db( "../Database.db" );
         auto cur = db.get_statement();
         cur->set_sql( "SELECT * FROM Player WHERE PlayerName = 'Test'");
@@ -116,7 +117,7 @@
 
     }
     std::array<int, 13>playerDB;
-    int player::pXPGain(int mEXP){
+    int player::pXPGain(int mEXP){//Matthew Fretwell
            int xpGain = playerDB[7] + mEXP;
             playerDB[7] = xpGain;
             sqlite::sqlite db( "../Database.db" );
@@ -130,7 +131,7 @@
             term->printTerminalText("\n\n\n\n\nXP: " + std::to_string(getEXP()));
             return playerDB[7];
 }
-    int player::pXPSplit(int mEXP,int attackNum,int defenceNum){
+    int player::pXPSplit(int mEXP,int attackNum,int defenceNum){//Matthew Fretwell
             int totalNum = attackNum + defenceNum;
             int equalSplit = mEXP/totalNum;
             int attackXP = equalSplit * attackNum;
@@ -152,7 +153,7 @@
             term->printTerminalText("\n\n\n\nDefence XP: " + std::to_string(getDEXP()));
 
         }
-    int player::levelUp(){
+    int player::levelUp(){//Matthew Fretwell
        int level = getLevel();
        int EXP = getEXP();
        int levelUpPoint = 40 *(level *1.2);
@@ -173,7 +174,7 @@
            }
 
             }
-      int player::healthLevelUp(){
+      int player::healthLevelUp(){//Matthew Fretwell
        int level = getHealth();
        int EXP = getEXP();
        int levelUpPoint = 30 *(level *1.2);
@@ -195,7 +196,7 @@
 
        }
 
-int player::updateDB(int a, int b, int asLevelUpPoint){
+int player::updateDB(int a, int b, int asLevelUpPoint){//Matthew Fretwell
     std::string upgrade;
     char upgradeChar[60];
     playerDB[a] = playerDB[a]+1;
@@ -219,7 +220,7 @@ int player::updateDB(int a, int b, int asLevelUpPoint){
             term->printTerminalText ("\n\n\nNext level at EXP. " + std::to_string(asLevelUpPoint));
     }
 
-    int player::statsLevelUp(int a, int b){
+    int player::statsLevelUp(int a, int b){//Matthew Fretwell
 
             int asLevel = playerDB[a];
             int asEXP = playerDB[b];
@@ -266,59 +267,59 @@ int player::updateDB(int a, int b, int asLevelUpPoint){
 
     }
 
-    int player::getLevelUp(){
+    int player::getLevelUp(){//Matthew Fretwell
         return levelUp();
     }
 
-    int player::getLevel(){
+    int player::getLevel(){//Matthew Fretwell
         return playerDB[1];
     }
-    int player::getHealth(){
+    int player::getHealth(){//Matthew Fretwell
         return playerDB[2];
     }
-    int player::getAttackStrength(){
+    int player::getAttackStrength(){//Matthew Fretwell
         return playerDB[3];
     }
-    int player::getMana(){
+    int player::getMana(){//Matthew Fretwell
         return playerDB[4];
     }
-    int player::getMagicStrength(){
+    int player::getMagicStrength(){//Matthew Fretwell
         return playerDB[5];
     }
-    int player::getDefence(){
+    int player::getDefence(){//Matthew Fretwell
         return playerDB[6];
     }
-    int player::getEXP(){
+    int player::getEXP(){//Matthew Fretwell
         return playerDB[7];
     }
-    int player::getGold(){
+    int player::getGold(){//Matthew Fretwell
         return playerDB[8];
     }
-    int player::getASEXP(){
+    int player::getASEXP(){//Matthew Fretwell
         return playerDB[9];
     }
-    int player::getDEXP(){
+    int player::getDEXP(){//Matthew Fretwell
         return playerDB[12];
     }
 
-        int player::getXPGain(int mEXP){
+        int player::getXPGain(int mEXP){//Matthew Fretwell
             return pXPGain(mEXP);
         }
-        int player::getXPSplit(int mEXP, int attackNum, int defenceNum){
+        int player::getXPSplit(int mEXP, int attackNum, int defenceNum){//Matthew Fretwell
             return pXPSplit(mEXP, attackNum, defenceNum);
         }
 
-        int player::getStatsLevelUp(int a, int b){
+        int player::getStatsLevelUp(int a, int b){//Matthew Fretwell
             return statsLevelUp(a, b);
         }
-        int player::getHealthLevelUp(){
+        int player::getHealthLevelUp(){//Matthew Fretwell
             return healthLevelUp();
         }
 
-    player::player(){
+    player::player(){//Matthew Fretwell
         playerDB = dbOpen();
     }
-    player::player(TerminalFunctions* _term){
+    player::player(TerminalFunctions* _term){//Matthew Fretwell & Charles Barry
         playerDB = dbOpen();
         term = _term;
     }
@@ -327,7 +328,7 @@ int player::updateDB(int a, int b, int asLevelUpPoint){
 
 // -----------------------  MONSTER -----------------------------
 
-auto monster::dbOpen(){
+auto monster::dbOpen(){//Matthew Fretwell
     sqlite::sqlite db( "../Database.db" );
     auto cur = db.get_statement();
     cur->set_sql( "SELECT * FROM Monster WHERE MonsterName = 'Goblin'");
@@ -344,36 +345,36 @@ auto monster::dbOpen(){
 }
 
 
-    int monster::getLevel(){
+    int monster::getLevel(){//Matthew Fretwell
         return monsterDB[1];
     }
-    int monster::getHealth(){
+    int monster::getHealth(){//Matthew Fretwell
         return monsterDB[2];
     }
-    int monster::getAttackStrength(){
+    int monster::getAttackStrength(){//Matthew Fretwell
         return monsterDB[3];
     }
-    int monster::getMana(){
+    int monster::getMana(){//Matthew Fretwell
         return monsterDB[4];
     }
-    int monster::getMagicStrength(){
+    int monster::getMagicStrength(){//Matthew Fretwell
         return monsterDB[5];
     }
-    int monster::getDefence(){
+    int monster::getDefence(){//Matthew Fretwell
         return monsterDB[6];
     }
-    int monster::getEXP(){
+    int monster::getEXP(){//Matthew Fretwell
         return monsterDB[7];
     }
-    int monster::getGold(){
+    int monster::getGold(){//Matthew Fretwell
         return monsterDB[8];
     }
-    int monster::updateDB(){
+    int monster::updateDB(){//Matthew Fretwell
         dbOpen();
         return 0;
     }
 
-monster::monster(){
+monster::monster(){//Matthew Fretwell
     monsterDB = dbOpen();
 }
 
@@ -381,7 +382,7 @@ monster::monster(){
 
 // -------------------------- ATTACK -----------------------------
 
-int Attack::attack_response() //player chooses desired weapon
+int Attack::attack_response() //player chooses desired weapon  //George Franklin
 {
   term->printTerminalText("These are damage stats " + std::to_string(weaponStrengthOne) +", " + std::to_string(weaponStrengthTwo) +", " + std::to_string(weaponStrengthThree));
   term->printTerminalText ("\nThese are the weapons you can use:");
@@ -421,14 +422,14 @@ int Attack::attack_response() //player chooses desired weapon
     }
 }
 
-Attack::Attack(TerminalFunctions* _term){
+Attack::Attack(TerminalFunctions* _term){//Charles Barry
   term = _term;
 }
 
 
 // ----------------------- SPELLS ------------------------------------
 
-int Spells::spells_response()
+int Spells::spells_response()  //George Franklin
 {
   term->printTerminalText("These are damage stats " + std::to_string(spellStrengthOne) +", " + std::to_string(spellStrengthTwo) +", " + std::to_string(spellStrengthThree));
   term->printTerminalText ("\nThese are the spells you can use:");
@@ -468,13 +469,13 @@ int Spells::spells_response()
     spells_response();
   }
 }
-Spells::Spells(TerminalFunctions* _term){
+Spells::Spells(TerminalFunctions* _term){//Charles Barry
   term = _term;
 }
 
 
 //-------------------------- DEFENCE  ----------------------------------
-auto Defence::get_quantity(){
+auto Defence::get_quantity(){  //George Franklin
   sqlite::sqlite db( "gamedb.db" );
     auto cur = db.get_statement();
     cur -> set_sql("SELECT Quantity FROM Inventory WHERE ID >=7");
@@ -490,7 +491,7 @@ auto Defence::get_quantity(){
   return vectorOfAmountLeft;
 }
 
-int Defence::defence_response()
+int Defence::defence_response()  //George Franklin
 {
   vectorOfQuantity = get_quantity();
   //term->eraseTerminal();
@@ -562,13 +563,13 @@ int Defence::defence_response()
   }
 }
 
-Defence::Defence(TerminalFunctions* _term){
+Defence::Defence(TerminalFunctions* _term){//Charles Barry
     term = _term;
 }
 
 
 // ------------------------  ATTACKTEST ---------------------------
-int AttackTest::battle(){
+int AttackTest::battle(){  //George Franklin
   while(true)
   {
     term->printTerminalText ("The monster's health is... " + std::to_string(mHealth));
@@ -671,7 +672,7 @@ int AttackTest::battle(){
   term->eraseTerminal();
 }
 
-AttackTest::AttackTest(TerminalFunctions* _term) : Attack(_term), Spells(_term), Defence(_term), player(_term){
+AttackTest::AttackTest(TerminalFunctions* _term) : Attack(_term), Spells(_term), Defence(_term), player(_term){//Charles Barry
   term = _term;
   monster* bob = new monster;
   enemy = bob;
@@ -679,7 +680,7 @@ AttackTest::AttackTest(TerminalFunctions* _term) : Attack(_term), Spells(_term),
   battle();
 }
 
-AttackTest::AttackTest(TerminalFunctions* _term, monster* phil) : Attack(_term), Spells(_term), Defence(_term), player(_term){
+AttackTest::AttackTest(TerminalFunctions* _term, monster* phil) : Attack(_term), Spells(_term), Defence(_term), player(_term){//Charles Barry
   term = _term;
   enemy = phil;
   loadMonsterStats();

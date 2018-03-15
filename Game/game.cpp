@@ -1,5 +1,5 @@
 //Charlie Barry
-//g++ -std=c++14 game.cpp maptile.cpp terminalfunc.cpp map.cpp window.cpp combatsystem.cpp -o game -lncursesw -lsqlite3
+//g++ -std=c++14 game.cpp maptile.cpp terminalfunc.cpp map.cpp window.cpp combatsystem.cpp login.cpp -o game -lncursesw -lsqlite3
 #include <locale>
 #include <cstring>
 
@@ -371,6 +371,7 @@ class Game{
     Window* game; Window* stat; Window* term;
     MapTile* maptiles;
     TerminalFunctions* func;
+    int playerID;
 
     int centreTextCursorPos(string text){
       return (func->getWindowWidth() - text.size())/2;
@@ -521,7 +522,20 @@ class Game{
 
       while(true){
         int movementflag = dungeon.movement();
-        if(movementflag==1){return 0;}else if(movementflag == 2){chests();}
+        switch(movementflag){
+          case 1://Exit dungeon
+            return 0;
+            break;
+          case 2:
+            chests();//Open Chest
+            break;
+          case 3:
+            //Combat with normal monsters
+            break;
+          case 4:
+            //Combat with bosses
+            break;
+        }
         mvwprintw(term, 1, 1, "(%i,%i)", dungeon.playerpos[0], dungeon.playerpos[1]);
         wrefresh(term);
         werase(term);
@@ -533,21 +547,21 @@ class Game{
     int gameSequence(){
       LoginClass login(func);
       Map main(1, game->getData(), maptiles);
-      
+
       while(true){//Main Menu loop
         printDungeonName(main.getName());
         int menuoption = MainMenu(main);
         if(menuoption == 1){
           return 1;
         }else if(menuoption == 0){
-          if(login.getUser() > 0){break;}}
+          playerID = login.getUser();
+          if(playerID > 0){break;}}
         main.printMap();
       }
 
-      int temppos[2];
+      int temppos[] = {0,0};
       PeacefulMap World(2, game->getData(), maptiles);
       while(true){//Gameplay loop
-        //PeacefulMap World(2, game.getData());
         int selecteddungeon = WorldMap(game->getData(), stat->getData(), term->getData(), World, temppos);
         if(selecteddungeon == 7){
           //SHOP

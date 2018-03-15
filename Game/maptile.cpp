@@ -1,10 +1,11 @@
+//Charles Barry
 #include <ncurses.h>
 #include <string>
 #include <vector>
 #include "libsqlite.hpp"
 #include "maptile.h"
 
-int MapTile::getMapTileNo(){
+int MapTile::getMapTileNo(){//William Smith
   sqlite::sqlite db( "gamedb.db" );
   auto cur = db.get_statement();
   cur->set_sql( "SELECT COUNT(*) FROM maptiles;" );
@@ -13,7 +14,7 @@ int MapTile::getMapTileNo(){
   return cur->get_int(0);}
 }
 
-void MapTile::loadMapTiles(){
+void MapTile::loadMapTiles(){//William Smith
   sqlite::sqlite db( "gamedb.db" );
   auto cur = db.get_statement();
   cur->set_sql( "SELECT * FROM maptiles;" );
@@ -23,7 +24,7 @@ void MapTile::loadMapTiles(){
   tiles[selectedtile].character = cur->get_text(1).c_str(); tiles[selectedtile].colour = cur->get_int(2);}
 }
 
-MapTile::MapTile(){
+MapTile::MapTile(){//Charles Barry
   tiles.resize(getMapTileNo());
   loadMapTiles();
 }

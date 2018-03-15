@@ -1,7 +1,8 @@
+//Charles Barry
 #ifndef MAP_H
 #define MAP_H
 
-class Map{
+class Map{//Charles Barry
 private:
   std::string name;
   MapTile *maptiles;
@@ -17,10 +18,10 @@ public:
   Map(int _ID, WINDOW* _win, MapTile* _maptiles);
 };
 
-class PeacefulMap : public Map{
+class PeacefulMap : public Map{//Charles Barry
 private:
   void fetchPlayerCoords();
-  int interact(int pos[2]);
+  int interact(int pos[2]);//William Smith
   template<typename T, unsigned int N, unsigned int Nn>
   bool ifIdenticalArray(T (&array1)[N], T (&array2)[Nn]);
   bool checkPlayerExit();
@@ -29,15 +30,16 @@ protected:
   void fetchExitCoords();
 public:
   int playerpos[2];
-  int movement();
+  virtual int movement();
   PeacefulMap(int _ID, WINDOW* _win, MapTile* maptiles);
 };
 
-class Dungeon : public PeacefulMap{
+class Dungeon : public PeacefulMap{//Charles Barry
 private:
-protected:
+  int checkForMonsters();
 public:
   int bosspos[2];
+  int movement();
   Dungeon(int _ID, WINDOW* _win, MapTile* maptiles);
 };
 

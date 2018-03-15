@@ -1,8 +1,9 @@
+//Charles Barry
 #include <ncurses.h>
 #include <string>
 #include "terminalfunc.h"
 
-void TerminalFunctions::printTerminalText(std::string text){
+void TerminalFunctions::printTerminalText(std::string text){//Charles Barry
   int y = 1;
   wmove(term, y, 1);
   for(int i = 0; i < text.length(); ++i){
@@ -14,7 +15,7 @@ void TerminalFunctions::printTerminalText(std::string text){
   wrefresh(term);
 }
 
-std::string TerminalFunctions::getUserInput(){
+std::string TerminalFunctions::getUserInput(){//Charles Barry
   wmove(term, 10, 1);
   wprintw(term, ">");
   std::string userinput;
@@ -36,7 +37,7 @@ std::string TerminalFunctions::getUserInput(){
   }
 }
 
-bool TerminalFunctions::getUserYN(){
+bool TerminalFunctions::getUserYN(){//Charles Barry
   while(true){
     std::string input = getUserInput();
     if(input == "y" || input == "yes" || input == "Y" || input == "YES"){
@@ -49,13 +50,12 @@ bool TerminalFunctions::getUserYN(){
   }
 }
 
-
-void TerminalFunctions::eraseTerminal(){
+void TerminalFunctions::eraseTerminal(){//Charles Barry
   werase(term);
   box(term, 0, 0);
   wrefresh(term);
 }
 
-TerminalFunctions::TerminalFunctions(WINDOW* _stat, WINDOW* _term, int _windowWidth){
+TerminalFunctions::TerminalFunctions(WINDOW* _stat, WINDOW* _term, int _windowWidth){//Charles Barry
   stat = _stat; term = _term; windowWidth = _windowWidth;
 }
