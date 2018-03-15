@@ -186,7 +186,7 @@
             term->printTerminalText("\n\n\n\n\n\n\n\n\nYou now have " + std::to_string(playerDB[2]) + " health.");
 
 
-            sqlite::sqlite db( "../Database.db" );
+            sqlite::sqlite db( "gamedb.db" );
             auto cur = db.get_statement();
             cur->set_sql("UPDATE Player SET Health = ? WHERE PlayerID = ?;");
             cur->prepare();
@@ -240,7 +240,7 @@ int player::updateDB(int a, int b, int asLevelUpPoint){//Matthew Fretwell
                 cur->step();
             }
             if(a==4 && asEXP >= asLevelUpPoint){
-                sqlite::sqlite db( "../Database.db" );
+                sqlite::sqlite db( "gamedb.db" );
                 auto cur = db.get_statement();
                 cur->set_sql("UPDATE PlayerStats SET Mana = ? WHERE PlayerID = ?;");
                 updateDB(4, 10, asLevelUpPoint);
@@ -250,7 +250,7 @@ int player::updateDB(int a, int b, int asLevelUpPoint){//Matthew Fretwell
                 cur->step();
             }
             if(a==5 && asEXP >= asLevelUpPoint){
-                sqlite::sqlite db( "../Database.db" );
+                sqlite::sqlite db( "gamedb.db" );
                 auto cur = db.get_statement();
                 cur->set_sql("UPDATE PlayerStats SET MagicStrength = ? WHERE PlayerID = ?;");
                 updateDB(5, 11, asLevelUpPoint);
@@ -260,7 +260,7 @@ int player::updateDB(int a, int b, int asLevelUpPoint){//Matthew Fretwell
                 cur->step();
             }
             if(a==6&& asEXP >= asLevelUpPoint){
-               sqlite::sqlite db( "../Database.db" );
+               sqlite::sqlite db( "gamedb.db" );
                 auto cur = db.get_statement();
                 cur->set_sql("UPDATE PlayerStats SET Defence = ? WHERE PlayerName = ?;");
                 updateDB(6, 12, asLevelUpPoint);
