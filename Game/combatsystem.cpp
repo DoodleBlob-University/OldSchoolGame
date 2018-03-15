@@ -101,10 +101,11 @@
 // ------------------------  PLAYER  ------------------------------------
 
     auto player::dbOpen(){//Matthew Fretwell
-        sqlite::sqlite db( "../Database.db" );
+        sqlite::sqlite db( "gamedb.db" );
         auto cur = db.get_statement();
-        cur->set_sql( "SELECT * FROM Player WHERE PlayerName = 'Test'");
+        cur->set_sql( "SELECT * FROM Player WHERE ID = ?");
         cur->prepare();
+        cur->bind(1, playerid);
         cur->step();
         int num = 1;
         std::array<int, 13>arrayOfStatsP;
@@ -119,12 +120,13 @@
     int player::pXPGain(int mEXP){//Matthew Fretwell
            int xpGain = playerDB[7] + mEXP;
             playerDB[7] = xpGain;
-            sqlite::sqlite db( "../Database.db" );
+            sqlite::sqlite db( "gamedb.db" );
             auto cur = db.get_statement();
-            cur->set_sql("UPDATE Player SET EXP = ? WHERE PlayerName = 'Test';");
+            cur->set_sql("UPDATE PlayerStats SET EXP = ? WHERE PlayerID = ?;");
             cur->prepare();
 
             cur->bind( 1, xpGain );
+            cur->bind( 2, playerid);
 
             cur->step();
             term->printTerminalText("\n\n\n\n\nXP: " + std::to_string(getEXP()));
@@ -137,16 +139,16 @@
             int defenceXP = equalSplit * defenceNum;
             int attackXPGain = playerDB[9] + attackXP;
             int defenceXPGain = playerDB[12] + defenceXP;
-            sqlite::sqlite db( "../Database.db" );
+            sqlite::sqlite db( "gamedb.db" );
             auto cur = db.get_statement();
-            cur->set_sql("UPDATE Player SET ASEXP = ?, MEXP = ?, MSEXP = ?, DEXP = ? WHERE PlayerName = 'Test';");
+            cur->set_sql("UPDATE Player SET ASEXP = ?, MEXP = ?, MSEXP = ?, DEXP = ? WHERE PlayerID = ?;");
             cur->prepare();
 
             cur->bind( 1, attackXPGain );
             cur->bind( 2, 0);
             cur->bind( 3, 0);
             cur->bind( 4, defenceXPGain);
-
+            cur->bind( 5, playerid);
             cur->step();
             term->printTerminalText("\n\n\nAttack XP: " + std::to_string(getASEXP()));
             term->printTerminalText("\n\n\n\nDefence XP: " + std::to_string(getDEXP()));
@@ -162,12 +164,13 @@
             term->printTerminalText("\n\n\n\n\n\n\nYou are level " + std::to_string(playerDB[1]));
 
 
-            sqlite::sqlite db( "../Database.db" );
+            sqlite::sqlite db( "gamedb.db" );
             auto cur = db.get_statement();
-            cur->set_sql("UPDATE Player SET Level = ? WHERE PlayerName = 'Test';");
+            cur->set_sql("UPDATE Player SET Level = ? WHERE PlayerID = ?;");
             cur->prepare();
 
             cur->bind( 1, playerDB[1] );
+            cur->bind( 2, playerid);
 
             cur->step();
            }
@@ -185,10 +188,11 @@
 
             sqlite::sqlite db( "../Database.db" );
             auto cur = db.get_statement();
-            cur->set_sql("UPDATE Player SET Health = ? WHERE PlayerName = 'Test';");
+            cur->set_sql("UPDATE Player SET Health = ? WHERE PlayerID = ?;");
             cur->prepare();
 
             cur->bind( 1, playerDB[2] );
+            cur->bind( 2, playerid);
 
             cur->step();
            }
@@ -226,39 +230,43 @@ int player::updateDB(int a, int b, int asLevelUpPoint){//Matthew Fretwell
             int asEXP = playerDB[b];
             int asLevelUpPoint = 20*(asLevel*1.2);
             if(a==3 && asEXP >= asLevelUpPoint){
-                sqlite::sqlite db( "../Database.db" );
+                sqlite::sqlite db( "gamedb.db" );
                 auto cur = db.get_statement();
-                cur->set_sql("UPDATE Player SET AttackStrength = ? WHERE PlayerName = 'Test';");
+                cur->set_sql("UPDATE PlayerStats SET AttackStrength = ? WHERE PlayerID = ?;");
                 updateDB(3, 9, asLevelUpPoint);
                 cur->prepare();
                 cur->bind( 1, playerDB[a] );
+                cur->bind( 2, playerid);
                 cur->step();
             }
             if(a==4 && asEXP >= asLevelUpPoint){
                 sqlite::sqlite db( "../Database.db" );
                 auto cur = db.get_statement();
-                cur->set_sql("UPDATE Player SET Mana = ? WHERE PlayerName = 'Test';");
+                cur->set_sql("UPDATE PlayerStats SET Mana = ? WHERE PlayerID = ?;");
                 updateDB(4, 10, asLevelUpPoint);
                 cur->prepare();
                 cur->bind( 1, playerDB[a] );
+                cur->bind( 2, playerid);
                 cur->step();
             }
             if(a==5 && asEXP >= asLevelUpPoint){
                 sqlite::sqlite db( "../Database.db" );
                 auto cur = db.get_statement();
-                cur->set_sql("UPDATE Player SET MagicStrength = ? WHERE PlayerName = 'Test';");
+                cur->set_sql("UPDATE PlayerStats SET MagicStrength = ? WHERE PlayerID = ?;");
                 updateDB(5, 11, asLevelUpPoint);
                 cur->prepare();
                 cur->bind( 1, playerDB[a] );
+                cur->bind( 2, playerid);
                 cur->step();
             }
             if(a==6&& asEXP >= asLevelUpPoint){
                sqlite::sqlite db( "../Database.db" );
                 auto cur = db.get_statement();
-                cur->set_sql("UPDATE Player SET Defence = ? WHERE PlayerName = 'Test';");
+                cur->set_sql("UPDATE PlayerStats SET Defence = ? WHERE PlayerName = ?;");
                 updateDB(6, 12, asLevelUpPoint);
                 cur->prepare();
                 cur->bind( 1, playerDB[a] );
+                cur->bind( 2, playerid);
                 cur->step();
             }
     else{
@@ -330,7 +338,7 @@ int player::updateDB(int a, int b, int asLevelUpPoint){//Matthew Fretwell
 // -----------------------  MONSTER -----------------------------
 
 auto monster::dbOpen(){//Matthew Fretwell
-    sqlite::sqlite db( "../Database.db" );
+    sqlite::sqlite db( "gamedb.db" );
     auto cur = db.get_statement();
     cur->set_sql( "SELECT * FROM Monster WHERE MonsterName = 'Goblin'");
     cur->prepare();
@@ -377,6 +385,7 @@ auto monster::dbOpen(){//Matthew Fretwell
 
 monster::monster(){//Matthew Fretwell
     monsterDB = dbOpen();
+    int ID;
 }
 
 
