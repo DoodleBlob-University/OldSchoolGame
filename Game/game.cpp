@@ -1,4 +1,4 @@
-//Charlie Barry
+//Charles Barry
 //g++ -std=c++14 game.cpp maptile.cpp terminalfunc.cpp map.cpp window.cpp combatsystem.cpp login.cpp -o game -lncursesw -lsqlite3
 #include <locale>
 #include <cstring>
@@ -15,14 +15,15 @@
 
 using namespace std;
 
-class MapCreator{
+class MapCreator{//Charles Barry
     private:
       MapTile* maptiles;
       WINDOW* game; WINDOW* stat; WINDOW* term;
       int coords[2]; int tilepos = 0;
       int map[35][106];
+      TerminalFunctions* func;
 
-      void uploadMap(int ID){
+      void uploadMap(int ID){//Charles Barry
           sqlite::sqlite db( "gamedb.db" ); // open database
           for(int x = 1; x < 106; ++x){
             for(int y = 1; y < 35; ++y){
@@ -39,41 +40,7 @@ class MapCreator{
         }
       }
 
-      void printTerminalText(string text){
-        int y = 1;
-        wmove(term, y, 1);
-        for(int i = 0; i < text.length(); ++i){
-          char cha = text[i];
-          if(cha == '\n'){y += 1; wmove(term, y, 1);}else{
-            wprintw(term, "%c", cha);
-          }
-        }
-        wrefresh(term);
-      }
-
-    string getUserInput(){
-      wmove(term, 10, 1);
-      wprintw(term, ">");
-      string userinput;
-      for(int i = 1; i < 45; ++i){
-        int input = wgetch(term);
-        switch(input){
-          case 127:
-            if(userinput.length() > 0){userinput = userinput.substr(0,userinput.length()-1); mvwprintw(term, 10, i, " "); i -= 1; wmove(term, 10, i+1);}
-            i -= 1;
-            break;
-          case '\n':
-            return userinput;
-            break;
-          default:
-            userinput = userinput.append(1u, input);
-            wprintw(term, "%c", input);
-            break;
-        }
-      }
-    }
-
-      void printMap(){
+      void printMap(){//Charles Barry
         for(int y = 1; y < 35; ++y){
           for(int x = 1; x < 106; ++x){
             if(maptiles->tiles[map[y][x]].colour > 0){wattron(game,COLOR_PAIR(maptiles->tiles[map[y][x]].colour));}
@@ -83,7 +50,7 @@ class MapCreator{
         }
       }
 
-      void loadMap(int ID){
+      void loadMap(int ID){//Charles Barry
         int yvalue, xvalue, tileno = 1;
         sqlite::sqlite db( "gamedb.db" ); // open database
         auto cur = db.get_statement(); // create query
@@ -99,7 +66,7 @@ class MapCreator{
         printMap();
       }
 
-      void printOptions(){
+      void printOptions(){//Charles Barry
         werase(stat); box(stat,0,0);
         WINDOW* currenttile = derwin(stat, 3,3, 2, 21);
         box(currenttile,0,0);
@@ -111,32 +78,14 @@ class MapCreator{
         wrefresh(stat);
       }
 
-      void refreshOptions(int tilepos){
+      void refreshOptions(int tilepos){//Charles Barry
         if(maptiles->tiles[tilepos].colour > 0){wattron(stat,COLOR_PAIR(maptiles->tiles[tilepos].colour));}
         mvwprintw(stat,3,22, maptiles->tiles[tilepos].character.c_str());
         wattroff(stat,COLOR_PAIR(maptiles->tiles[tilepos].colour));
         wrefresh(stat);
       }
-      void eraseTerminal(){
-        werase(term);
-        box(term, 0, 0);
-        wrefresh(term);
-      }
 
-      bool getUserYN(){
-        while(true){
-          string input = getUserInput();
-          if(input == "y" || input == "yes" || input == "Y" || input == "YES"){
-            return true;
-          }else if(input == "n" || input == "no" || input == "N" || input == "NO"){
-            return false;
-          }else{
-            printTerminalText("\n\nSorry, I didn't understand that");
-          }
-        }
-      }
-
-      int input(){
+      int input(){//Charles Barry
           switch(toupper(wgetch(game))){
             case 'W':
               if(coords[0]-1 != 0){coords[0] -= 1;}
@@ -172,21 +121,21 @@ class MapCreator{
             case 'U':{//upload
               string mapname; string suggestedmapname; int mapnum; bool existing = false;
               existing = false;
-              eraseTerminal();
+              func->eraseTerminal();
 
               while(true){//get userinput less than 15 char
-                printTerminalText("What would you like to call this map?\nMax 15 Characters!");
-                mapname = getUserInput();
+                func->printTerminalText("What would you like to call this map?\nMax 15 Characters!");
+                mapname = func->getUserInput();
 
                 if(mapname.length() <= 15){break;}
-                eraseTerminal();
-                printTerminalText("\n\nName must be less than 15 characters!");
+                func->eraseTerminal();
+                func->printTerminalText("\n\nName must be less than 15 characters!");
 
               }
 
               if(mapname.length() == 0){
-                eraseTerminal();
-                printTerminalText("Upload cancelled");
+                func->eraseTerminal();
+                func->printTerminalText("Upload cancelled");
                 break;
               }
 
@@ -204,32 +153,32 @@ class MapCreator{
               }
 
               if(suggestedmapname == mapname){
-                eraseTerminal();
+                func->eraseTerminal();
                 existing = true;
-                printTerminalText("This would overwrite " + suggestedmapname + "!\nAre you sure? y/n");
-                if(getUserYN() == false){
-                  eraseTerminal();
-                  printTerminalText("Upload cancelled");
+                func->printTerminalText("This would overwrite " + suggestedmapname + "!\nAre you sure? y/n");
+                if(func->getUserYN() == false){
+                  func->eraseTerminal();
+                  func->printTerminalText("Upload cancelled");
                   break;
                 }
               }else if(suggestedmapname.length()>0){
-                eraseTerminal();
-                printTerminalText("Did you mean: " + suggestedmapname + "?\ny/n");
-                if(getUserYN() == true){
-                  eraseTerminal();
-                  printTerminalText("This will overwrite the current " + suggestedmapname + "\nAre you sure? y/n");
-                  if(getUserYN() == true){
+                func->eraseTerminal();
+                func->printTerminalText("Did you mean: " + suggestedmapname + "?\ny/n");
+                if(func->getUserYN() == true){
+                  func->eraseTerminal();
+                  func->printTerminalText("This will overwrite the current " + suggestedmapname + "\nAre you sure? y/n");
+                  if(func->getUserYN() == true){
                     mapname = suggestedmapname;
                     existing = true;
                   }else{
-                    eraseTerminal();
-                    printTerminalText("Upload cancelled");
+                    func->eraseTerminal();
+                    func->printTerminalText("Upload cancelled");
                     break;
                   }
                 }
               }
-              eraseTerminal();
-              printTerminalText("Uploading " + mapname + "...\nPlease wait");
+              func->eraseTerminal();
+              func->printTerminalText("Uploading " + mapname + "...\nPlease wait");
               if(existing == true){
                 {//delete previous map
                   {//get dungeon ID
@@ -287,8 +236,8 @@ class MapCreator{
                      tileno = cur->get_int(0);
                   }
                   if(tileno == 3570){
-                    eraseTerminal();
-                    printTerminalText(mapname + " uploaded");
+                    func->eraseTerminal();
+                    func->printTerminalText(mapname + " uploaded");
                     refresh();
                     break;
                   }
@@ -299,16 +248,16 @@ class MapCreator{
 
             case 'L':{//load
               string mapname; int mapnum;
-              eraseTerminal();
+              func->eraseTerminal();
 
-              printTerminalText("Enter name of the map you would like to load:");
-              mapname = getUserInput();
-              eraseTerminal();
+              func->printTerminalText("Enter name of the map you would like to load:");
+              mapname = func->getUserInput();
+              func->eraseTerminal();
 
               if(!mapname.length()){
-                printTerminalText("Map Loading cancelled");
+                func->printTerminalText("Map Loading cancelled");
               }else{
-                printTerminalText(">"+mapname);
+                func->printTerminalText(">"+mapname);
                 {
                   sqlite::sqlite db( "gamedb.db" ); // open database
                   auto cur = db.get_statement();
@@ -321,28 +270,28 @@ class MapCreator{
                   }
                 }
                 if(mapnum == 0){
-                  printTerminalText("\nError 404: Map Not Found");
+                  func->printTerminalText("\nError 404: Map Not Found");
                 }else{
-                  printTerminalText("\nLoading "+mapname);
+                  func->printTerminalText("\nLoading "+mapname);
                   loadMap(mapnum);
                 }
               }
               break;}
 
             case 'H':
-              printTerminalText("Move the cursor using 'W', 'A', 'S' and 'D'\nDraw your selected tile by pressing SPACEBAR\nChoose your tile by pressing 'O' or 'P'");
+              func->printTerminalText("Move the cursor using 'W', 'A', 'S' and 'D'\nDraw your selected tile by pressing SPACEBAR\nChoose your tile by pressing 'O' or 'P'");
               break;
 
             case 'Q':
-              eraseTerminal();
+              func->eraseTerminal();
               return 1;
               break;
           }
         return 0;
       }
     public:
-      MapCreator(WINDOW* _game, WINDOW* _stat, WINDOW* _term, MapTile* _maptiles){
-        game = _game; stat = _stat; term = _term; maptiles = _maptiles;
+      MapCreator(WINDOW* _game, WINDOW* _stat, WINDOW* _term, MapTile* _maptiles, TerminalFunctions* _func){//Charles Barry
+        game = _game; stat = _stat; term = _term; maptiles = _maptiles; func = _func;
         printOptions();
         curs_set(1);
         werase(game); box(game, 0, 0); coords[0] = 1; coords[1] = 1;
@@ -366,19 +315,19 @@ class MapCreator{
       }
 };
 
-class Game{
+class Game{//Charles Barry
   private:
     Window* game; Window* stat; Window* term;
     MapTile* maptiles;
     TerminalFunctions* func;
     int playerID;
 
-    int centreTextCursorPos(string text){
+    int centreTextCursorPos(string text){//Charles Barry
       return (func->getWindowWidth() - text.size())/2;
     }
 
     template<typename T, unsigned int N, unsigned int Nn>
-    bool ifIdenticalArray(T (&array1)[N], T (&array2)[Nn]){
+    bool ifIdenticalArray(T (&array1)[N], T (&array2)[Nn]){//Charles Barry
       //I assume the data types for the array are identical - if this isnt the case an error will occur upon compiling
         if(N != Nn){return false;}else{
           for(int i = 0; i < N; ++i){
@@ -390,7 +339,7 @@ class Game{
         }
     }
 
-    void chests(){
+    void chests(){//William Smith
       int getRanNum;
       int textRan;
       srand(time(0));
@@ -413,7 +362,7 @@ class Game{
       }
     }
 
-    void printDungeonName(string dungeonname){
+    void printDungeonName(string dungeonname){//Charles Barry
       werase(stat->getData());
       mvwprintw(stat->getData(), 1, centreTextCursorPos(dungeonname), dungeonname.c_str());
       wmove(stat->getData(), 2, centreTextCursorPos(dungeonname)- 1);
@@ -424,7 +373,7 @@ class Game{
       wrefresh(stat->getData());
     }
 
-    int MainMenu(Map main){
+    int MainMenu(Map main){//Charles Barry
       string dungeonname = main.getName();
       int selected = 0; int suboption = 0;
       vector<vector<string>> MenuOptions = {{"Play Game","Extra", "Options", "Exit"},{"MapCreator","Back"},{"----","Back"}};
@@ -451,7 +400,7 @@ class Game{
               case 0:
                 {switch(suboption){
                   case 0: return 0; break;
-                  case 1: {MapCreator creator(game->getData(), stat->getData(), term->getData(), maptiles);} return 2; break;
+                  case 1: {MapCreator creator(game->getData(), stat->getData(), term->getData(), maptiles, func);} return 2; break;
                   case 2: break;
                 }}
                 break;
@@ -478,7 +427,7 @@ class Game{
       }
     }
 
-    int WorldMap(WINDOW* game, WINDOW* stat, WINDOW* term, PeacefulMap World, int temppos[2]){
+    int WorldMap(WINDOW* game, WINDOW* stat, WINDOW* term, PeacefulMap World, int temppos[2]){//Charles Barry
       int Dungeon[][2] = {{8,87},{31,85},{10,20},{30,22},{18,38}};
 
       printDungeonName(World.getName());
@@ -517,7 +466,7 @@ class Game{
       }
     }
 
-    int DungeonSequence(WINDOW* game, WINDOW* stat, WINDOW* term, Dungeon dungeon){
+    int DungeonSequence(WINDOW* game, WINDOW* stat, WINDOW* term, Dungeon dungeon){//Charles Barry
       printDungeonName(dungeon.getName());
 
       while(true){
@@ -544,7 +493,7 @@ class Game{
       }
     }
 
-    int gameSequence(){
+    int gameSequence(){//Charles Barry
       LoginClass login(func);
       Map main(1, game->getData(), maptiles);
 
@@ -576,14 +525,14 @@ class Game{
       }
     }
   public:
-    Game(Window* _game, Window* _stat, Window* _term, MapTile* _maptiles, TerminalFunctions* _func){
+    Game(Window* _game, Window* _stat, Window* _term, MapTile* _maptiles, TerminalFunctions* _func){//Charles Barry
       game = _game; stat = _stat; term = _term; maptiles = _maptiles; func = _func;
       gameSequence();
     }
   };
 
-  int main(){
-      setlocale(LC_ALL, "");//setting locale in order to allow unicode characters
+  int main(){//Charles Barry
+      setlocale(LC_ALL, "");//setting locale in order to allow unicode and extended ascii characters
       initscr();
 
       start_color();//initialise all colour pairs
