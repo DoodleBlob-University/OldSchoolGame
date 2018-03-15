@@ -12,7 +12,8 @@
 
 // ------------------------------  COMBAT  ----------------------------------------
 
-    std::string Combat::database_assign_name_weapon(int ID) //gets the name of the weapons and spells used  //George Franklin
+    //all calls below get the name and stats for each of the spells, weapons and defence abilities 
+    std::string Combat::database_assign_name_weapon(int ID) //George Franklin
       {
         sqlite::sqlite db( "gamedb.db" );
         auto cur = db.get_statement();
@@ -23,7 +24,7 @@
         nameW = cur->get_text(0);
         return nameW;
       }
-  std::string Combat::database_assign_name_spell(int ID) //gets the name of the weapons and spells used  //George Franklin
+  std::string Combat::database_assign_name_spell(int ID)  //George Franklin
       {
         sqlite::sqlite db( "gamedb.db" );
         auto cur = db.get_statement();
@@ -34,7 +35,7 @@
         nameS = cur->get_text(0);
         return nameS;
       }
-  std::string Combat::database_assign_name_defence(int ID) //gets the name of the weapons and spells used  //George Franklin
+  std::string Combat::database_assign_name_defence(int ID)  //George Franklin
       {
         sqlite::sqlite db( "gamedb.db" );
         auto cur = db.get_statement();
@@ -79,7 +80,7 @@
     healingAmount = cur->get_int(0);
     return healingAmount;
   }
-
+  //this updates the database when the consumable is used
   int Combat::database_remove_amount(int ID)  //George Franklin
   {
     sqlite::sqlite db( "gamedb.db");
@@ -96,8 +97,6 @@
     }
     return attach;
   }
-
-
 
 // ------------------------  PLAYER  ------------------------------------
 
@@ -399,12 +398,12 @@ int Attack::attack_response() //player chooses desired weapon  //George Franklin
 
   weaponOptionOne = attackResponse.find("1");
   weaponOptionTwo = attackResponse.find("2");
-  weaponOptionThree = attackResponse.find("3"); //result will come out with -1 if it can't find substring
-  weaponOptionOneNo = attackResponse.find(weaponOneLower);
+  weaponOptionThree = attackResponse.find("3"); 
+  weaponOptionOneNo = attackResponse.find(weaponOneLower); 
   weaponOptionTwoNo = attackResponse.find(weaponTwoLower);
   weaponOptionThreeNo = attackResponse.find(weaponThreeLower);
 
-  if (weaponOptionOne != std::string::npos || weaponOptionOneNo != std::string::npos)
+  if (weaponOptionOne != std::string::npos || weaponOptionOneNo != std::string::npos)//within standard documentation
     {
       return weaponStrengthOne;
     }
@@ -475,8 +474,9 @@ Spells::Spells(TerminalFunctions* _term){//Charles Barry
 
 
 //-------------------------- DEFENCE  ----------------------------------
-auto Defence::get_quantity(){  //George Franklin
-  sqlite::sqlite db( "gamedb.db" );
+    //updates and gets the number of consumables left in your inventory
+    auto Defence::get_quantity(){  //George Franklin
+    sqlite::sqlite db( "gamedb.db" );
     auto cur = db.get_statement();
     cur -> set_sql("SELECT Quantity FROM Inventory WHERE ID >=7");
     cur->prepare();
@@ -494,7 +494,6 @@ auto Defence::get_quantity(){  //George Franklin
 int Defence::defence_response()  //George Franklin
 {
   vectorOfQuantity = get_quantity();
-  //term->eraseTerminal();
   term->printTerminalText("These are healing stats " + std::to_string(defenceAmountOne) +", " + std::to_string(defenceAmountTwo) +", " + std::to_string(defenceAmountThree));
   term->printTerminalText ("\nThese are the defences you can use:");
   term->printTerminalText ("\n\n-1    Use " + defenceOneString + " which has " + std::to_string(vectorOfQuantity[0]) + " uses left");
@@ -505,13 +504,13 @@ int Defence::defence_response()  //George Franklin
   defenceResponse = term->getUserInput();
   term->eraseTerminal();
 
-  defenceOneLower = make_lower(defenceOneString); //made lower so user can't misplace and uppercase letter
+  defenceOneLower = make_lower(defenceOneString); //made lower so user can use an uppercase letter
   defenceTwoLower = make_lower(defenceTwoString);
   defenceThreeLower = make_lower(defenceThreeString);
-  defenceOptionOneNo = defenceResponse.find("1"); //find function to check if the substr is in the main
+  defenceOptionOneNo = defenceResponse.find("1"); //find function to check if the substr is in the input
   defenceOptionTwoNo = defenceResponse.find("2");
   defenceOptionThreeNo = defenceResponse.find("3");
-  defenceOptionOne = defenceResponse.find(defenceOneLower); //find function to check if the substr is in the main
+  defenceOptionOne = defenceResponse.find(defenceOneLower);
   defenceOptionTwo = defenceResponse.find(defenceTwoLower);
   defenceOptionThree = defenceResponse.find(defenceThreeLower);
 
@@ -570,6 +569,8 @@ Defence::Defence(TerminalFunctions* _term){//Charles Barry
 
 // ------------------------  ATTACKTEST ---------------------------
 int AttackTest::battle(){  //George Franklin
+    //this simulates the battle which won't end until the the monster or players health is 0 
+    //also provides options throughout the combat for damage and healing opportunities
   while(true)
   {
     term->printTerminalText ("The monster's health is... " + std::to_string(mHealth));
@@ -613,15 +614,16 @@ int AttackTest::battle(){  //George Franklin
 
       if(mHealth <=0)
       {
+          //once killing the monster, stats will go through functions to upgrade
           term->eraseTerminal();
           term->printTerminalText ("You have killed the monster");
           term->printTerminalText("\nYou have been awarded with " + std::to_string(mEXP)+ " XP!");
-          getXPGain(mEXP);
-          getXPSplit(mEXP, attackCounter, healingCounter);
-          getLevelUp();
-          getHealthLevelUp();
+          getXPGain(mEXP);// Matthew Fretwell
+          getXPSplit(mEXP, attackCounter, healingCounter);// Matthew Fretwell
+          getLevelUp();// Matthew Fretwell
+          getHealthLevelUp();// Matthew Fretwell
 
-          while(a<=6)
+          while(a<=6)// Matthew Fretwell
           {
             getStatsLevelUp(a, b);
             a=a+1;
@@ -630,7 +632,7 @@ int AttackTest::battle(){  //George Franklin
           sleep(2);
         break;
       }
-      term->eraseTerminal();
+      term->eraseTerminal();//George Franklin
       term->printTerminalText ("Monsters time to attack");
       sleep(2);
       term->printTerminalText ("\n\n\nThe monster did " + std::to_string(mAttackStrength) + " damage!");
@@ -648,6 +650,7 @@ int AttackTest::battle(){  //George Franklin
       }
      else
      {
+       //this is the option for healing yourself 
        term->eraseTerminal();
        term->printTerminalText("Your health now is... " + std::to_string(pHealth));
        term->printTerminalText("\nWould you like to use a defence item?");
