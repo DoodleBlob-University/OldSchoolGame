@@ -179,12 +179,12 @@ PeacefulMap::PeacefulMap(int _ID, WINDOW* _win, MapTile* maptiles) : Map(_ID, _w
 
 
 //------------   DUNGEON   --------------------
-Dungeon::Dungeon(int _ID, WINDOW* _win, MapTile* maptiles) : PeacefulMap(_ID, _win, maptiles){//Charles Barry
+Dungeon::Dungeon(int _ID, WINDOW* _win, MapTile* maptiles) : PeacefulMap(_ID, _win, maptiles){//Matthew Fretwell and Charles Barry
     int numberOfMonsters = 20;
     {//Spawn monsters randomly across map //Charles Barry
       sqlite::sqlite db( "gamedb.db" );
       auto cur = db.get_statement();//selects random coordinates where the monsters can spawn
-      cur->set_sql("SELECT map.y, map.x FROM map WHERE map.tileID = 0 AND dungeonID = ? ORDER BY RANDOM() LIMIT ?;");
+      cur->set_sql("SELECT map.y, map.x FROM map WHERE map.tileID = 0 AND dungeonID = ? ORDER BY RANDOM() LIMIT ?;");//Matthew Fretwell
       cur->prepare();
       cur->bind(1, ID);
       cur->bind(2, numberOfMonsters);

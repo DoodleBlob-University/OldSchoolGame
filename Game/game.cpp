@@ -29,24 +29,24 @@ class MapCreator{//Charles Barry
           for(int x = 1; x < 106; ++x){
             for(int y = 1; y < 35; ++y){
               auto cur = db.get_statement(); // create query
-              cur->set_sql( "INSERT INTO map(dungeonID, y, x, tileID) VALUES (?,?,?,?);" );
+              cur->set_sql( "INSERT INTO map(dungeonID, y, x, tileID) VALUES (?,?,?,?);" ); //sets sql query
               cur->prepare();
               cur->bind( 1, ID );
               cur->bind( 2, y );                // set placeholders
               cur->bind( 3, x );
               cur->bind( 4, map[y][x] );
-              cur->step();
+              cur->step();                      //runs sql query
 
           }
         }
       }
 
       void printMap(){//Charles Barry
-        for(int y = 1; y < 35; ++y){
-          for(int x = 1; x < 106; ++x){
+        for(int y = 1; y < 35; ++y){          //runs across y values printing map
+          for(int x = 1; x < 106; ++x){       //runs across x values printing map
             if(maptiles->tiles[map[y][x]].colour > 0){wattron(game,COLOR_PAIR(maptiles->tiles[map[y][x]].colour));}
-            mvwprintw(game, y, x, maptiles->tiles[map[y][x]].character.c_str());
-            wattroff(game,COLOR_PAIR(maptiles->tiles[map[y][x]].colour));
+            mvwprintw(game, y, x, maptiles->tiles[map[y][x]].character.c_str()); //prints the map inside of the game window
+            wattroff(game,COLOR_PAIR(maptiles->tiles[map[y][x]].colour));         //turns off colours
           }
         }
       }
@@ -89,7 +89,7 @@ class MapCreator{//Charles Barry
       int input(){//Charles Barry
           switch(toupper(wgetch(game))){
             case 'W':
-              if(coords[0]-1 != 0){coords[0] -= 1;}
+              if(coords[0]-1 != 0){coords[0] -= 1;} //moving cursor around, restricting it from leaving bounds of game
               break;
 
             case 'A':
@@ -112,11 +112,11 @@ class MapCreator{//Charles Barry
               break;
 
             case 'O':
-              if(tilepos-1 >= 0){tilepos -= 1;}
+              if(tilepos-1 >= 0){tilepos -= 1;} //runs down tiles 
               break;
 
             case 'P':
-              if(tilepos+1 < maptiles->tiles.size()){tilepos += 1;}
+              if(tilepos+1 < maptiles->tiles.size()){tilepos += 1;} //counts up tiles 
               break;
 
             case 'U':{//upload
@@ -134,10 +134,10 @@ class MapCreator{//Charles Barry
 
               }
 
-              if(mapname.length() == 0){
+              if(mapname.length() == 0){ //checks is user inputted zero
                 func->eraseTerminal();
-                func->printTerminalText("Upload cancelled");
-                break;
+                func->printTerminalText("Upload cancelled"); 
+                break;                                          //cancels upload function if nothing entered
               }
 
               {
@@ -252,7 +252,7 @@ class MapCreator{//Charles Barry
               func->eraseTerminal();
 
               func->printTerminalText("Enter name of the map you would like to load:");
-              mapname = func->getUserInput();
+              mapname = func->getUserInput();                                             //sets map name to userinput
               func->eraseTerminal();
 
               if(!mapname.length()){
@@ -327,16 +327,16 @@ class Game{//Charles Barry
     void chests(){//William Smith
       int getRanNum;
       int textRan;
-      srand(time(0));
+      srand(time(0));   //intialises random seed
       string textArray[] = {"The chest swings open!", "The chest creaks open!", "The chest slowly creaks open!", "The chest thuds open!"};
-      textRan = rand() % 4;
-      mvwprintw(term->getData(), 1, 1, "%s", textArray[textRan].c_str());
+      textRan = rand() % 4; //randomises through 0-3
+      mvwprintw(term->getData(), 1, 1, "%s", textArray[textRan].c_str());     //randomises down array and prints value
       wrefresh(term->getData());
-      getRanNum = rand() % 20 + 1;
+      getRanNum = rand() % 20 + 1;      //randomises through 1-20
       if(getRanNum < 15){
       int getRanGold;
-      getRanGold = rand() % 30 + 5;
-      mvwprintw(term->getData(), 2, 1, "You have received %i Gold!", getRanGold);
+      getRanGold = rand() % 30 + 5;       //randomises through 5-35
+      mvwprintw(term->getData(), 2, 1, "You have received %i Gold!", getRanGold);   //prints message including randomised amount inplace of placeholder
       wrefresh(term->getData());
       }else if(getRanNum == 20){
       mvwprintw(term->getData(), 2, 1, "You have received an item and gold!");
@@ -509,12 +509,20 @@ class Game{//Charles Barry
             mvwprintw(gamew, dungeon.playerpos[0], dungeon.playerpos[1], "X");
             wrefresh(gamew);
             break;
-          case 4:
+          case 4://William Smith
             //Combat with bosses
+            int monsterIDs;
             {
-
+              sqlite::sqlite db( "gamedb.db" ); // open database
+              auto cur = db.get_statement();
+              cur->set_sql( "SELECT bossID FROM dungeon WHERE ID = ?;" ); //sets sql query
+              cur->prepare();                                             //prepares sql query
+              cur->bind(1, dungeon.getID());                              //set placeholder
+              cur->step();                                                //runs sql query
+                 monsterIDs=cur->get_int(0);                              //setting variable with retrieved information
             }
-            go = new AttackTest(func, playerID);
+            monstermap = new Map(monsterIDs+8, gamew, maptiles);          //prints combat picture 
+            go = new AttackTest(func, playerID, monsterIDs);  
             break;
         }
       }
