@@ -327,16 +327,16 @@ class Game{//Charles Barry
     void chests(){//William Smith
       int getRanNum;
       int textRan;
-      srand(time(0));
+      srand(time(0));   //intialises random seed
       string textArray[] = {"The chest swings open!", "The chest creaks open!", "The chest slowly creaks open!", "The chest thuds open!"};
-      textRan = rand() % 4;
-      mvwprintw(term->getData(), 1, 1, "%s", textArray[textRan].c_str());
+      textRan = rand() % 4; //randomises through 0-3
+      mvwprintw(term->getData(), 1, 1, "%s", textArray[textRan].c_str());     //randomises down array and prints value
       wrefresh(term->getData());
-      getRanNum = rand() % 20 + 1;
+      getRanNum = rand() % 20 + 1;      //randomises through 1-20
       if(getRanNum < 15){
       int getRanGold;
-      getRanGold = rand() % 30 + 5;
-      mvwprintw(term->getData(), 2, 1, "You have received %i Gold!", getRanGold);
+      getRanGold = rand() % 30 + 5;       //randomises through 5-35
+      mvwprintw(term->getData(), 2, 1, "You have received %i Gold!", getRanGold);   //prints message including randomised amount inplace of placeholder
       wrefresh(term->getData());
       }else if(getRanNum == 20){
       mvwprintw(term->getData(), 2, 1, "You have received an item and gold!");
