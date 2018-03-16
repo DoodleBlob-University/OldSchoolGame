@@ -12,6 +12,7 @@
 #include "terminalfunc.h"
 #include "combatsystem.h"
 #include "login.h"
+#include "inv.h"
 
 using namespace std;
 
@@ -322,6 +323,7 @@ class Game{//Charles Barry
     MapTile* maptiles;
     TerminalFunctions* func;
     int playerID;
+
 
     template<typename T, unsigned int N, unsigned int Nn>
     bool ifIdenticalArray(T (&array1)[N], T (&array2)[Nn]){//Charles Barry

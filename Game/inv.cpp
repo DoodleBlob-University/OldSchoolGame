@@ -1,85 +1,35 @@
-#include <iostream>
-#include <ncurses.h>
 #include <string>
 #include <vector>
-#include <array>
+
+#include "inv.h"
 #include "libsqlite.hpp"
 
-using namespace std;
 
-class Item {
-    private:
-        int cost;
-        string name;
-        int itemType;
-    protected:
-      void setItemValues(string _name, int _cost, int _itemType){
+      void Item::setItemValues(std::string _name, int _cost, int _itemType){//Kai Arnold
         name = _name; cost = _cost; itemType = _itemType;
       }
-    public:
-        string getName(){return name;}
-        int getCost(){return cost;}
-        int getType(){return itemType;}
-        Item(){}
-};
 
-class Weapon : public Item {
-    private:
-        int damage;
 
-    public:
-        void setValues(string name, int _damage, int cost){
+        void Weapon::setValues(std::string name, int _damage, int cost){//Kai Arnold
           damage = _damage;
           setItemValues(name, cost, 0);
         }
-        int getDamage(){
-            return damage;
-        }
-        Weapon() : Item(){}
-    };
 
-class Armour : public Item {
-    private:
-        int armour;
-    public:
-        void setValues(string name, int _armour, int cost){
+
+        void Armour::setValues(std::string name, int _armour, int cost){//Kai Arnold
           armour = _armour;
           setItemValues(name, cost, 1);
         }
-        int getArmour(){
-            return armour;
-        }
-        Armour() : Item(){}
-};
 
-class Potion : public Item {
 
-    private:
-        int health;
-        int mana;
-    public:
-        int getHealth(){
-            return health;
-        }
-        int getMana(){
-            return mana;
-        }
-        void setValues(string name, int _health, int _mana, int cost){
+        void Potion::setValues(std::string name, int _health, int _mana, int cost){//Kai Arnold
           health = _health; mana = _mana;
           setItemValues(name, cost, 2);
         }
 
-        Potion() : Item(){}
-};
 
-class PlayerInventory{
-    private:
-        struct Inventory{
-            Weapon* w = new Weapon();
-            Armour* a = new Armour();
-            Potion* p = new Potion();
-        };
-        void getWeapon() {
+
+        void PlayerInventory::getWeapon() {//Kai Arnold
             int count = 1;
             sqlite::sqlite db("Database.db");
             auto cur = db.get_statement();
@@ -89,7 +39,7 @@ class PlayerInventory{
                 items[cur->get_int(0)].w->setValues(cur->get_text(1), cur->get_int(2), cur->get_int(3));
             }
         }
-        void getArmour() {
+        void PlayerInventory::getArmour() {//Kai Arnold
             int count = 1;
             sqlite::sqlite db("Database.db");
             auto cur = db.get_statement();
@@ -99,7 +49,7 @@ class PlayerInventory{
                 items[cur->get_int(0)].a->setValues(cur->get_text(1), cur->get_int(2), cur->get_int(3));
             }
         }
-        void getPotion() {
+        void PlayerInventory::getPotion() {//Kai Arnold
             sqlite::sqlite db("Database.db");
             auto cur = db.get_statement();
             cur->set_sql("SELECT item.id, potion.name, potion.health, potion.mana, potion.cost FROM potion, item where item.PotionID = potion.ID;");
@@ -108,7 +58,7 @@ class PlayerInventory{
                 items[cur->get_int(0)].p->setValues(cur->get_text(1), cur->get_int(2), cur->get_int(3), cur->get_int(4));
             }
         }
-        int getItemCount() {
+        int PlayerInventory::getItemCount() {//Kai Arnold
             int size;
             sqlite::sqlite db("Database.db");
             auto cur = db.get_statement();
@@ -119,16 +69,8 @@ class PlayerInventory{
 
             return size;
         }
-        Weapon* wempty = new Weapon();
-        Armour* aempty = new Armour();
-        Potion* pempty = new Potion();
-        int itemno = 0;
-    public:
-        vector<Inventory> items;
-        vector<Inventory> playerInv;
-        vector<Inventory> playerEquip;
 
-        PlayerInventory(){
+        PlayerInventory::PlayerInventory(){//Kai Arnold and Charles Barry
             itemno = getItemCount() + 1;
             items.resize(itemno);
             playerInv.resize(10);
@@ -137,7 +79,7 @@ class PlayerInventory{
             getArmour();
             getPotion();
         }
-        void addItem(int id){
+        void PlayerInventory::addItem(int id){//Kai Arnold and Charles Barry
           int emptypos = -1;
           for(int i = 0; i < playerInv.size(); ++i){
             if(playerInv[i].w->getName() == "" && playerInv[i].a->getName() == "" && playerInv[i].p->getName() == ""){
@@ -145,30 +87,26 @@ class PlayerInventory{
               break;
             }
           }
-          //playerInventory[1] = items[id];
           if(emptypos >= 0){
             if(id <= itemno){
             playerInv[emptypos] = items[id];
-          }//ur a fgt
-          }else{
-            //is empty bois
+            }
           }
         }
-        void removeItem(int pos){
+        void PlayerInventory::removeItem(int pos){//Kai Arnold
           playerInv[pos].w = wempty;
           playerInv[pos].a = aempty;
           playerInv[pos].p = pempty;
         }
-        void equipItem(int invpos, int equipslot){
+        void PlayerInventory::equipItem(int invpos, int equipslot){//Kai Arnold
           Inventory temp = playerEquip[equipslot];
           playerEquip[equipslot] = playerInv[invpos];
           playerInv[invpos] = temp;
         }
 
-};
 
-
-int main() {
+/*
+int main() {//Kai Arnold 
     PlayerInventory* inv = new PlayerInventory();
     inv->addItem(1);
     inv->addItem(1);
@@ -197,3 +135,4 @@ int main() {
     endwin();
 
 }
+*/
