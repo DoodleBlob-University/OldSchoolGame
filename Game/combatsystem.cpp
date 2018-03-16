@@ -178,14 +178,14 @@
            }
 
             }
-      int player::healthLevelUp(){//Matthew Fretwell
-       int level = getHealth();
-       int EXP = getEXP();
-       int levelUpPoint = 30 *(level *1.2);
-        if (EXP >= levelUpPoint){
-            playerDB[2] = playerDB[2]+1;
-            term->printTerminalText("\n\n\n\n\n\n\n\nYour health has leveled up!");
-            term->printTerminalText("\n\n\n\n\n\n\n\n\nYou now have " + std::to_string(playerDB[2]) + " health.");
+      int player::health(int playerHealth){//Matthew Fretwell
+       //int level = playerDB[2];
+       //int EXP = playerDB[7];
+       //int levelUpPoint = 30 *(level *1.2);
+        //if (EXP >= levelUpPoint){
+            //playerDB[2] = playerDB[2]+1;
+            //term->printTerminalText("\n\n\n\n\n\n\n\nYour health has leveled up!");
+            //term->printTerminalText("\n\n\n\n\n\n\n\n\nYou now have " + std::to_string(playerDB[2]) + " health.");
 
 
             sqlite::sqlite db( "gamedb.db" );
@@ -193,17 +193,15 @@
             cur->set_sql("UPDATE PlayerStats SET Health = ? WHERE PlayerID = ?;");
             cur->prepare();
 
-            cur->bind( 1, playerDB[2] );
+            cur->bind( 1, playerHealth );
             cur->bind( 2, playerid);
 
             cur->step();
+            playerDB[2] = playerHealth;
            }
-
-       }
 
 int player::updateDB(int a, int b, int asLevelUpPoint){//Matthew Fretwell
     std::string upgrade;
-    char upgradeChar[60];
     int playerid;
     playerDB[a] = playerDB[a]+1;
     if(a==3){
@@ -262,7 +260,7 @@ int player::updateDB(int a, int b, int asLevelUpPoint){//Matthew Fretwell
                 cur->step();
             }
             if(a==6&& asEXP >= asLevelUpPoint){
-               sqlite::sqlite db( "gamedb.db" );
+                sqlite::sqlite db( "gamedb.db" );
                 auto cur = db.get_statement();
                 cur->set_sql("UPDATE PlayerStats SET Defence = ? WHERE PlayerID = ?;");
                 updateDB(6, 12, asLevelUpPoint);
@@ -273,9 +271,9 @@ int player::updateDB(int a, int b, int asLevelUpPoint){//Matthew Fretwell
             }
     }
 
-    int player::getLevelUp(){//Matthew Fretwell
+    /*int player::getLevelUp(){//Matthew Fretwell
         return levelUp();
-    }
+    }*/
 
     int player::getLevel(){//Matthew Fretwell
         return playerDB[1];
@@ -307,8 +305,11 @@ int player::updateDB(int a, int b, int asLevelUpPoint){//Matthew Fretwell
     int player::getDEXP(){//Matthew Fretwell
         return playerDB[12];
     }
+    int player::getPlayerID(){
+      return playerid;
+    }
 
-        int player::getXPGain(int mEXP){//Matthew Fretwell
+       /* int player::getXPGain(int mEXP){//Matthew Fretwell
             return pXPGain(mEXP);
         }
         int player::getXPSplit(int mEXP, int attackNum, int defenceNum){//Matthew Fretwell
@@ -320,7 +321,7 @@ int player::updateDB(int a, int b, int asLevelUpPoint){//Matthew Fretwell
         }
         int player::getHealthLevelUp(){//Matthew Fretwell
             return healthLevelUp();
-        }
+        }*/
 
 
 
@@ -571,7 +572,6 @@ int AttackTest::battle(){  //George Franklin
   {
     substat = derwin(term->getStat(), 9,43,3,1);
     term->changeWindowWidth(windowWidth);
-    //term->printTerminalText ("The monster's health is... " + std::to_string(mHealth));
     term->printTerminalText ("What would you like to do?");
     term-> printTerminalText ("\n-1    Cast a spell");
     term-> printTerminalText ("\n\n-2    Use an attack");
@@ -584,9 +584,7 @@ int AttackTest::battle(){  //George Franklin
     wattroff(substat,COLOR_PAIR(2));
 
     mvwprintw(substat, 4, term->centreTextCursorPos("Your health is " + std::to_string(pHealth)), "Your health is %i", pHealth);
-    //mvwprintw(substat, 0, 0, "Your health is %i", pHealth);
     mvwprintw(substat, 5, term->centreTextCursorPos("Monster's Health: " + std::to_string(mHealth)), "Monster's Health: %i", mHealth);
-    //mvwprintw(substat, 1, 0, "Monster's health: %i", mHealth);
     wrefresh(substat);
     fightingResponse = term->getUserInput();
     term->eraseTerminal();
@@ -615,15 +613,20 @@ int AttackTest::battle(){  //George Franklin
        battle();
      }
 
-    //term->printTerminalText("Player Health = " + std::to_string(pHealth));
     term->printTerminalText ("Your attack = " + std::to_string(combatAttack));
     mHealth = mHealth - combatAttack;
     wclear(substat);
-    mvwprintw(substat, 0, 0, "Your health is %i", pHealth);
-    mvwprintw(substat, 1, 0, "Monster's health: %i", mHealth);
-    mvwprintw(substat, 2, 0, "Player's XP: %i", pXP);
+    wattron(substat,COLOR_PAIR(2));
+    mvwprintw(substat, 1, term->centreTextCursorPos(enemy->getName()), enemy->getName().c_str());
+    mvwprintw(substat, 2, term->centreTextCursorPos(std::string(enemy->getName().length()+2, '.')), std::string(enemy->getName().length()+2, '~').c_str());
+    wattroff(substat,COLOR_PAIR(2));
+
+    mvwprintw(substat, 4, term->centreTextCursorPos("Your health is " + std::to_string(pHealth)), "Your health is %i", pHealth);
+    mvwprintw(substat, 5, term->centreTextCursorPos("Monster's Health: " + std::to_string(mHealth)), "Monster's Health: %i", mHealth);
     wrefresh(substat);
-    //term->printTerminalText ("\n\nMonsters health after attack is " + std::to_string(mHealth));
+    wclear(substat);
+    wrefresh(substat);
+    
     sleep(1);
 
       if(mHealth <=0)
@@ -631,14 +634,25 @@ int AttackTest::battle(){  //George Franklin
           term->eraseTerminal();
           term->printTerminalText ("You have killed the monster");
           term->printTerminalText("\nYou have been awarded with " + std::to_string(mEXP)+ " XP!");
-          /*getXPGain(mEXP);// Matthew Fretwell
-          getXPSplit(mEXP, attackCounter, healingCounter);
-          getLevelUp();
-          getHealthLevelUp();
+          health(pHealth);
+        
+        /*sqlite::sqlite db( "gamedb.db" );
+          auto cur = db.get_statement();
+          cur->set_sql("UPDATE PlayerStats SET Health = ? WHERE PlayerID = ?;");
+          //updateDB(6, 12, asLevelUpPoint);
+          cur->prepare();
+          cur->bind( 1, pHealth );
+          cur->bind( 2, playerid);
+          cur->step();
+          //pXPGain(mEXP);// Matthew Fretwell
+          /*pXPSplit(mEXP, attackCounter, healingCounter);
+          levelUp();
+          healthLevelUp();
+          sleep(2);
           wclear(substat);
           wrefresh(substat);
 
-          while(a<=6)
+          /*while(a<=6)
           {
             getStatsLevelUp(a, b);
             a=a+1;
@@ -653,9 +667,13 @@ int AttackTest::battle(){  //George Franklin
       term->printTerminalText ("\n\n\nThe monster did " + std::to_string(mAttackStrength) + " damage!");
       pHealth = pHealth - mAttackStrength;
       wclear(substat);
-      mvwprintw(substat, 0, 0, "Your health is %i", pHealth);
-      mvwprintw(substat, 1, 0, "Monster's health: %i", mHealth);
-      mvwprintw(substat, 2, 0, "Player's XP: %i", pXP);
+      wattron(substat,COLOR_PAIR(2));
+      mvwprintw(substat, 1, term->centreTextCursorPos(enemy->getName()), enemy->getName().c_str());
+      mvwprintw(substat, 2, term->centreTextCursorPos(std::string(enemy->getName().length()+2, '.')), std::string(enemy->getName().length()+2, '~').c_str());
+      wattroff(substat,COLOR_PAIR(2));
+
+      mvwprintw(substat, 4, term->centreTextCursorPos("Your health is " + std::to_string(pHealth)), "Your health is %i", pHealth);
+      mvwprintw(substat, 5, term->centreTextCursorPos("Monster's Health: " + std::to_string(mHealth)), "Monster's Health: %i", mHealth);
       wrefresh(substat);
       sleep(1);
 
@@ -682,9 +700,13 @@ int AttackTest::battle(){  //George Franklin
         pHealth = pHealth + defenceResponse;
         //term->printTerminalText("Your health is now... " + std::to_string(pHealth));
         wclear(substat);
-        mvwprintw(substat, 0, 0, "Your health is %i", pHealth);
-        mvwprintw(substat, 1, 0, "Monster's health: %i", mHealth);
-        mvwprintw(substat, 2, 0, "Player's XP: %i", pXP);
+        wattron(substat,COLOR_PAIR(2));
+        mvwprintw(substat, 1, term->centreTextCursorPos(enemy->getName()), enemy->getName().c_str());
+        mvwprintw(substat, 2, term->centreTextCursorPos(std::string(enemy->getName().length()+2, '.')), std::string(enemy->getName().length()+2, '~').c_str());
+        wattroff(substat,COLOR_PAIR(2));
+
+        mvwprintw(substat, 4, term->centreTextCursorPos("Your health is " + std::to_string(pHealth)), "Your health is %i", pHealth);
+        mvwprintw(substat, 5, term->centreTextCursorPos("Monster's Health: " + std::to_string(mHealth)), "Monster's Health: %i", mHealth);
         wrefresh(substat);
         sleep(1);
         term->eraseTerminal();
