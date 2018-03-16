@@ -526,7 +526,13 @@ int Defence::defence_response()  //George Franklin
   defenceOptionTwo = defenceResponse.find(defenceTwoLower);
   defenceOptionThree = defenceResponse.find(defenceThreeLower);
 
-  if (defenceOptionOne != std::string::npos || defenceOptionOneNo != std::string::npos)
+  if(vectorOfQuantity[0]==0 && vectorOfQuantity[1]==0 && vectorOfQuantity[2]==0){
+    term->printTerminalText("\n\n\n\n\n\nYou have no potions left!");
+    return 0;
+  }
+  
+  
+  else if (defenceOptionOne != std::string::npos || defenceOptionOneNo != std::string::npos)
   {
 
     if(vectorOfQuantity[0]!=0){
@@ -580,6 +586,17 @@ Defence::Defence(TerminalFunctions* _term){//Charles Barry
 
 
 // ------------------------  ATTACKTEST ---------------------------
+void AttackTest::printToStatMenu(int playerHealth, int monsterHealth){//George Franklin & Charles Barry
+    wattron(substat,COLOR_PAIR(2));
+    mvwprintw(substat, 1, term->centreTextCursorPos(enemy->getName()), enemy->getName().c_str());
+    mvwprintw(substat, 2, term->centreTextCursorPos(std::string(enemy->getName().length()+2, '.')), std::string(enemy->getName().length()+2, '~').c_str());
+    wattroff(substat,COLOR_PAIR(2));
+
+    mvwprintw(substat, 4, term->centreTextCursorPos("Your health is " + std::to_string(playerHealth)), "Your health is %i", playerHealth);
+    mvwprintw(substat, 5, term->centreTextCursorPos("Monster's Health: " + std::to_string(monsterHealth)), "Monster's Health: %i", monsterHealth);
+    wrefresh(substat);
+}
+
 int AttackTest::battle(){  //George Franklin
   while(true)
   {
@@ -590,16 +607,7 @@ int AttackTest::battle(){  //George Franklin
     term-> printTerminalText ("\n-1    Cast a spell");
     term-> printTerminalText ("\n\n-2    Use an attack");
     term->printTerminalText ("\n\n\n----- ");
-    wclear(substat);
-
-    wattron(substat,COLOR_PAIR(2));
-    mvwprintw(substat, 1, term->centreTextCursorPos(enemy->getName()), enemy->getName().c_str());
-    mvwprintw(substat, 2, term->centreTextCursorPos(std::string(enemy->getName().length()+2, '.')), std::string(enemy->getName().length()+2, '~').c_str());
-    wattroff(substat,COLOR_PAIR(2));
-
-    mvwprintw(substat, 4, term->centreTextCursorPos("Your health is " + std::to_string(pHealth)), "Your health is %i", pHealth);
-    mvwprintw(substat, 5, term->centreTextCursorPos("Monster's Health: " + std::to_string(mHealth)), "Monster's Health: %i", mHealth);
-    wrefresh(substat);
+    printToStatMenu(pHealth, mHealth);
     fightingResponse = term->getUserInput();
     term->eraseTerminal();
 
@@ -629,17 +637,7 @@ int AttackTest::battle(){  //George Franklin
 
     term->printTerminalText ("Your attack = " + std::to_string(combatAttack));
     mHealth = mHealth - combatAttack;
-    wclear(substat);
-    wattron(substat,COLOR_PAIR(2));
-    mvwprintw(substat, 1, term->centreTextCursorPos(enemy->getName()), enemy->getName().c_str());
-    mvwprintw(substat, 2, term->centreTextCursorPos(std::string(enemy->getName().length()+2, '.')), std::string(enemy->getName().length()+2, '~').c_str());
-    wattroff(substat,COLOR_PAIR(2));
-
-    mvwprintw(substat, 4, term->centreTextCursorPos("Your health is " + std::to_string(pHealth)), "Your health is %i", pHealth);
-    mvwprintw(substat, 5, term->centreTextCursorPos("Monster's Health: " + std::to_string(mHealth)), "Monster's Health: %i", mHealth);
-    wrefresh(substat);
-    wclear(substat);
-    wrefresh(substat);
+    printToStatMenu(pHealth, mHealth);
     
     sleep(1);
 
@@ -648,13 +646,7 @@ int AttackTest::battle(){  //George Franklin
           term->eraseTerminal();
           term->printTerminalText ("You have killed the monster");
           term->printTerminalText("\nYou have been awarded with " + std::to_string(mEXP)+ " XP!");
-          matt-> pXPGain(mEXP);// Matthew Fretwell
-          matt-> pXPSplit(mEXP, attackCounter, healingCounter);
-          matt-> levelUp();
-          matt-> health(pHealth);
-          sleep(2);
-          wclear(substat);
-          wrefresh(substat);
+          
 
           while(a<=6)
           {
@@ -662,24 +654,22 @@ int AttackTest::battle(){  //George Franklin
             a=a+1;
             b=b+1;
           }
+          matt-> pXPGain(mEXP);// Matthew Fretwell
+          matt-> pXPSplit(mEXP, attackCounter, healingCounter);
+          matt-> levelUp();
+          matt-> health(pHealth);
           sleep(2);
         term->eraseTerminal();
-        break;
+        wclear(substat);
+        wrefresh(substat);
+        return 0;
       }
       term->eraseTerminal();//George Franklin
       term->printTerminalText ("Monsters time to attack");
       sleep(1);
       term->printTerminalText ("\n\n\nThe monster did " + std::to_string(mAttackStrength) + " damage!");
       pHealth = pHealth - mAttackStrength;
-      wclear(substat);
-      wattron(substat,COLOR_PAIR(2));
-      mvwprintw(substat, 1, term->centreTextCursorPos(enemy->getName()), enemy->getName().c_str());
-      mvwprintw(substat, 2, term->centreTextCursorPos(std::string(enemy->getName().length()+2, '.')), std::string(enemy->getName().length()+2, '~').c_str());
-      wattroff(substat,COLOR_PAIR(2));
-
-      mvwprintw(substat, 4, term->centreTextCursorPos("Your health is " + std::to_string(pHealth)), "Your health is %i", pHealth);
-      mvwprintw(substat, 5, term->centreTextCursorPos("Monster's Health: " + std::to_string(mHealth)), "Monster's Health: %i", mHealth);
-      wrefresh(substat);
+      printToStatMenu(pHealth, mHealth);
       sleep(1);
 
 
@@ -689,12 +679,11 @@ int AttackTest::battle(){  //George Franklin
           term->eraseTerminal();
           term->printTerminalText ("You have died");
           getch();
-          break;
+          return 1;
       }
      else
      {
        term->eraseTerminal();
-       //term->printTerminalText("Your health now is... " + std::to_string(pHealth));
        term->printTerminalText("Would you like to use a defence item?");
        term->printTerminalText("\nType yes if you would like to heal...");
        defenceOption = term->getUserYN();
@@ -703,16 +692,7 @@ int AttackTest::battle(){  //George Franklin
         defenceResponse = defence_response();
         term->eraseTerminal();
         pHealth = pHealth + defenceResponse;
-        //term->printTerminalText("Your health is now... " + std::to_string(pHealth));
-        wclear(substat);
-        wattron(substat,COLOR_PAIR(2));
-        mvwprintw(substat, 1, term->centreTextCursorPos(enemy->getName()), enemy->getName().c_str());
-        mvwprintw(substat, 2, term->centreTextCursorPos(std::string(enemy->getName().length()+2, '.')), std::string(enemy->getName().length()+2, '~').c_str());
-        wattroff(substat,COLOR_PAIR(2));
-
-        mvwprintw(substat, 4, term->centreTextCursorPos("Your health is " + std::to_string(pHealth)), "Your health is %i", pHealth);
-        mvwprintw(substat, 5, term->centreTextCursorPos("Monster's Health: " + std::to_string(mHealth)), "Monster's Health: %i", mHealth);
-        wrefresh(substat);
+        printToStatMenu(pHealth, mHealth);
         sleep(1);
         term->eraseTerminal();
         healingCounter = healingCounter + 1;

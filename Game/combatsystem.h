@@ -216,7 +216,6 @@ private:
 
   void loadMonsterStats(){//Matt Fretwell and Charles Barry
     mHealth = enemy->getHealth();
-    //int mHealth = 50;
     mAttackStrength = enemy->getAttackStrength();
     mMana = enemy->getMana();
     mMagicStrength = enemy->getMagicStrength();
@@ -227,6 +226,7 @@ private:
   TerminalFunctions* term;//Charles Barry
 
 public:
+  void printToStatMenu(int playerHealth, int monsterHealth);
   int battle();
 
   AttackTest(TerminalFunctions* _term, int playerid);//Charles Barry
