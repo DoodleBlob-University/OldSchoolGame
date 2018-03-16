@@ -36,7 +36,6 @@ class MapCreator{//Charles Barry
               cur->bind( 3, x );
               cur->bind( 4, map[y][x] );
               cur->step();                      //runs sql query
-
           }
         }
       }
