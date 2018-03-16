@@ -226,7 +226,7 @@ private:
   TerminalFunctions* term;//Charles Barry
 
 public:
-  int printToStatMenu(int playerHealth, int monsterHealth);
+  void printToStatMenu(int playerHealth, int monsterHealth);
   int battle();
 
   AttackTest(TerminalFunctions* _term, int playerid);//Charles Barry
