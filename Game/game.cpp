@@ -29,24 +29,24 @@ class MapCreator{//Charles Barry
           for(int x = 1; x < 106; ++x){
             for(int y = 1; y < 35; ++y){
               auto cur = db.get_statement(); // create query
-              cur->set_sql( "INSERT INTO map(dungeonID, y, x, tileID) VALUES (?,?,?,?);" );
+              cur->set_sql( "INSERT INTO map(dungeonID, y, x, tileID) VALUES (?,?,?,?);" ); //sets sql query
               cur->prepare();
               cur->bind( 1, ID );
               cur->bind( 2, y );                // set placeholders
               cur->bind( 3, x );
               cur->bind( 4, map[y][x] );
-              cur->step();
+              cur->step();                      //runs sql query
 
           }
         }
       }
 
       void printMap(){//Charles Barry
-        for(int y = 1; y < 35; ++y){
-          for(int x = 1; x < 106; ++x){
+        for(int y = 1; y < 35; ++y){          //runs across y values printing map
+          for(int x = 1; x < 106; ++x){       //runs across x values printing map
             if(maptiles->tiles[map[y][x]].colour > 0){wattron(game,COLOR_PAIR(maptiles->tiles[map[y][x]].colour));}
-            mvwprintw(game, y, x, maptiles->tiles[map[y][x]].character.c_str());
-            wattroff(game,COLOR_PAIR(maptiles->tiles[map[y][x]].colour));
+            mvwprintw(game, y, x, maptiles->tiles[map[y][x]].character.c_str()); //prints the map inside of the game window
+            wattroff(game,COLOR_PAIR(maptiles->tiles[map[y][x]].colour));         //turns off colours
           }
         }
       }
@@ -89,7 +89,7 @@ class MapCreator{//Charles Barry
       int input(){//Charles Barry
           switch(toupper(wgetch(game))){
             case 'W':
-              if(coords[0]-1 != 0){coords[0] -= 1;}
+              if(coords[0]-1 != 0){coords[0] -= 1;} //moving cursor around, restricting it from leaving bounds of game
               break;
 
             case 'A':
@@ -112,11 +112,11 @@ class MapCreator{//Charles Barry
               break;
 
             case 'O':
-              if(tilepos-1 >= 0){tilepos -= 1;}
+              if(tilepos-1 >= 0){tilepos -= 1;} //runs down tiles 
               break;
 
             case 'P':
-              if(tilepos+1 < maptiles->tiles.size()){tilepos += 1;}
+              if(tilepos+1 < maptiles->tiles.size()){tilepos += 1;} //counts up tiles 
               break;
 
             case 'U':{//upload
@@ -134,10 +134,10 @@ class MapCreator{//Charles Barry
 
               }
 
-              if(mapname.length() == 0){
+              if(mapname.length() == 0){ //checks is user inputted zero
                 func->eraseTerminal();
-                func->printTerminalText("Upload cancelled");
-                break;
+                func->printTerminalText("Upload cancelled"); 
+                break;                                          //cancels upload function if nothing entered
               }
 
               {
@@ -252,7 +252,7 @@ class MapCreator{//Charles Barry
               func->eraseTerminal();
 
               func->printTerminalText("Enter name of the map you would like to load:");
-              mapname = func->getUserInput();
+              mapname = func->getUserInput();                                             //sets map name to userinput
               func->eraseTerminal();
 
               if(!mapname.length()){
