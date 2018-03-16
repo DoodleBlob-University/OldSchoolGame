@@ -582,6 +582,7 @@ Defence::Defence(TerminalFunctions* _term){//Charles Barry
 // ------------------------  ATTACKTEST ---------------------------
 void AttackTest::printToStatMenu(int playerHealth, int monsterHealth){//George Franklin & Charles Barry
     //this prints to a separate window to display desired stats throughout 
+    wclear(substat);
     wattron(substat,COLOR_PAIR(2));
     mvwprintw(substat, 1, term->centreTextCursorPos(enemy->getName()), enemy->getName().c_str());
     mvwprintw(substat, 2, term->centreTextCursorPos(std::string(enemy->getName().length()+2, '.')), std::string(enemy->getName().length()+2, '~').c_str());
