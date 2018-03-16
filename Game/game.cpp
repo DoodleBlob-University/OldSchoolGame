@@ -515,13 +515,13 @@ class Game{//Charles Barry
             {
               sqlite::sqlite db( "gamedb.db" ); // open database
               auto cur = db.get_statement();
-              cur->set_sql( "SELECT bossID FROM dungeon WHERE ID = ?;" );
-              cur->prepare();
-              cur->bind(1, dungeon.getID());
-              cur->step();
-                 monsterIDs=cur->get_int(0); 
+              cur->set_sql( "SELECT bossID FROM dungeon WHERE ID = ?;" ); //sets sql query
+              cur->prepare();                                             //prepares sql query
+              cur->bind(1, dungeon.getID());                              //set placeholder
+              cur->step();                                                //runs sql query
+                 monsterIDs=cur->get_int(0);                              //setting variable with retrieved information
             }
-            monstermap = new Map(monsterIDs+8, gamew, maptiles);
+            monstermap = new Map(monsterIDs+8, gamew, maptiles);          //prints combat picture 
             go = new AttackTest(func, playerID, monsterIDs);  
             break;
         }
