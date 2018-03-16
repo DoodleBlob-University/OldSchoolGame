@@ -509,11 +509,6 @@ class Game{//Charles Barry
             go = new AttackTest(func, playerID);
             break;
         }
-        mvwprintw(term, 1, 1, "(%i,%i)", dungeon.playerpos[0], dungeon.playerpos[1]);
-        wrefresh(term);
-        werase(term);
-        box(term, 0, 0);
-
       }
     }
 

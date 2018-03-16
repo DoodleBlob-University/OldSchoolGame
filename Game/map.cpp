@@ -102,7 +102,7 @@ int PeacefulMap::interact(int pos[2]){//William Smith
   return 0;
 }
 
-template<typename T, unsigned int N, unsigned int Nn>//template for array type and size of both
+template<typename T, unsigned int N, unsigned int Nn>//template for array type and size of each array
 bool PeacefulMap::ifIdenticalArray(T (&array1)[N], T (&array2)[Nn]){//Charles Barry
   //I assume the data types for the array are identical - if this isnt the case an error will occur upon compiling
     if(N != Nn){return false;}else{
