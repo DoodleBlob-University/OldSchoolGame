@@ -509,7 +509,7 @@ class Game{//Charles Barry
             mvwprintw(gamew, dungeon.playerpos[0], dungeon.playerpos[1], "X");
             wrefresh(gamew);
             break;
-          case 4:
+          case 4://William Smith
             //Combat with bosses
             int monsterIDs;
             {
