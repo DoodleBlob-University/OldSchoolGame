@@ -179,16 +179,25 @@
 
             }
       int player::health(int playerHealth){//Matthew Fretwell
-       //int level = playerDB[2];
-       //int EXP = playerDB[7];
-       //int levelUpPoint = 30 *(level *1.2);
-        //if (EXP >= levelUpPoint){
-            //playerDB[2] = playerDB[2]+1;
-            //term->printTerminalText("\n\n\n\n\n\n\n\nYour health has leveled up!");
-            //term->printTerminalText("\n\n\n\n\n\n\n\n\nYou now have " + std::to_string(playerDB[2]) + " health.");
-
-
+       int level = playerDB[2];
+       int EXP = playerDB[7];
+       float levelUpPoint = 20 *(level *1.2);
+        if (EXP >= levelUpPoint){
+            playerDB[2] = playerDB[2]+1;
+            term->printTerminalText("\n\n\n\n\n\n\n\nYour health has leveled up!");
+            term->printTerminalText("\n\n\n\n\n\n\n\n\nYou now have " + std::to_string(playerDB[2]) + " health.");//*/
             sqlite::sqlite db( "gamedb.db" );
+            auto cur = db.get_statement();
+            cur->set_sql("UPDATE PlayerStats SET Health = ? WHERE PlayerID = ?;");
+            cur->prepare();
+
+            cur->bind( 1, playerDB[2] );
+            cur->bind( 2, playerid);
+
+            cur->step();
+
+
+            /*sqlite::sqlite db( "gamedb.db" );
             auto cur = db.get_statement();
             cur->set_sql("UPDATE PlayerStats SET Health = ? WHERE PlayerID = ?;");
             cur->prepare();
@@ -198,7 +207,10 @@
 
             cur->step();
             playerDB[2] = playerHealth;
-           }
+           }//*/
+        }
+      }
+        
 
 int player::updateDB(int a, int b, int asLevelUpPoint){//Matthew Fretwell
     std::string upgrade;
@@ -635,7 +647,6 @@ int AttackTest::battle(){  //George Franklin
           term->eraseTerminal();
           term->printTerminalText ("You have killed the monster");
           term->printTerminalText("\nYou have been awarded with " + std::to_string(mEXP)+ " XP!");
-          health(pHealth);
           matt-> pXPGain(mEXP);// Matthew Fretwell
           matt-> pXPSplit(mEXP, attackCounter, healingCounter);
           matt-> levelUp();
@@ -651,6 +662,7 @@ int AttackTest::battle(){  //George Franklin
             b=b+1;
           }
           sleep(2);
+        term->eraseTerminal();
         break;
       }
       term->eraseTerminal();//George Franklin
