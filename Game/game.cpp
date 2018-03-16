@@ -511,10 +511,18 @@ class Game{//Charles Barry
             break;
           case 4:
             //Combat with bosses
+            int monsterIDs;
             {
-
+              sqlite::sqlite db( "gamedb.db" ); // open database
+              auto cur = db.get_statement();
+              cur->set_sql( "SELECT bossID FROM dungeon WHERE ID = ?;" );
+              cur->prepare();
+              cur->bind(1, dungeon.getID());
+              cur->step();
+                 monsterIDs=cur->get_int(0); 
             }
-            go = new AttackTest(func, playerID);
+            monstermap = new Map(monsterIDs+8, gamew, maptiles);
+            go = new AttackTest(func, playerID, monsterIDs);  
             break;
         }
       }
