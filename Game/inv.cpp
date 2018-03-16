@@ -1,32 +1,33 @@
 //Charles Barry
 #include <string>
 #include <vector>
+#include <ncurses.h>
 
 #include "inv.h"
 #include "libsqlite.hpp"
 
 
-      void Item::setItemValues(std::string _name, int _cost, int _itemType){//Kai Arnold
+      void Item::setItemValues(std::string _name, int _cost, int _itemType){//Kai Arnold Setting Values for Item
         name = _name; cost = _cost; itemType = _itemType;
       }
 
-        void Weapon::setValues(std::string name, int _damage, int cost){//Kai Arnold
+        void Weapon::setValues(std::string name, int _damage, int cost){//Kai Arnold Setting Values for Weapon
           damage = _damage;
           setItemValues(name, cost, 0);
         }
 
-        void Armour::setValues(std::string name, int _armour, int cost){//Kai Arnold
+        void Armour::setValues(std::string name, int _armour, int cost){//Kai Arnold Setting Values for Armour
           armour = _armour;
           setItemValues(name, cost, 1);
         }
 
 
-        void Potion::setValues(std::string name, int _health, int _mana, int cost){//Kai Arnold
+        void Potion::setValues(std::string name, int _health, int _mana, int cost){//Kai Arnold Setting Values for Potions
           health = _health; mana = _mana;
           setItemValues(name, cost, 2);
         }
 
-        void PlayerInventory::getWeapon() {//Kai Arnold
+        void PlayerInventory::getWeapon() {//Kai Arnold - SQL call to retrieve the Item ID, Weapon Name, Weapon Damage and Weapon Cost from the Database
             int count = 1;
             sqlite::sqlite db("Database.db");
             auto cur = db.get_statement();
@@ -36,7 +37,7 @@
                 items[cur->get_int(0)].w->setValues(cur->get_text(1), cur->get_int(2), cur->get_int(3));
             }
         }
-        void PlayerInventory::getArmour() {//Kai Arnold
+        void PlayerInventory::getArmour() {//Kai Arnold - SQL call to retrieve the Item ID, Armour Name, Armour Amour and Armour Cost from the Database
             int count = 1;
             sqlite::sqlite db("Database.db");
             auto cur = db.get_statement();
@@ -46,7 +47,7 @@
                 items[cur->get_int(0)].a->setValues(cur->get_text(1), cur->get_int(2), cur->get_int(3));
             }
         }
-        void PlayerInventory::getPotion() {//Kai Arnold
+        void PlayerInventory::getPotion() {//Kai Arnold - SQL call to retrieve the Item ID, Potion Name, Potion Health, Potion Mana and Potion Cost from the Database
             sqlite::sqlite db("Database.db");
             auto cur = db.get_statement();
             cur->set_sql("SELECT item.id, potion.name, potion.health, potion.mana, potion.cost FROM potion, item where item.PotionID = potion.ID;");
@@ -55,7 +56,7 @@
                 items[cur->get_int(0)].p->setValues(cur->get_text(1), cur->get_int(2), cur->get_int(3), cur->get_int(4));
             }
         }
-        int PlayerInventory::getItemCount() {//Kai Arnold
+        int PlayerInventory::getItemCount() {//Kai Arnold - SQL call to retrieve the count of items in the Item Table from the Database and returns the integer value
             int size;
             sqlite::sqlite db("Database.db");
             auto cur = db.get_statement();
@@ -90,7 +91,7 @@
             }
           }
         }
-        void PlayerInventory::removeItem(int pos){//Kai Arnold
+        void PlayerInventory::removeItem(int pos){//Kai Arnold Starts at 0 
           playerInv[pos].w = wempty;
           playerInv[pos].a = aempty;
           playerInv[pos].p = pempty;
@@ -102,34 +103,35 @@
         }
 
 
-/*
+
 int main() {//Kai Arnold
-    PlayerInventory* inv = new PlayerInventory();
+    PlayerInventory* inv = new PlayerInventory();  //Creates a new player inventory 
     inv->addItem(1);
-    inv->addItem(1);
-    inv->addItem(1);
-    inv->addItem(1);
-    inv->addItem(1);
-    inv->addItem(1);
-    inv->addItem(1);
-    inv->addItem(1);
-    inv->addItem(1);
-    inv->addItem(1);
-    inv->removeItem(2);
+    inv->addItem(2);
+    inv->addItem(3);
+    inv->addItem(4);
+    inv->addItem(5);
+    inv->addItem(6);
+    inv->addItem(7);
+    inv->addItem(8);
+    inv->addItem(9);
     inv->addItem(10);
+  
 
-    inv->equipItem(3, 1);
+    //inv->removeItem(1);
+    
+    // inv->equipItem(3, 1);
 
-    initscr();
+    initscr(); 
     for(int i = 0; i < 10; ++i){
-      printw("-%s\n", inv->playerInv[i].w->getName().c_str());
+      printw("- %s\n", inv->playerInv[i].w->getName().c_str()); // Print player Inventory
     }
     printw("\n\n");
     for(int i = 0; i < 3; ++i){
-      printw("-%s\n", inv->playerEquip[i].w->getName().c_str());
+      printw("- %s\n", inv->playerEquip[i].w->getName().c_str()); // Prints player equipped Items
     }
     getch();
     endwin();
 
 }
-*/
+
