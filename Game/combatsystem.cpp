@@ -585,6 +585,7 @@ int AttackTest::battle(){  //George Franklin
   {
     substat = derwin(term->getStat(), 9,43,3,1);
     term->changeWindowWidth(windowWidth);
+    term->eraseTerminal();
     term->printTerminalText ("What would you like to do?");
     term-> printTerminalText ("\n-1    Cast a spell");
     term-> printTerminalText ("\n\n-2    Use an attack");
