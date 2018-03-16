@@ -526,7 +526,13 @@ int Defence::defence_response()  //George Franklin
   defenceOptionTwo = defenceResponse.find(defenceTwoLower);
   defenceOptionThree = defenceResponse.find(defenceThreeLower);
 
-  if (defenceOptionOne != std::string::npos || defenceOptionOneNo != std::string::npos)
+  if(vectorOfQuantity[0]==0 && vectorOfQuantity[1]==0 && vectorOfQuantity[2]==0){
+    term->printTerminalText("\n\n\n\n\n\nYou have no potions left!");
+    return 0;
+  }
+  
+  
+  else if (defenceOptionOne != std::string::npos || defenceOptionOneNo != std::string::npos)
   {
 
     if(vectorOfQuantity[0]!=0){
@@ -580,10 +586,7 @@ Defence::Defence(TerminalFunctions* _term){//Charles Barry
 
 
 // ------------------------  ATTACKTEST ---------------------------
-int AttackTest::printToStatMenu(int playerHealth, int monsterHealth){
-    //substat = derwin(term->getStat(), 9,43,3,1);
-    //wclear(substat);
-
+void AttackTest::printToStatMenu(int playerHealth, int monsterHealth){//George Franklin & Charles Barry
     wattron(substat,COLOR_PAIR(2));
     mvwprintw(substat, 1, term->centreTextCursorPos(enemy->getName()), enemy->getName().c_str());
     mvwprintw(substat, 2, term->centreTextCursorPos(std::string(enemy->getName().length()+2, '.')), std::string(enemy->getName().length()+2, '~').c_str());
@@ -659,7 +662,7 @@ int AttackTest::battle(){  //George Franklin
         term->eraseTerminal();
         wclear(substat);
         wrefresh(substat);
-        break;
+        return 0;
       }
       term->eraseTerminal();//George Franklin
       term->printTerminalText ("Monsters time to attack");
@@ -676,7 +679,7 @@ int AttackTest::battle(){  //George Franklin
           term->eraseTerminal();
           term->printTerminalText ("You have died");
           getch();
-          break;
+          return 1;
       }
      else
      {
