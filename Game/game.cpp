@@ -330,19 +330,19 @@ class Game{//Charles Barry
       srand(time(0));
       string textArray[] = {"The chest swings open!", "The chest creaks open!", "The chest slowly creaks open!", "The chest thuds open!"};
       textRan = rand() % 4;
-      mvwprintw(term->getData(), 2, 1, "%s", textArray[textRan].c_str());
+      mvwprintw(term->getData(), 1, 1, "%s", textArray[textRan].c_str());
       wrefresh(term->getData());
       getRanNum = rand() % 20 + 1;
       if(getRanNum < 15){
       int getRanGold;
       getRanGold = rand() % 30 + 5;
-      mvwprintw(term->getData(), 3, 1, "You have received %i Gold!", getRanGold);
+      mvwprintw(term->getData(), 2, 1, "You have received %i Gold!", getRanGold);
       wrefresh(term->getData());
       }else if(getRanNum == 20){
-      mvwprintw(term->getData(), 3, 1, "You have received an item and gold!");
+      mvwprintw(term->getData(), 2, 1, "You have received an item and gold!");
       wrefresh(term->getData());
       }else{
-      mvwprintw(term->getData(), 3, 1, "You have received an Item");
+      mvwprintw(term->getData(), 2, 1, "You have received an Item");
       wrefresh(term->getData());
       }
     }
