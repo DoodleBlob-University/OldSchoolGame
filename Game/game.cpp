@@ -464,11 +464,13 @@ class Game{//Charles Barry
       }
     }
 
-    int DungeonSequence(WINDOW* game, WINDOW* stat, WINDOW* term, Dungeon dungeon){//Charles Barry
+    int DungeonSequence(WINDOW* gamew, WINDOW* statw, WINDOW* termw, Dungeon dungeon){//Charles Barry
       printDungeonName(dungeon.getName());
-
+      int monstermapid;
       while(true){
         AttackTest* go;
+        Map* monstermap;
+
         int movementflag = dungeon.movement();
         switch(movementflag){
           case 1://Exit dungeon
@@ -498,8 +500,14 @@ class Game{//Charles Barry
               }else{
                 monster = 8;
               }
-            }
+              monster;
+          }
+            monstermap = new Map(monster+8, gamew, maptiles);
+            //player.printMap();
             go = new AttackTest(func, playerID, monster);
+            dungeon.printMap();
+            mvwprintw(gamew, dungeon.playerpos[0], dungeon.playerpos[1], "X");
+            wrefresh(gamew);
             break;
           case 4:
             //Combat with bosses
