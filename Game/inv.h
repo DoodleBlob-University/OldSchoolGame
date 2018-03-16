@@ -45,7 +45,7 @@ class Potion : public Item {//Kai Arnold
         Potion() : Item(){}
 };
 
-class PlayerInventory{//Kai Arnold 
+class PlayerInventory{//Kai Arnold and Charles Barry
     private:
         Weapon* wempty = new Weapon();
         Armour* aempty = new Armour();

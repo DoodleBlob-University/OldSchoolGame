@@ -23,13 +23,13 @@ class PeacefulMap : public Map{//Charles Barry
 private:
   void fetchPlayerCoords();
   int interact(int pos[2]);//William Smith
-  template<typename T, unsigned int N, unsigned int Nn>
-  bool ifIdenticalArray(T (&array1)[N], T (&array2)[Nn]);
   bool checkPlayerExit();
   std::vector<std::vector<int> > exitcoords;
 protected:
   void fetchExitCoords();
 public:
+  template<typename T, unsigned int N, unsigned int Nn>
+  bool ifIdenticalArray(T (&array1)[N], T (&array2)[Nn]);
   int playerpos[2];
   virtual int movement();
   PeacefulMap(int _ID, WINDOW* _win, MapTile* maptiles);
@@ -39,7 +39,6 @@ class Dungeon : public PeacefulMap{//Charles Barry
 private:
   int checkForMonsters();
 public:
-  int bosspos[2];
   int movement();
   Dungeon(int _ID, WINDOW* _win, MapTile* maptiles);
 };

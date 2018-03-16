@@ -12,7 +12,7 @@
 #include "terminalfunc.h"
 #include "combatsystem.h"
 #include "login.h"
-#include "inv.h"
+//#include "inv.h"
 
 using namespace std;
 
@@ -324,20 +324,6 @@ class Game{//Charles Barry
     TerminalFunctions* func;
     int playerID;
 
-
-    template<typename T, unsigned int N, unsigned int Nn>
-    bool ifIdenticalArray(T (&array1)[N], T (&array2)[Nn]){//Charles Barry
-      //I assume the data types for the array are identical - if this isnt the case an error will occur upon compiling
-        if(N != Nn){return false;}else{
-          for(int i = 0; i < N; ++i){
-            if(array1[i] != array2[i]){
-              return false;
-            }
-          }
-          return true;
-        }
-    }
-
     void chests(){//William Smith
       int getRanNum;
       int textRan;
@@ -455,19 +441,19 @@ class Game{//Charles Barry
             case 0:
               for(int i = 0; i < 2; ++i){
                 int tempdungeon[] = {Dungeon[dungeonno][0],Dungeon[dungeonno][1]+i};
-                if(ifIdenticalArray(tempdungeon, World.playerpos)){
+                if(World.ifIdenticalArray(tempdungeon, World.playerpos)){
                   enteringdungeon = true;
               }}
               break;
             case 2: case 3:
               for(int i = 0; i < 3; ++i){
                 int tempdungeon[] = {Dungeon[dungeonno][0],Dungeon[dungeonno][1]+i};
-                if(ifIdenticalArray(tempdungeon, World.playerpos)){
+                if(World.ifIdenticalArray(tempdungeon, World.playerpos)){
                   enteringdungeon = true;
               }}
               break;
             default:
-              enteringdungeon = ifIdenticalArray(Dungeon[dungeonno], World.playerpos);
+              enteringdungeon = World.ifIdenticalArray(Dungeon[dungeonno], World.playerpos);
             break;
           }
           if(enteringdungeon){

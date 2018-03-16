@@ -33,10 +33,10 @@ private:
   int healthLevelUp();
   int updateDB(int a, int b, int asLevelUpPoint);
   void statsLevelUp(int a, int b);
-  TerminalFunctions* term;
-  int playerid;
+  TerminalFunctions* term;//Charles Barry
+  int playerid;//Charles Barry
 public:
-  void dbOpen(TerminalFunctions* _term, int _playerid);
+  void dbOpen(TerminalFunctions* _term, int _playerid);//Charles Barry and Matt Fretwell
   int getHealthLevelUp();
   int getLevelUp();
   int getLevel();
@@ -58,11 +58,11 @@ public:
 class monster{//Matthew Fretwell
 private:
   std::array<int, 9>monsterDB;
-  int monsterid;
-  std::string monstername;
+  int monsterid;//Charles Barry
+  std::string monstername;//Charles Barry
 public:
-  std::string getName();
-  void dbOpen(int _monsterid);
+  std::string getName();//Charles Barry
+  void dbOpen(int _monsterid);//Charles Barry and Matt Fretwell
   int getLevel();
   int getHealth();
   int getAttackStrength();
@@ -166,8 +166,6 @@ public:
 
 class AttackTest : public Attack, public Spells, public Defence, public monster, public player{//George Franklin
 private:
-  void printTerminalText(std::string);
-  std::string getUserInput();
   std::string choice;
   std::string response;
   std::string attacksearch = "attack";
@@ -184,7 +182,7 @@ private:
   int a = 3;
   int b = 9;
   bool defenceOption;
-  const int windowWidth = 43;
+  const int windowWidth = 43;//Charles Barry
 
   player* matt;//Matt Fretwell
   int pHealth;
@@ -194,7 +192,7 @@ private:
   int pDef;
   int pXP;
 
-  void loadPlayerStats(){
+  void loadPlayerStats(){//Charles Barry and Matt Fretwell
     pHealth = matt->getHealth();
     pAttackStrength = matt->getAttackStrength();
     pMana = matt->getMana();
@@ -203,7 +201,7 @@ private:
     pXP = matt->getEXP();
   }
 
-  WINDOW* substat;
+  WINDOW* substat;//Charles Barry
 
   monster* enemy;//Matt Fretwell
   int mHealth;
@@ -213,7 +211,7 @@ private:
   int mDef;
   int mEXP;
 
-  void loadMonsterStats(){//Matt Fretwell
+  void loadMonsterStats(){//Matt Fretwell and Charles Barry
     mHealth = enemy->getHealth();
     //int mHealth = 50;
     mAttackStrength = enemy->getAttackStrength();
@@ -223,8 +221,7 @@ private:
     mEXP = enemy->getEXP();
   }
 
-  TerminalFunctions* term;
-  player* please;
+  TerminalFunctions* term;//Charles Barry
 
 public:
   int battle();

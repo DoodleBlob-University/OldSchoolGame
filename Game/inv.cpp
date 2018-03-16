@@ -1,3 +1,4 @@
+//Charles Barry
 #include <string>
 #include <vector>
 
@@ -9,12 +10,10 @@
         name = _name; cost = _cost; itemType = _itemType;
       }
 
-
         void Weapon::setValues(std::string name, int _damage, int cost){//Kai Arnold
           damage = _damage;
           setItemValues(name, cost, 0);
         }
-
 
         void Armour::setValues(std::string name, int _armour, int cost){//Kai Arnold
           armour = _armour;
@@ -26,8 +25,6 @@
           health = _health; mana = _mana;
           setItemValues(name, cost, 2);
         }
-
-
 
         void PlayerInventory::getWeapon() {//Kai Arnold
             int count = 1;
@@ -71,25 +68,25 @@
         }
 
         PlayerInventory::PlayerInventory(){//Kai Arnold and Charles Barry
-            itemno = getItemCount() + 1;
-            items.resize(itemno);
+            itemno = getItemCount() + 1;//itemno starts from 1 as the position in the vector equals itemid
+            items.resize(itemno);//resize all vectors to their appropriate size
             playerInv.resize(10);
             playerEquip.resize(3);
-            getWeapon();
-            getArmour();
-            getPotion();
+            getWeapon();//get weapons from database
+            getArmour();//get armour from database
+            getPotion();//get potions from database
         }
         void PlayerInventory::addItem(int id){//Kai Arnold and Charles Barry
           int emptypos = -1;
-          for(int i = 0; i < playerInv.size(); ++i){
+          for(int i = 0; i < playerInv.size(); ++i){//check each object of every structure in the vector to see if they are empty
             if(playerInv[i].w->getName() == "" && playerInv[i].a->getName() == "" && playerInv[i].p->getName() == ""){
-              emptypos = i;
-              break;
+              emptypos = i;//get the position in the vector of the empty structure
+              break;//exit the for loop
             }
           }
           if(emptypos >= 0){
-            if(id <= itemno){
-            playerInv[emptypos] = items[id];
+            if(id <= itemno && id > 0){//check if id is valid
+            playerInv[emptypos] = items[id];//the empty position in playerinv is given the reference to the item
             }
           }
         }
@@ -106,7 +103,7 @@
 
 
 /*
-int main() {//Kai Arnold 
+int main() {//Kai Arnold
     PlayerInventory* inv = new PlayerInventory();
     inv->addItem(1);
     inv->addItem(1);

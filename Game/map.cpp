@@ -11,9 +11,9 @@
 void Map::printMap(){//Charles Barry
   for(int y = 1; y < height; ++y){
     for(int x = 1; x < width+1; ++x){
-      if(maptiles->tiles[map[y][x]].colour > 0){wattron(win,COLOR_PAIR(maptiles->tiles[map[y][x]].colour));}
-      mvwprintw(win, y, x, maptiles->tiles[map[y][x]].character.c_str());
-      wattroff(win,COLOR_PAIR(maptiles->tiles[map[y][x]].colour));
+      if(maptiles->tiles[map[y][x]].colour > 0){wattron(win,COLOR_PAIR(maptiles->tiles[map[y][x]].colour));}//if colour specified, print colour
+      mvwprintw(win, y, x, maptiles->tiles[map[y][x]].character.c_str());//at the corresponding coords, print the character
+      wattroff(win,COLOR_PAIR(maptiles->tiles[map[y][x]].colour));//turn off colour
     }}
     wrefresh(win);
 }
@@ -31,7 +31,7 @@ Map::Map(int _ID, WINDOW* _win, MapTile* _maptiles){//Charles Barry
 }
 
 void Map::loadMap(){//Charles Barry
-  int yvalue, xvalue, tileno = 1;
+  int yvalue, xvalue, tileno = 1;//gets coords and tileid from database and makes a 2d array map
   sqlite::sqlite db( "gamedb.db" );
   auto cur = db.get_statement();
   cur->set_sql( "select x, y, tileID, dungeon.name from map, dungeon where dungeonID = ? and dungeonID = dungeon.ID order by y, x;" );
@@ -51,7 +51,7 @@ void Map::loadMap(){//Charles Barry
 
 //------------   PEACEFUL MAP   --------------------
 void PeacefulMap::fetchPlayerCoords(){//Charles Barry
-  sqlite::sqlite db( "gamedb.db" );
+  sqlite::sqlite db( "gamedb.db" );//gets players spawning coords
   auto cur = db.get_statement();
   cur->set_sql( "select playery, playerx from dungeon where ID = ?;" );
   cur->prepare();
@@ -102,7 +102,7 @@ int PeacefulMap::interact(int pos[2]){//William Smith
   return 0;
 }
 
-template<typename T, unsigned int N, unsigned int Nn>
+template<typename T, unsigned int N, unsigned int Nn>//template for array type and size of both
 bool PeacefulMap::ifIdenticalArray(T (&array1)[N], T (&array2)[Nn]){//Charles Barry
   //I assume the data types for the array are identical - if this isnt the case an error will occur upon compiling
     if(N != Nn){return false;}else{
@@ -140,39 +140,39 @@ int PeacefulMap::movement(){//William Smith & Charles Barry
   if(checkPlayerExit()){return 1;}
   switch(toupper(wgetch(win))){
     case 'W':
-        if((map[playerpos[0]-1][playerpos[1]] == 0) && (playerpos[0] - 1 > 0)){
+        if((map[playerpos[0]-1][playerpos[1]] == 0) && (playerpos[0] - 1 > 0)){//up
           playerpos[0] -= 1;
         }
         break;
     case 'A':
-        if((map[playerpos[0]][playerpos[1] - 1] == 0) && (playerpos[1] - 1 > 0)){
+        if((map[playerpos[0]][playerpos[1] - 1] == 0) && (playerpos[1] - 1 > 0)){//left
           playerpos[1] -= 1;
         }
         break;
     case 'S':
-        if((map[playerpos[0]+1][playerpos[1]] == 0) && (playerpos[0] + 1 <= height - 1)){
+        if((map[playerpos[0]+1][playerpos[1]] == 0) && (playerpos[0] + 1 <= height - 1)){//down
           playerpos[0] += 1;
         }
         break;
     case 'D':
-         if((map[playerpos[0]][playerpos[1] + 1] == 0) && (playerpos[1] + 1 <= width)){
+         if((map[playerpos[0]][playerpos[1] + 1] == 0) && (playerpos[1] + 1 <= width)){//right
            playerpos[1] += 1;
          }
          break;
-    case 'E':
+    case 'E'://interact
         if(interact(playerpos)){return 2;};
         break;
     break;
   }
-  printMap();
-  mvwprintw(win, playerpos[0], playerpos[1], "X");
+  printMap();//reprint map without player
+  mvwprintw(win, playerpos[0], playerpos[1], "X");//print player at new coord
   wrefresh(win);
 }
 
 PeacefulMap::PeacefulMap(int _ID, WINDOW* _win, MapTile* maptiles) : Map(_ID, _win, maptiles){//Charles Barry
   fetchPlayerCoords();
   fetchExitCoords();
-  mvwprintw(win, playerpos[0], playerpos[1], "X");
+  mvwprintw(win, playerpos[0], playerpos[1], "X");//get coords and print player
   wrefresh(win);
 }
 
@@ -181,16 +181,16 @@ PeacefulMap::PeacefulMap(int _ID, WINDOW* _win, MapTile* maptiles) : Map(_ID, _w
 //------------   DUNGEON   --------------------
 Dungeon::Dungeon(int _ID, WINDOW* _win, MapTile* maptiles) : PeacefulMap(_ID, _win, maptiles){//Charles Barry
     int numberOfMonsters = 20;
-    {//Spawn monsters randomly across map //Matthew Fretwell
+    {//Spawn monsters randomly across map //Charles Barry
       sqlite::sqlite db( "gamedb.db" );
-      auto cur = db.get_statement();
+      auto cur = db.get_statement();//selects random coordinates where the monsters can spawn
       cur->set_sql("SELECT map.y, map.x FROM map WHERE map.tileID = 0 AND dungeonID = ? ORDER BY RANDOM() LIMIT ?;");
       cur->prepare();
       cur->bind(1, ID);
       cur->bind(2, numberOfMonsters);
       int num = 0;
         while(cur->step()){
-        map[cur->get_int(0)][cur->get_int(1)] = 13;
+        map[cur->get_int(0)][cur->get_int(1)] = 13;//changes ID at the spawning locations on the map to the tile of a monster
         num = num+1;
       }
     }
@@ -200,7 +200,7 @@ Dungeon::Dungeon(int _ID, WINDOW* _win, MapTile* maptiles) : PeacefulMap(_ID, _w
 
 }
 
-int Dungeon::movement(){//Charles Barry
+int Dungeon::movement(){//overrides previous function//Charles Barry
   int movementflag = checkForMonsters();
   if(movementflag){return movementflag;}//check before player moves
 

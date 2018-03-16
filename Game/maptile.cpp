@@ -5,7 +5,7 @@
 #include "libsqlite.hpp"
 #include "maptile.h"
 
-int MapTile::getMapTileNo(){//William Smith 
+int MapTile::getMapTileNo(){//William Smith
   sqlite::sqlite db( "gamedb.db" ); //Function finds how many map tiles there are, using that to size the dungeon up
   auto cur = db.get_statement();
   cur->set_sql( "SELECT COUNT(*) FROM maptiles;" ); //SQL query

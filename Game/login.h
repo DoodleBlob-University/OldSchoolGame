@@ -1,4 +1,4 @@
-//Shirin Shahali
+//Charles Barry
 #ifndef LOGIN_H
 #define LOGIN_H
 

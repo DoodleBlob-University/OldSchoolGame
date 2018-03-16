@@ -100,21 +100,24 @@
 
 // ------------------------  PLAYER  ------------------------------------
 
-     void player::dbOpen(TerminalFunctions* _term, int _playerid){//Matthew Fretwell
+     void player::dbOpen(TerminalFunctions* _term, int _playerid){//Matthew Fretwell and Charles Barry
        term = _term; playerid = _playerid;
+       //assigns playerid the actual playerid and gives term a pointer to an instance of terminalfunctions
         sqlite::sqlite db( "gamedb.db" );
         auto cur = db.get_statement();
         cur->set_sql( "SELECT * FROM PlayerStats WHERE PlayerID = ?");
-        cur->prepare();
+        cur->prepare();//query gets all data about the player with said id
         cur->bind(1, playerid);
         cur->step();
         int num = 1;
-        while(num<14){
+        while(num<14){//all stats about player are put into an array
             playerDB[num-1] = cur->get_int(num-1);
             num = num +1;
         }
 
     }
+
+
 
     int player::pXPGain(int mEXP){//Matthew Fretwell
            int xpGain = playerDB[7] + mEXP;
@@ -324,23 +327,24 @@ int player::updateDB(int a, int b, int asLevelUpPoint){//Matthew Fretwell
 
 // -----------------------  MONSTER -----------------------------
 
-void monster::dbOpen(int _monsterid){//Matthew Fretwell
+void monster::dbOpen(int _monsterid){//Matthew Fretwell and Charles Barry
     monsterid = _monsterid;
+    //assigns monsterid the actual monster id
     sqlite::sqlite db( "gamedb.db" );
     auto cur = db.get_statement();
     cur->set_sql( "SELECT MonsterName, Level, Health, AttackStrength, Mana, MagicStrength, Defence, EXP, Gold FROM Monster WHERE ID = ?");
-    cur->prepare();
+    cur->prepare();//query gets all data from the monster with said id
     cur->bind(1, monsterid);
     cur->step();
     int num = 1;
     monstername = cur->get_text(0);
-    while(num<8){
+    while(num<8){//all stats about monster are put into an array
         monsterDB[num-1] = cur->get_int(num);
         num = num +1;
     }
 }
 
-    std::string monster::getName(){
+    std::string monster::getName(){//Charles Barry
       return monstername;
     }
     int monster::getLevel(){//Matthew Fretwell
@@ -696,27 +700,29 @@ int AttackTest::battle(){  //George Franklin
 }
 
 AttackTest::AttackTest(TerminalFunctions* _term, int _playerid) : Attack(_term), Spells(_term), Defence(_term){//Charles Barry
+  //if no monster is specified, a monster with the ID of one will always load
   term = _term;
-  enemy = new monster();
+  enemy = new monster();//create new instances of monster and player and assign them
   matt = new player();
 
-  matt->dbOpen(_term, _playerid);
-  enemy->dbOpen(1);
-  //player* please = new player(term, _playerid);
+  matt->dbOpen(_term, _playerid);//get data from database about player
+  enemy->dbOpen(1);//get data from database about monster, where ID is 1
+
   loadMonsterStats();
   loadPlayerStats();
-  battle();
+  battle();//commence battle
 }
 
 AttackTest::AttackTest(TerminalFunctions* _term, int _playerid, int monsterid) : Attack(_term), Spells(_term), Defence(_term){//Charles Barry
+  //if monsterid is specified, a monster will spawn with the specified id
   term = _term;
-  enemy = new monster();
+  enemy = new monster();//create new instances of monster and player and assign them
   matt = new player();
 
-  matt->dbOpen(_term, _playerid);
-  enemy->dbOpen(monsterid);
-  //player* please = new player(term, _playerid);
+  matt->dbOpen(_term, _playerid);//get data from database about player
+  enemy->dbOpen(monsterid);//get data from database about monster, where ID is equal to monsterid
+
   loadMonsterStats();
   loadPlayerStats();
-  battle();
+  battle();//commence battle
 }
