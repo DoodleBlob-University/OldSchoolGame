@@ -112,11 +112,11 @@ class MapCreator{//Charles Barry
               break;
 
             case 'O':
-              if(tilepos-1 >= 0){tilepos -= 1;} //runs down tiles 
+              if(tilepos-1 >= 0){tilepos -= 1;} //runs down tiles
               break;
 
             case 'P':
-              if(tilepos+1 < maptiles->tiles.size()){tilepos += 1;} //counts up tiles 
+              if(tilepos+1 < maptiles->tiles.size()){tilepos += 1;} //counts up tiles
               break;
 
             case 'U':{//upload
@@ -136,7 +136,7 @@ class MapCreator{//Charles Barry
 
               if(mapname.length() == 0){ //checks is user inputted zero
                 func->eraseTerminal();
-                func->printTerminalText("Upload cancelled"); 
+                func->printTerminalText("Upload cancelled");
                 break;                                          //cancels upload function if nothing entered
               }
 
@@ -144,7 +144,7 @@ class MapCreator{//Charles Barry
                 sqlite::sqlite db( "gamedb.db" ); // open database
                 auto cur = db.get_statement();
                 cur->set_sql( "SELECT ID, name FROM dungeon WHERE name LIKE ? OR name = ?;" );
-                cur->prepare();
+                cur->prepare();//get id and name of dungeon where name is similar or equal to the users input
                 cur->bind(1, "%%"+mapname+"%%");
                 cur->bind(2, mapname);
                 while( cur->step() ){
@@ -153,7 +153,7 @@ class MapCreator{//Charles Barry
                 }
               }
 
-              if(suggestedmapname == mapname){
+              if(suggestedmapname == mapname){//if the suggestedname is equal to the users input
                 func->eraseTerminal();
                 existing = true;
                 func->printTerminalText("This would overwrite " + suggestedmapname + "!\nAre you sure? y/n");
@@ -162,7 +162,7 @@ class MapCreator{//Charles Barry
                   func->printTerminalText("Upload cancelled");
                   break;
                 }
-              }else if(suggestedmapname.length()>0){
+              }else if(suggestedmapname.length()>0){//if a name is suggested..
                 func->eraseTerminal();
                 func->printTerminalText("Did you mean: " + suggestedmapname + "?\ny/n");
                 if(func->getUserYN() == true){
@@ -178,7 +178,7 @@ class MapCreator{//Charles Barry
                   }
                 }
               }
-              func->eraseTerminal();
+              func->eraseTerminal();//upload map
               func->printTerminalText("Uploading " + mapname + "...\nPlease wait");
               if(existing == true){
                 {//delete previous map
@@ -191,7 +191,7 @@ class MapCreator{//Charles Barry
                     while( cur->step() ){
                        mapnum = cur->get_int(0);
                     }
-                  }
+                  }//delete previous map
                   sqlite::sqlite db( "gamedb.db" );
                   for(int x = 1; x < 106; ++x){
                     for(int y = 1; y < 35; ++y){
@@ -229,7 +229,7 @@ class MapCreator{//Charles Barry
                 {//get dungeon ID
                   int tileno;
                   sqlite::sqlite db( "gamedb.db" );
-                  auto cur = db.get_statement();
+                  auto cur = db.get_statement();//check if the correct number of tiles are stored
                   cur->set_sql( "SELECT COUNT(*) FROM map WHERE DungeonID = ?;" );
                   cur->prepare();
                   cur->bind(1, mapnum);
@@ -252,7 +252,7 @@ class MapCreator{//Charles Barry
               func->eraseTerminal();
 
               func->printTerminalText("Enter name of the map you would like to load:");
-              mapname = func->getUserInput();                                             //sets map name to userinput
+              mapname = func->getUserInput();   //gets user input
               func->eraseTerminal();
 
               if(!mapname.length()){
@@ -263,7 +263,7 @@ class MapCreator{//Charles Barry
                   sqlite::sqlite db( "gamedb.db" ); // open database
                   auto cur = db.get_statement();
                   cur->set_sql( "SELECT ID, name FROM dungeon WHERE name LIKE ? OR name = ?;" );
-                  cur->prepare();
+                  cur->prepare();//get id and name from dungeon where userinput is similar or equal to name
                   cur->bind(1, "%%"+mapname+"%%");
                   cur->bind(2, mapname);
                   while( cur->step() ){
@@ -272,15 +272,15 @@ class MapCreator{//Charles Barry
                   }
                 }
                 if(mapnum == 0){
-                  func->printTerminalText("\nError 404: Map Not Found");
+                  func->printTerminalText("\nError 404: Map Not Found");//no map found
                 }else{
-                  func->printTerminalText("\nLoading "+mapname);
+                  func->printTerminalText("\nLoading "+mapname);//loading
                   loadMap(mapnum);
                 }
               }
               break;}
 
-            case 'H':
+            case 'H'://display help
               func->printTerminalText("Move the cursor using 'W', 'A', 'S' and 'D'\nDraw your selected tile by pressing SPACEBAR\nChoose your tile by pressing 'O' or 'P'");
               break;
 
@@ -350,9 +350,9 @@ class Game{//Charles Barry
     void printDungeonName(string dungeonname){//Charles Barry
       werase(stat->getData());
       mvwprintw(stat->getData(), 1, func->centreTextCursorPos(dungeonname), dungeonname.c_str());
-      wmove(stat->getData(), 2, func->centreTextCursorPos(dungeonname)- 1);
+      wmove(stat->getData(), 2, func->centreTextCursorPos(dungeonname)- 1);//centres dungeon name and prints
       for(int i = 0; i < (dungeonname.size() + 2); ++i){
-        wprintw(stat->getData(), "¯");
+        wprintw(stat->getData(), "¯");//underlines the dungeon name
       }
         box(stat->getData(), 0, 0);
       wrefresh(stat->getData());
@@ -431,10 +431,10 @@ class Game{//Charles Barry
       printDungeonName(World.getName());
       World.printMap();
       if(temppos[0] != 0){World.playerpos[0] = temppos[0]; World.playerpos[1] = temppos[1];}
-      mvwprintw(game, World.playerpos[0], World.playerpos[1], "X");
+      mvwprintw(game, World.playerpos[0], World.playerpos[1], "X");//prints player pos
       while(true){
         World.movement();
-
+        //checks if user entered a dungeon by comparing the playerpos array with dungeonno
         for(int dungeonno = 0; dungeonno < 5; ++dungeonno){
           bool enteringdungeon = false;
           switch(dungeonno){
@@ -504,9 +504,12 @@ class Game{//Charles Barry
           }
             monstermap = new Map(monster+8, gamew, maptiles);
             //player.printMap();
-            go = new AttackTest(func, playerID, monster);
-            dungeon.printMap();
-            mvwprintw(gamew, dungeon.playerpos[0], dungeon.playerpos[1], "X");
+            go = new AttackTest(func, playerID, monster);//print combat map
+            if(go->isdead()){
+              return 1;
+            }
+            dungeon.printMap();//reprint dungeon
+            mvwprintw(gamew, dungeon.playerpos[0], dungeon.playerpos[1], "X");//reprint player
             wrefresh(gamew);
             break;
           case 4://William Smith
@@ -519,10 +522,16 @@ class Game{//Charles Barry
               cur->prepare();
               cur->bind(1, dungeon.getID());
               cur->step();
-                 monsterIDs=cur->get_int(0); 
+                 monsterIDs=cur->get_int(0);
             }
-            monstermap = new Map(monsterIDs+8, gamew, maptiles);
-            go = new AttackTest(func, playerID, monsterIDs);  
+            monstermap = new Map(monsterIDs+8, gamew, maptiles);//print combat map
+            go = new AttackTest(func, playerID, monsterIDs);//start combat
+            if(go->isdead()){
+              return 1;
+            }
+            dungeon.printMap();//reprint dungeon
+            mvwprintw(gamew, dungeon.playerpos[0], dungeon.playerpos[1], "X");//reprint player
+            wrefresh(gamew);
             break;
         }
       }
@@ -550,11 +559,13 @@ class Game{//Charles Barry
         if(selecteddungeon == 7){
           //SHOP
           Map shop(7, game->getData(), maptiles);
-
+          getch();
         }else{
           //DUNGEON
           Dungeon dungeon(selecteddungeon, game->getData(), maptiles);
-          DungeonSequence(game->getData(), stat->getData(), term->getData(), dungeon);
+          if(DungeonSequence(game->getData(), stat->getData(), term->getData(), dungeon)){
+            return 1;
+          }
 
         }
       }
@@ -562,7 +573,8 @@ class Game{//Charles Barry
   public:
     Game(Window* _game, Window* _stat, Window* _term, MapTile* _maptiles, TerminalFunctions* _func){//Charles Barry
       game = _game; stat = _stat; term = _term; maptiles = _maptiles; func = _func;
-      gameSequence();
+      while(true){
+      gameSequence();}
     }
   };
 

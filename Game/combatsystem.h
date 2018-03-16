@@ -172,6 +172,7 @@ private:
   std::string attacksearch = "attack";
   std::string spellsearch = "spell";
   std::string fightingResponse;
+  bool dead = false;
   int defenceResponse;
   size_t nextA;
   size_t nextS;
@@ -227,7 +228,8 @@ private:
 
 public:
   void printToStatMenu(int playerHealth, int monsterHealth);
-  int battle();
+  void battle();
+  bool isdead();
 
   AttackTest(TerminalFunctions* _term, int playerid);//Charles Barry
   AttackTest(TerminalFunctions* _term, int playerid, int monsterid);//Charles Barry

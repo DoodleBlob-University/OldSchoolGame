@@ -210,7 +210,7 @@
            }//*/
         }
       }
-        
+
 
 int player::updateDB(int a, int b, int asLevelUpPoint){//Matthew Fretwell, poorly named, updates the array and prints out any relevant stat increase messages.
     std::string upgrade;
@@ -490,7 +490,7 @@ Spells::Spells(TerminalFunctions* _term){//Charles Barry
 
 int Defence::defence_response()  //George Franklin
 {
-  //player selects the potion which will heal them 
+  //player selects the potion which will heal them
   vectorOfQuantity = get_quantity();
   term->eraseTerminal();
   term->printTerminalText("These are healing stats " + std::to_string(defenceAmountOne) +", " + std::to_string(defenceAmountTwo) +", " + std::to_string(defenceAmountThree));
@@ -514,13 +514,13 @@ int Defence::defence_response()  //George Franklin
   defenceOptionThree = defenceResponse.find(defenceThreeLower);
 
   if(vectorOfQuantity[0]==0 && vectorOfQuantity[1]==0 && vectorOfQuantity[2]==0){
-    //initial test to see if there are any potions left 
+    //initial test to see if there are any potions left
     term->printTerminalText("\n\n\n\n\n\nYou have no potions left!");
     sleep(1);
     return 0;
   }
-  
-  
+
+
   else if (defenceOptionOne != std::string::npos || defenceOptionOneNo != std::string::npos)
   {
 
@@ -530,7 +530,7 @@ int Defence::defence_response()  //George Franklin
     }
 
     else{
-      //runs the function again if the player doesn't have any in their inventory 
+      //runs the function again if the player doesn't have any in their inventory
       term->printTerminalText("Not enough of these in your inventory.");
       sleep(1);
       defence_response();
@@ -581,7 +581,7 @@ Defence::Defence(TerminalFunctions* _term){//Charles Barry
 
 // ------------------------  ATTACKTEST ---------------------------
 void AttackTest::printToStatMenu(int playerHealth, int monsterHealth){//George Franklin & Charles Barry
-    //this prints to a separate window to display desired stats throughout 
+    //this prints to a separate window to display desired stats throughout
     wclear(substat);
     wattron(substat,COLOR_PAIR(2));
     mvwprintw(substat, 1, term->centreTextCursorPos(enemy->getName()), enemy->getName().c_str());
@@ -593,7 +593,7 @@ void AttackTest::printToStatMenu(int playerHealth, int monsterHealth){//George F
     wrefresh(substat);
 }
 
-int AttackTest::battle(){  //George Franklin
+void AttackTest::battle(){  //George Franklin
   //starts the combat and will always happen as it's true
   while(true)
   {
@@ -635,7 +635,7 @@ int AttackTest::battle(){  //George Franklin
     term->printTerminalText ("Your attack = " + std::to_string(combatAttack));
     mHealth = mHealth - combatAttack;
     printToStatMenu(pHealth, mHealth);
-    
+
     sleep(1);
 
       if(mHealth <=0)
@@ -643,7 +643,7 @@ int AttackTest::battle(){  //George Franklin
           term->eraseTerminal();
           term->printTerminalText ("You have killed the monster");
           term->printTerminalText("\nYou have been awarded with " + std::to_string(mEXP)+ " XP!");
-          
+
 
           while(a<=6)// Matthew Fretwell
           {
@@ -659,7 +659,7 @@ int AttackTest::battle(){  //George Franklin
           term->eraseTerminal();
           wclear(substat);
           wrefresh(substat);
-          return 0;
+          break;
       }
       term->eraseTerminal();//George Franklin
       term->printTerminalText ("Monsters time to attack");
@@ -676,7 +676,8 @@ int AttackTest::battle(){  //George Franklin
           term->eraseTerminal();
           term->printTerminalText ("You have died");
           getch();
-          return 1;
+          dead = true;
+          break;
       }
      else
      {
@@ -729,4 +730,8 @@ AttackTest::AttackTest(TerminalFunctions* _term, int _playerid, int monsterid) :
   loadMonsterStats();
   loadPlayerStats();
   battle();//commence battle
+}
+
+bool AttackTest::isdead(){
+  return dead;
 }
