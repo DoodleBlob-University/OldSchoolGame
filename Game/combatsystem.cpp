@@ -635,29 +635,20 @@ int AttackTest::battle(){  //George Franklin
           term->printTerminalText ("You have killed the monster");
           term->printTerminalText("\nYou have been awarded with " + std::to_string(mEXP)+ " XP!");
           health(pHealth);
-        
-        /*sqlite::sqlite db( "gamedb.db" );
-          auto cur = db.get_statement();
-          cur->set_sql("UPDATE PlayerStats SET Health = ? WHERE PlayerID = ?;");
-          //updateDB(6, 12, asLevelUpPoint);
-          cur->prepare();
-          cur->bind( 1, pHealth );
-          cur->bind( 2, playerid);
-          cur->step();
-          //pXPGain(mEXP);// Matthew Fretwell
-          /*pXPSplit(mEXP, attackCounter, healingCounter);
-          levelUp();
-          healthLevelUp();
+          matt-> pXPGain(mEXP);// Matthew Fretwell
+          matt-> pXPSplit(mEXP, attackCounter, healingCounter);
+          matt-> levelUp();
+          matt-> health(pHealth);
           sleep(2);
           wclear(substat);
           wrefresh(substat);
 
-          /*while(a<=6)
+          while(a<=6)
           {
-            getStatsLevelUp(a, b);
+            matt-> statsLevelUp(a, b);
             a=a+1;
             b=b+1;
-          }*/
+          }
           sleep(2);
         break;
       }
