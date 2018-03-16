@@ -184,6 +184,7 @@ private:
   int a = 3;
   int b = 9;
   bool defenceOption;
+  const int windowWidth = 43;
 
   player* matt;//Matt Fretwell
   int pHealth;

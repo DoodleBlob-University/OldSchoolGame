@@ -9,6 +9,7 @@ private:
   int windowWidth;
 public:
   int getWindowWidth(){return windowWidth;}
+  void changeWindowWidth(int _windowWidth){windowWidth = _windowWidth;}
   void printTerminalText(std::string text);
   WINDOW* getStat(){return stat;}
   std::string getUserInput();
@@ -16,6 +17,7 @@ public:
   bool getUserYN();
   void eraseTerminal();
   TerminalFunctions(WINDOW* _stat, WINDOW* _term, int _windowWidth);
+  int centreTextCursorPos(std::string text);
 };
 
 #endif

@@ -566,14 +566,23 @@ int AttackTest::battle(){  //George Franklin
   while(true)
   {
     substat = derwin(term->getStat(), 9,43,3,1);
+    term->changeWindowWidth(windowWidth);
     //term->printTerminalText ("The monster's health is... " + std::to_string(mHealth));
-    term->printTerminalText ("What would you like to do?" + enemy->getName());
+    term->printTerminalText ("What would you like to do?");
     term-> printTerminalText ("\n-1    Cast a spell");
     term-> printTerminalText ("\n\n-2    Use an attack");
     term->printTerminalText ("\n\n\n----- ");
     wclear(substat);
-    mvwprintw(substat, 0, 0, "Your health is %i", pHealth);
-    mvwprintw(substat, 1, 0, "Monster's health: %i", mHealth);
+
+    wattron(substat,COLOR_PAIR(2));
+    mvwprintw(substat, 1, term->centreTextCursorPos(enemy->getName()), enemy->getName().c_str());
+    mvwprintw(substat, 2, term->centreTextCursorPos(std::string(enemy->getName().length()+2, '.')), std::string(enemy->getName().length()+2, '~').c_str());
+    wattroff(substat,COLOR_PAIR(2));
+
+    mvwprintw(substat, 4, term->centreTextCursorPos("Your health is " + std::to_string(pHealth)), "Your health is %i", pHealth);
+    //mvwprintw(substat, 0, 0, "Your health is %i", pHealth);
+    mvwprintw(substat, 5, term->centreTextCursorPos("Monster's Health: " + std::to_string(mHealth)), "Monster's Health: %i", mHealth);
+    //mvwprintw(substat, 1, 0, "Monster's health: %i", mHealth);
     wrefresh(substat);
     fightingResponse = term->getUserInput();
     term->eraseTerminal();
@@ -683,6 +692,7 @@ int AttackTest::battle(){  //George Franklin
     }
   }
   term->eraseTerminal();
+  term->changeWindowWidth(45);
 }
 
 AttackTest::AttackTest(TerminalFunctions* _term, int _playerid) : Attack(_term), Spells(_term), Defence(_term){//Charles Barry

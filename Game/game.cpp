@@ -323,10 +323,6 @@ class Game{//Charles Barry
     TerminalFunctions* func;
     int playerID;
 
-    int centreTextCursorPos(string text){//Charles Barry
-      return (func->getWindowWidth() - text.size())/2;
-    }
-
     template<typename T, unsigned int N, unsigned int Nn>
     bool ifIdenticalArray(T (&array1)[N], T (&array2)[Nn]){//Charles Barry
       //I assume the data types for the array are identical - if this isnt the case an error will occur upon compiling
@@ -365,8 +361,8 @@ class Game{//Charles Barry
 
     void printDungeonName(string dungeonname){//Charles Barry
       werase(stat->getData());
-      mvwprintw(stat->getData(), 1, centreTextCursorPos(dungeonname), dungeonname.c_str());
-      wmove(stat->getData(), 2, centreTextCursorPos(dungeonname)- 1);
+      mvwprintw(stat->getData(), 1, func->centreTextCursorPos(dungeonname), dungeonname.c_str());
+      wmove(stat->getData(), 2, func->centreTextCursorPos(dungeonname)- 1);
       for(int i = 0; i < (dungeonname.size() + 2); ++i){
         wprintw(stat->getData(), "¯");
       }
@@ -380,12 +376,12 @@ class Game{//Charles Barry
       vector<vector<string>> MenuOptions = {{"Play Game","Extra", "Options", "Exit"},{"MapCreator","Back"},{"About","Back"}};
       while(true){
         printDungeonName(dungeonname);
-        mvwprintw(stat->getData(), 20, centreTextCursorPos("h: Help"), "h: Help");
+        mvwprintw(stat->getData(), 20, func->centreTextCursorPos("h: Help"), "h: Help");
 
 
         for(int i = 0; i < MenuOptions[suboption].size(); ++i){
           if(i == selected){wattron(stat->getData(),COLOR_PAIR(2));}
-          mvwprintw(stat->getData(), i+5, centreTextCursorPos(MenuOptions[suboption][i]), MenuOptions[suboption][i].c_str());
+          mvwprintw(stat->getData(), i+5, func->centreTextCursorPos(MenuOptions[suboption][i]), MenuOptions[suboption][i].c_str());
           wattroff(stat->getData(),COLOR_PAIR(2));
         }
 
@@ -495,12 +491,33 @@ class Game{//Charles Barry
             break;
           case 3:
             //Combat with normal monsters
-            //AttackTest ree(func);
-            go = new AttackTest(func, playerID);
+            int monster;
+            {
+              vector<int> monsterIDs;
+              sqlite::sqlite db( "gamedb.db" ); // open database
+              auto cur = db.get_statement();
+              cur->set_sql( "SELECT ID FROM Monster WHERE Dungeon = ?;" );
+              cur->prepare();
+              cur->bind(1, dungeon.getID());
+              while( cur->step() ){
+                 monsterIDs.push_back(cur->get_int(0));
+              }
+              srand(time(0));
+              int size = monsterIDs.size();
+              if(size > 0){
+                int random = rand() % size;
+                monster = monsterIDs[random];
+              }else{
+                monster = 8;
+              }
+            }
+            go = new AttackTest(func, playerID, monster);
             break;
           case 4:
             //Combat with bosses
-            //AttackTest ree(func);
+            {
+
+            }
             go = new AttackTest(func, playerID);
             break;
         }
@@ -523,9 +540,6 @@ class Game{//Charles Barry
           return 1;
         }else if(menuoption == 0){
           playerID = login.getUser();
-          wprintw(stat->getData(), "%i", playerID);
-          wrefresh(stat->getData());
-          getch();
           if(playerID > 0){break;}}
         main.printMap();
       }

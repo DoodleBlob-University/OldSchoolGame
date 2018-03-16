@@ -15,6 +15,10 @@ void TerminalFunctions::printTerminalText(std::string text){//Charles Barry
   wrefresh(term);
 }
 
+int TerminalFunctions::centreTextCursorPos(std::string text){//Charles Barry
+  return (getWindowWidth() - text.size())/2;
+}
+
 std::string TerminalFunctions::getUserInput(){//Charles Barry
   wmove(term, 10, 1);
   wprintw(term, ">");

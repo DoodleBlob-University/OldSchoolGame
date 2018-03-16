@@ -13,6 +13,7 @@ protected:
   int map[35][106];
   WINDOW* win;
 public:
+  int getID(){return ID;}
   void printMap();
   const char* getName();
   Map(int _ID, WINDOW* _win, MapTile* _maptiles);
