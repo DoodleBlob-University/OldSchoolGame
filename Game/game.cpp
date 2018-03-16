@@ -564,7 +564,7 @@ class Game{//Charles Barry
           //DUNGEON
           Dungeon dungeon(selecteddungeon, game->getData(), maptiles);
           if(DungeonSequence(game->getData(), stat->getData(), term->getData(), dungeon)){
-            return 1;
+            return 0;
           }
 
         }
@@ -574,7 +574,10 @@ class Game{//Charles Barry
     Game(Window* _game, Window* _stat, Window* _term, MapTile* _maptiles, TerminalFunctions* _func){//Charles Barry
       game = _game; stat = _stat; term = _term; maptiles = _maptiles; func = _func;
       while(true){
-      gameSequence();}
+        if(gameSequence()){
+          break;
+        }
+      }
     }
   };
 
