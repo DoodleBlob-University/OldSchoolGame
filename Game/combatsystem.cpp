@@ -493,6 +493,7 @@ Spells::Spells(TerminalFunctions* _term){//Charles Barry
 int Defence::defence_response()  //George Franklin
 {
   vectorOfQuantity = get_quantity();
+  term->eraseTerminal();
   term->printTerminalText("These are healing stats " + std::to_string(defenceAmountOne) +", " + std::to_string(defenceAmountTwo) +", " + std::to_string(defenceAmountThree));
   term->printTerminalText ("\nThese are the defences you can use:");
   term->printTerminalText ("\n\n-1    Use " + defenceOneString + " which has " + std::to_string(vectorOfQuantity[0]) + " uses left");
