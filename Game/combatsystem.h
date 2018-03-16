@@ -27,17 +27,17 @@ public:
 class player{//Matthew Fretwell
 private:
   std::array<int, 13>playerDB;
-  int pXPGain(int mEXP);
-  int pXPSplit(int mEXP,int attackNum,int defenceNum);
-  int levelUp();
-  int healthLevelUp();
-  int updateDB(int a, int b, int asLevelUpPoint);
-  void statsLevelUp(int a, int b);
   TerminalFunctions* term;//Charles Barry
   int playerid;//Charles Barry
 public:
+  int pXPGain(int mEXP);
+  int pXPSplit(int mEXP,int attackNum,int defenceNum);
+  int levelUp();
+  int health(int playerHealth);
+  int updateDB(int a, int b, int asLevelUpPoint);
+  void statsLevelUp(int a, int b);
   void dbOpen(TerminalFunctions* _term, int _playerid);//Charles Barry and Matt Fretwell
-  int getHealthLevelUp();
+  //int getHealthLevelUp();
   int getLevelUp();
   int getLevel();
   int getHealth();
@@ -49,9 +49,10 @@ public:
   int getGold();
   int getASEXP();
   int getDEXP();
-  int getXPGain(int mEXP);
+  int getPlayerID();
+  /*int getXPGain(int mEXP);
   int getXPSplit(int mEXP, int attackNum, int defenceNum);
-  int getStatsLevelUp(int a, int b);
+  int getStatsLevelUp(int a, int b);*/
   int levelingSystem(int mEXP, int numOfAttacks, int numOfDefence);
 };
 
@@ -191,6 +192,7 @@ private:
   int pMagicStrength;
   int pDef;
   int pXP;
+  int playerid;
 
   void loadPlayerStats(){//Charles Barry and Matt Fretwell
     pHealth = matt->getHealth();
@@ -199,6 +201,7 @@ private:
     pMagicStrength = matt->getMagicStrength();
     pDef = matt->getDefence();
     pXP = matt->getEXP();
+    playerid = getPlayerID();
   }
 
   WINDOW* substat;//Charles Barry
