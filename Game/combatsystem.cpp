@@ -533,6 +533,7 @@ int Defence::defence_response()  //George Franklin
   if(vectorOfQuantity[0]==0 && vectorOfQuantity[1]==0 && vectorOfQuantity[2]==0){
     //initial test to see if there are any potions left 
     term->printTerminalText("\n\n\n\n\n\nYou have no potions left!");
+    sleep(1);
     return 0;
   }
   
@@ -547,7 +548,8 @@ int Defence::defence_response()  //George Franklin
 
     else{
       //runs the function again if the player doesn't have any in their inventory 
-      term->printTerminalText("\n\n\n\n\n\nNot enough of these in your inventory.");
+      term->printTerminalText("Not enough of these in your inventory.");
+      sleep(1);
       defence_response();
     }
   }
@@ -561,7 +563,8 @@ int Defence::defence_response()  //George Franklin
     }
     else
     {
-      term->printTerminalText("\n\n\n\n\n\nNot enough of these in your inventory.");
+      term->printTerminalText("Not enough of these in your inventory.");
+      sleep(1);
       defence_response();
     }
   }
@@ -575,13 +578,15 @@ int Defence::defence_response()  //George Franklin
     }
     else
     {
-      term->printTerminalText("\n\n\n\n\n\nNot enough of these in your inventory.");
+      term->printTerminalText("Not enough of these in your inventory.");
+      sleep(1);
       defence_response();
     }
    }
   else
   {
-    term->printTerminalText("\n\n\n\n\n\nEnter number slot or name of consumable");
+    term->printTerminalText("Enter number slot or name of consumable");
+    sleep(1);
     defence_response();
   }
 }
