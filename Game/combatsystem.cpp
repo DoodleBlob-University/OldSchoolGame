@@ -1,4 +1,3 @@
-//Charles Barry
 #include <ncurses.h>
 #include <iostream>
 #include <cstring>
@@ -91,7 +90,8 @@
           cur->step();
   }
 
-  std::string Combat::make_lower(std::string attach){ //allows user input to match the name of the weapon or spell  //George Franklin
+  std::string Combat::make_lower(std::string attach){//George Franklin
+    //allows user input to match the name of the weapon or spell
     for(int length = 0; length < attach.length(); ++length){
       attach[length] = tolower(attach[length]);
     }
@@ -162,8 +162,8 @@
        int levelUpPoint = 40 *(level *1.2);
         if (EXP >= levelUpPoint){
             playerDB[1] = playerDB[1]+1;
-            term->printTerminalText("\n\n\n\n\n\nYou have leveled up!");
-            term->printTerminalText("\n\n\n\n\n\n\nYou are level " + std::to_string(playerDB[1]));
+            term->printTerminalText("\n\n\n\n\n\n\n\nYou have leveled up!");
+            term->printTerminalText("\n\n\n\n\n\n\n\n\nYou are level " + std::to_string(playerDB[1]));
 
 
             sqlite::sqlite db( "gamedb.db" );
@@ -184,8 +184,8 @@
        float levelUpPoint = 20 *(level *1.2);
         if (EXP >= levelUpPoint){
             playerDB[2] = playerDB[2]+1;
-            term->printTerminalText("\n\n\n\n\n\n\n\nYour health has leveled up!");
-            term->printTerminalText("\n\n\n\n\n\n\n\n\nYou now have " + std::to_string(playerDB[2]) + " health.");//*/
+            term->printTerminalText("\n\n\n\n\n\n\n\n\nYour health has leveled up!");
+            term->printTerminalText("\n\n\n\n\n\n\n\n\n\nYou now have " + std::to_string(playerDB[2]) + " health.");//*/
             sqlite::sqlite db( "gamedb.db" );
             auto cur = db.get_statement();
             cur->set_sql("UPDATE PlayerStats SET Health = ? WHERE PlayerID = ?;");
@@ -392,8 +392,9 @@ void monster::dbOpen(int _monsterid){//Matthew Fretwell and Charles Barry
 
 // -------------------------- ATTACK -----------------------------
 
-int Attack::attack_response() //player chooses desired weapon  //George Franklin
+int Attack::attack_response()//George Franklin
 {
+  //player chooses desired weapon
   term->printTerminalText("These are damage stats " + std::to_string(weaponStrengthOne) +", " + std::to_string(weaponStrengthTwo) +", " + std::to_string(weaponStrengthThree));
   term->printTerminalText ("\nThese are the weapons you can use:");
   term->printTerminalText ("\n\n-1    Deal damage with a " + weaponOneString);
@@ -408,13 +409,14 @@ int Attack::attack_response() //player chooses desired weapon  //George Franklin
 
 
   weaponOptionOne = attackResponse.find("1");
-  weaponOptionTwo = attackResponse.find("2");
+  weaponOptionTwo = attackResponse.find("2"); //using the find fucntion to search the string
   weaponOptionThree = attackResponse.find("3");
   weaponOptionOneNo = attackResponse.find(weaponOneLower);
   weaponOptionTwoNo = attackResponse.find(weaponTwoLower);
   weaponOptionThreeNo = attackResponse.find(weaponThreeLower);
 
-  if (weaponOptionOne != std::string::npos || weaponOptionOneNo != std::string::npos)//within standard documentation
+  if (weaponOptionOne != std::string::npos || weaponOptionOneNo != std::string::npos)
+    //npos is basically -1 as find will return -1 if it can't find what's inside
     {
       return weaponStrengthOne;
     }
@@ -427,6 +429,7 @@ int Attack::attack_response() //player chooses desired weapon  //George Franklin
       return weaponStrengthThree;
     }
     else{
+      //if the player doesn't enter anything that's there it will run the function again
         term->printTerminalText ("\n\n\n\n\n\nEnter number slot or name of weapon");
         attack_response();
     }
@@ -441,6 +444,7 @@ Attack::Attack(TerminalFunctions* _term){//Charles Barry
 
 int Spells::spells_response()  //George Franklin
 {
+  //player chooses their desired spells at no cost of mana
   term->printTerminalText("These are damage stats " + std::to_string(spellStrengthOne) +", " + std::to_string(spellStrengthTwo) +", " + std::to_string(spellStrengthThree));
   term->printTerminalText ("\nThese are the spells you can use:");
   term->printTerminalText ("\n\n-1    Cast " + spellOneString);
@@ -452,12 +456,11 @@ int Spells::spells_response()  //George Franklin
 
   spellOneLower = make_lower(spellOneString); //made lower so user can't misplace and uppercase letter
   spellTwoLower = make_lower(spellTwoString); //either be in function or in the prirate section
-
   spellThreeLower = make_lower(spellThreeString);
 
   spellOptionOneNo = spellResponse.find("1");
   spellOptionTwoNo = spellResponse.find("2");
-  spellOptionThreeNo = spellResponse.find("3");
+  spellOptionThreeNo = spellResponse.find("3");//same find function as above
   spellOptionOne = spellResponse.find(spellOneLower);
   spellOptionTwo = spellResponse.find(spellTwoLower);
   spellOptionThree = spellResponse.find(spellThreeLower);
@@ -504,6 +507,7 @@ Spells::Spells(TerminalFunctions* _term){//Charles Barry
 
 int Defence::defence_response()  //George Franklin
 {
+  //player selects the potion which will heal them 
   vectorOfQuantity = get_quantity();
   term->eraseTerminal();
   term->printTerminalText("These are healing stats " + std::to_string(defenceAmountOne) +", " + std::to_string(defenceAmountTwo) +", " + std::to_string(defenceAmountThree));
@@ -527,6 +531,7 @@ int Defence::defence_response()  //George Franklin
   defenceOptionThree = defenceResponse.find(defenceThreeLower);
 
   if(vectorOfQuantity[0]==0 && vectorOfQuantity[1]==0 && vectorOfQuantity[2]==0){
+    //initial test to see if there are any potions left 
     term->printTerminalText("\n\n\n\n\n\nYou have no potions left!");
     return 0;
   }
@@ -541,6 +546,7 @@ int Defence::defence_response()  //George Franklin
     }
 
     else{
+      //runs the function again if the player doesn't have any in their inventory 
       term->printTerminalText("\n\n\n\n\n\nNot enough of these in your inventory.");
       defence_response();
     }
@@ -587,6 +593,7 @@ Defence::Defence(TerminalFunctions* _term){//Charles Barry
 
 // ------------------------  ATTACKTEST ---------------------------
 void AttackTest::printToStatMenu(int playerHealth, int monsterHealth){//George Franklin & Charles Barry
+    //this prints to a separate window to display desired stats throughout 
     wattron(substat,COLOR_PAIR(2));
     mvwprintw(substat, 1, term->centreTextCursorPos(enemy->getName()), enemy->getName().c_str());
     mvwprintw(substat, 2, term->centreTextCursorPos(std::string(enemy->getName().length()+2, '.')), std::string(enemy->getName().length()+2, '~').c_str());
@@ -598,6 +605,7 @@ void AttackTest::printToStatMenu(int playerHealth, int monsterHealth){//George F
 }
 
 int AttackTest::battle(){  //George Franklin
+  //starts the combat and will always happen as it's true
   while(true)
   {
     substat = derwin(term->getStat(), 9,43,3,1);
@@ -648,7 +656,7 @@ int AttackTest::battle(){  //George Franklin
           term->printTerminalText("\nYou have been awarded with " + std::to_string(mEXP)+ " XP!");
           
 
-          while(a<=6)
+          while(a<=6)// Matthew Fretwell
           {
             matt-> statsLevelUp(a, b);
             a=a+1;
@@ -659,10 +667,10 @@ int AttackTest::battle(){  //George Franklin
           matt-> levelUp();
           matt-> health(pHealth);
           sleep(2);
-        term->eraseTerminal();
-        wclear(substat);
-        wrefresh(substat);
-        return 0;
+          term->eraseTerminal();
+          wclear(substat);
+          wrefresh(substat);
+          return 0;
       }
       term->eraseTerminal();//George Franklin
       term->printTerminalText ("Monsters time to attack");
@@ -703,7 +711,7 @@ int AttackTest::battle(){  //George Franklin
     }
   }
   term->eraseTerminal();
-  term->changeWindowWidth(45);
+  term->changeWindowWidth(45);//Chalres Barry
 }
 
 AttackTest::AttackTest(TerminalFunctions* _term, int _playerid) : Attack(_term), Spells(_term), Defence(_term){//Charles Barry
