@@ -100,8 +100,8 @@
 
 // ------------------------  PLAYER  ------------------------------------
 
-     void player::dbOpen(TerminalFunctions* _term, int _playerid){//Matthew Fretwell and Charles Barry
-       term = _term; playerid = _playerid;
+     void player::dbOpen(TerminalFunctions* _term, int _playerid){//All parts by Matthew Fretwell unless stated otherwise.
+       term = _term; playerid = _playerid;//Charles Barry
        //assigns playerid the actual playerid and gives term a pointer to an instance of terminalfunctions
         sqlite::sqlite db( "gamedb.db" );
         auto cur = db.get_statement();
@@ -119,7 +119,7 @@
 
 
 
-    int player::pXPGain(int mEXP){//Matthew Fretwell
+    int player::pXPGain(int mEXP){//Matthew Fretwell, updates the total XP of the player after combat.
            int xpGain = playerDB[7] + mEXP;
             playerDB[7] = xpGain;
             sqlite::sqlite db( "gamedb.db" );
@@ -134,7 +134,7 @@
             term->printTerminalText("\n\n\n\n\nXP: " + std::to_string(getEXP()));
             return playerDB[7];
 }
-    int player::pXPSplit(int mEXP,int attackNum,int defenceNum){//Matthew Fretwell
+    int player::pXPSplit(int mEXP,int attackNum,int defenceNum){//Matthew Fretwell, splits the total XP in a ratio depending on which attack you use in the combat system.
             int totalNum = attackNum + defenceNum;
             int equalSplit = mEXP/totalNum;
             int attackXP = equalSplit * attackNum;
@@ -156,7 +156,7 @@
             term->printTerminalText("\n\n\n\nDefence XP: " + std::to_string(getDEXP()));
 
         }
-    int player::levelUp(){//Matthew Fretwell
+    int player::levelUp(){//Matthew Fretwell, Levels the player up if their XP exceeds the level up point.
        int level = getLevel();
        int EXP = getEXP();
        int levelUpPoint = 40 *(level *1.2);
@@ -178,7 +178,7 @@
            }
 
             }
-      int player::health(int playerHealth){//Matthew Fretwell
+      int player::health(int playerHealth){//Matthew Fretwell, Levels up the players health when their XP exceeds the leveluppoint.
        int level = playerDB[2];
        int EXP = playerDB[7];
        float levelUpPoint = 20 *(level *1.2);
@@ -212,7 +212,7 @@
       }
         
 
-int player::updateDB(int a, int b, int asLevelUpPoint){//Matthew Fretwell
+int player::updateDB(int a, int b, int asLevelUpPoint){//Matthew Fretwell, poorly named, updates the array and prints out any relevant stat increase messages.
     std::string upgrade;
     int playerid;
     playerDB[a] = playerDB[a]+1;
@@ -236,7 +236,7 @@ int player::updateDB(int a, int b, int asLevelUpPoint){//Matthew Fretwell
             term->printTerminalText ("\n\n\nNext level at EXP. " + std::to_string(asLevelUpPoint));
     }
 
-    void player::statsLevelUp(int a, int b){//Matthew Fretwell
+    void player::statsLevelUp(int a, int b){//Matthew Fretwell, If stats exceed their level up point, the database is updated with their new stat level.
 
             int asLevel = playerDB[a];
             int asEXP = playerDB[b];
@@ -283,9 +283,7 @@ int player::updateDB(int a, int b, int asLevelUpPoint){//Matthew Fretwell
             }
     }
 
-    /*int player::getLevelUp(){//Matthew Fretwell
-        return levelUp();
-    }*/
+//All the following functions are to make my code easier to integrate with the combat system.
 
     int player::getLevel(){//Matthew Fretwell
         return playerDB[1];
@@ -321,27 +319,12 @@ int player::updateDB(int a, int b, int asLevelUpPoint){//Matthew Fretwell
       return playerid;
     }
 
-       /* int player::getXPGain(int mEXP){//Matthew Fretwell
-            return pXPGain(mEXP);
-        }
-        int player::getXPSplit(int mEXP, int attackNum, int defenceNum){//Matthew Fretwell
-            return pXPSplit(mEXP, attackNum, defenceNum);
-        }
-
-        int player::getStatsLevelUp(int a, int b){//Matthew Fretwell
-            statsLevelUp(a, b);
-        }
-        int player::getHealthLevelUp(){//Matthew Fretwell
-            return healthLevelUp();
-        }*/
-
-
 
 
 // -----------------------  MONSTER -----------------------------
 
-void monster::dbOpen(int _monsterid){//Matthew Fretwell and Charles Barry
-    monsterid = _monsterid;
+void monster::dbOpen(int _monsterid){//All code by Matthew Fretwell unless otherwise stated
+    monsterid = _monsterid;//Charles Barry
     //assigns monsterid the actual monster id
     sqlite::sqlite db( "gamedb.db" );
     auto cur = db.get_statement();
