@@ -12,14 +12,14 @@ class Item {
         int itemID;
         int cost;
         string name;
+        int itemType;
     public:
         int getID(){return itemID;}
-        string getName(){return name;} 
-        int getCost(){return cost;}  
-        Item(int _itemID, string _name, int _cost){
-            itemID = _itemID; name = _name; cost = _cost;
-        }
-        Item(){
+        string getName(){return name;}
+        int getCost(){return cost;}
+        int getType(){return itemType;}
+        Item(int _itemID, string _name, int _cost, int _itemType){
+            itemID = _itemID; name = _name; cost = _cost; itemType = _itemType;
         }
 };
 
@@ -28,24 +28,21 @@ class Weapon : public Item {
         int damage;
 
     public:
-        Weapon(int ID, string name, int _damage, int cost) : Item(ID, name, cost){
+        Weapon(int ID, string name, int _damage, int cost) : Item(ID, name, cost, 0){
             damage = _damage;
         }
         int getDamage(){
             return damage;
         }
-
-        
     };
 
 class Armour : public Item {
     private:
         int armour;
-        int durability;
     public:
-        Armour(int ID, string name, int _armour, int cost) : Item(ID, name, cost){
+        Armour(int ID, string name, int _armour, int cost) : Item(ID, name, cost, 1){
             armour = _armour;
-        }      
+        }
         int getArmour(){
             return armour;
         }
@@ -53,28 +50,24 @@ class Armour : public Item {
 
 class Potion : public Item {
 
-    private: 
+    private:
         int health;
-        int stamina;
         int mana;
     public:
-        Potion(int ID, string name, int _health, int _stamina, int _mana, int cost) : Item(ID, name, cost){
-            health = _health; stamina = _stamina; mana = _mana;
-        }
         int getHealth(){
             return health;
         }
-        int getStamina(){
-            return stamina;
-        }
         int getMana(){
             return mana;
+        }
+        Potion(int ID, string name, int _health, int _mana, int cost) : Item(ID, name, cost, 2){
+            health = _health; mana = _mana;
         }
 };
 
 class PlayerInventory{
     private:
-        struct Inventory{
+        struct Inventory
             Weapon *Weapon;
             Armour *Armour;
             Potion *Potion;
@@ -87,9 +80,9 @@ class PlayerInventory{
             cur->prepare();
             while(cur->step()){
                 int id = cur->get_int(0);
-                Weapon* ree = new Weapon(id, cur->get_text(1), cur->get_int(2), cur->get_int(3));
-                items[id].Weapon = ree;
-            } 
+                Weapon* wea = new Weapon(id, cur->get_text(1), cur->get_int(2), cur->get_int(3));
+                items[id].Weapon = wea;
+            }
         }
         void getArmour() {
             int count = 1;
@@ -99,21 +92,20 @@ class PlayerInventory{
             cur->prepare();
             while(cur->step()){
                 int id = cur->get_int(0);
-                Armour* reh = new Armour(id, cur->get_text(1), cur->get_int(2), cur->get_int(3));
-                items[id].Armour = reh;
-            } 
+                Armour* arm = new Armour(id, cur->get_text(1), cur->get_int(2), cur->get_int(3));
+                items[id].Armour = arm;
+            }
         }
         void getPotion() {
-            int count = 1;
             sqlite::sqlite db("Database.db");
             auto cur = db.get_statement();
-            cur->set_sql("SELECT item.id, potion.name, potion.health, potion.mana, potion.stamina, potion.cost FROM potion, item where item.PotionID = potion.ID;");
+            cur->set_sql("SELECT item.id, potion.name, potion.health, potion.mana, potion.cost FROM potion, item where item.PotionID = potion.ID;");
             cur->prepare();
             while(cur->step()){
                 int id = cur->get_int(0);
-                Potion* reeeeee = new Potion(id, cur->get_text(1), cur->get_int(2), cur->get_int(3), cur->get_int(4), cur->get_int(5));
-                items[id].Potion = reeeeee;
-            } 
+                Potion* pot = new Potion(id, cur->get_text(1), cur->get_int(2), cur->get_int(3), cur->get_int(4), cur->get_int(5));
+                items[id].Potion = pot;
+            }
         }
         int getItemCount() {
             int size;
@@ -123,13 +115,13 @@ class PlayerInventory{
             cur->prepare();
             cur->step();
             size = cur->get_int(0);
-            
+
             return size;
         }
     public:
         vector<Inventory> items;
-        array<Inventory, 10> playerInventory;
-        array<Inventory, 10> playerEquipped;
+        vector<Inventory> playerInventory;
+        vector<Inventory> playerEquipped;
 
         PlayerInventory(){
             items.resize(getItemCount());
@@ -138,32 +130,34 @@ class PlayerInventory{
             getPotion();
         }
         void addItem(int id){
-            int slot;
-            for(int i = 1; i < playerInventory.size(); ++i) {
-                slot = i;
+          int emptypos;
+          for(int i = 1; i < playerInventory.size(); ++i){
+            if(playerInventory[i].Weapon = NULL && playerInventory[i].Armour = NULL && playerInventory[i].Potion = NULL){
+              emptypos = i;
+              break;
             }
-            if(slot > 0){
-                playerInventory[slot] = items[id];
-            }
+          }
+          if(!emptypos){
+            //no adding here
+          }else{
+            playerInventory[emptypos] = items[id];
+          }
         }
-        //void removeItem(int id){
+        void removeItem(int id){
 
-       // }
-       // int equipItem(int id){
-
-      //  }
+        }
 };
 
 
 int main() {
     PlayerInventory* inv = new PlayerInventory();
     //inv->addItem(2);
-    inv->playerInventory[1] = inv->items[1];
+    inv->addItem(2);
 
     initscr();
     printw("%s", inv->playerInventory[1].Weapon->getName().c_str());
     getch();
     endwin();
-    
+
 
 }
