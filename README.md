@@ -21,3 +21,9 @@ For this, simply add more files to the terminal command as demonstrated below:
 ```
 g++ -std=c++14 *filename*.cpp *filename2*.cpp -o *filename* -lncursesw -lsqlite3
 ```
+## References
+
+#### Ncurses
+https://invisible-island.net/ncurses/
+#### Credit to rubdos for the libsqlitepp C++ library.
+https://github.com/glycos/libsqlitepp
