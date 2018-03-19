@@ -131,7 +131,9 @@
             cur->bind( 2, playerid);
 
             cur->step();
-            term->printTerminalText("\n\n\n\n\nXP: " + std::to_string(getEXP()));
+            //term->eraseTerminal();
+            term->printTerminalText("\n\n\n\nXP: " + std::to_string(getEXP()));
+            sleep(1);
             return playerDB[7];
 }
     int player::pXPSplit(int mEXP,int attackNum,int defenceNum){//Matthew Fretwell, splits the total XP in a ratio depending on which attack you use in the combat system.
@@ -152,8 +154,10 @@
             cur->bind( 4, defenceXPGain);
             cur->bind( 5, playerid);
             cur->step();
-            term->printTerminalText("\n\n\nAttack XP: " + std::to_string(getASEXP()));
-            term->printTerminalText("\n\n\n\nDefence XP: " + std::to_string(getDEXP()));
+            term->eraseTerminal();
+            term->printTerminalText("Attack XP: " + std::to_string(getASEXP()));
+            term->printTerminalText("\nDefence XP: " + std::to_string(getDEXP()));
+            sleep(1);
 
         }
     int player::levelUp(){//Matthew Fretwell, Levels the player up if their XP exceeds the level up point.
@@ -162,8 +166,10 @@
        int levelUpPoint = 40 *(level *1.2);
         if (EXP >= levelUpPoint){
             playerDB[1] = playerDB[1]+1;
-            term->printTerminalText("\n\n\n\n\n\n\n\nYou have leveled up!");
-            term->printTerminalText("\n\n\n\n\n\n\n\n\nYou are level " + std::to_string(playerDB[1]));
+            term->eraseTerminal();
+            term->printTerminalText("You have leveled up!");
+            term->printTerminalText("\nYou are level " + std::to_string(playerDB[1]));
+            sleep(1);
 
 
             sqlite::sqlite db( "gamedb.db" );
@@ -184,8 +190,10 @@
        float levelUpPoint = 20 *(level *1.2);
         if (EXP >= levelUpPoint){
             playerDB[2] = playerDB[2]+1;
-            term->printTerminalText("\n\n\n\n\n\n\n\n\nYour health has leveled up!");
-            term->printTerminalText("\n\n\n\n\n\n\n\n\n\nYou now have " + std::to_string(playerDB[2]) + " health.");//*/
+            term->eraseTerminal();
+            term->printTerminalText("Your health has leveled up!");
+            term->printTerminalText("\nYou now have " + std::to_string(playerDB[2]) + " health.");//*/
+            sleep(1);
             sqlite::sqlite db( "gamedb.db" );
             auto cur = db.get_statement();
             cur->set_sql("UPDATE PlayerStats SET Health = ? WHERE PlayerID = ?;");
@@ -228,7 +236,6 @@ int player::updateDB(int a, int b, int asLevelUpPoint){//Matthew Fretwell, poorl
     if(a==6){
         upgrade = "Defence";
     };
-            sleep(2);
             term->eraseTerminal();
             term->printTerminalText ("Your stats have increased!\n");
             term->printTerminalText ("\nYou are " + upgrade + " level " + std::to_string(playerDB[a]));
@@ -735,3 +742,4 @@ AttackTest::AttackTest(TerminalFunctions* _term, int _playerid, int monsterid) :
 bool AttackTest::isdead(){
   return dead;
 }
+
