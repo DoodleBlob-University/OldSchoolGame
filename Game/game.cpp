@@ -558,6 +558,8 @@ class Game{//Charles Barry
         if(selecteddungeon == 7){
           //SHOP
           Map shop(7, game->getData(), maptiles);
+          func->eraseTerminal();
+          func->printTerminalText("Hello! Welcome to gregorevs shop!\n1 - Buy Weapons\n2 - Buy Armour\n3 - Buy Potions\n4 - Sell Items\n5 - Exit Shop");
           getch();
         }else{
           //DUNGEON
