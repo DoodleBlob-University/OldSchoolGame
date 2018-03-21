@@ -554,12 +554,16 @@ class Game{//Charles Barry
       int temppos[] = {0,0};
       PeacefulMap World(2, game->getData(), maptiles);
       while(true){//Gameplay loop
+        func->eraseTerminal();
+        try{
+          curs_set(0);//some terminals dont support this feature, hence `try` and `catch`
+        }catch(...) {}
         int selecteddungeon = WorldMap(game->getData(), stat->getData(), term->getData(), World, temppos);
         if(selecteddungeon == 7){
           //SHOP
           Map shop(7, game->getData(), maptiles);
           func->eraseTerminal();
-          func->printTerminalText("Hello! Welcome to gregorevs shop!\n1 - Buy Weapons\n2 - Buy Armour\n3 - Buy Potions\n4 - Sell Items\n5 - Exit Shop");
+          func->printTerminalText("Hello! Welcome to gregorevs shop!"/*"\n1 - Buy Weapons\n2 - Buy Armour\n3 - Buy Potions\n4 - Sell Items\n5 - Exit Shop"*/);
           getch();
         }else{
           //DUNGEON

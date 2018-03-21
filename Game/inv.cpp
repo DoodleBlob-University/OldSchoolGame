@@ -91,7 +91,7 @@
             }
           }
         }
-        void PlayerInventory::removeItem(int pos){//Kai Arnold Starts at 0 
+        void PlayerInventory::removeItem(int pos){//Kai Arnold Starts at 0
           playerInv[pos].w = wempty;
           playerInv[pos].a = aempty;
           playerInv[pos].p = pempty;
@@ -103,9 +103,9 @@
         }
 
 
-
+/*
 int main() {//Kai Arnold
-    PlayerInventory* inv = new PlayerInventory();  //Creates a new player inventory 
+    PlayerInventory* inv = new PlayerInventory();  //Creates a new player inventory
     inv->addItem(1);
     inv->addItem(2);
     inv->addItem(3);
@@ -116,13 +116,13 @@ int main() {//Kai Arnold
     inv->addItem(8);
     inv->addItem(9);
     inv->addItem(10);
-  
+
 
     //inv->removeItem(1);
-    
+
     // inv->equipItem(3, 1);
 
-    initscr(); 
+    initscr();
     for(int i = 0; i < 10; ++i){
       printw("- %s\n", inv->playerInv[i].w->getName().c_str()); // Print player Inventory
     }
@@ -133,5 +133,4 @@ int main() {//Kai Arnold
     getch();
     endwin();
 
-}
-
+}*/
